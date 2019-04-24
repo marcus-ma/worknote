@@ -25,6 +25,14 @@ $this->response->back();
 ```
 ![](https://raw.githubusercontent.com/marcus-ma/worknote/master/flashSession-success.png)
 
+```php
+//返回上一页后显示蓝色提示信息
+$this->flashSession->notice("ts was created successfully");
+//返回上一页后显示黄色提示信息
+$this->flashSession->warning("ts was created successfully");
+$this->response->back();
+```
+
 
 ## volt
 ```php
