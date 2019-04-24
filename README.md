@@ -88,6 +88,8 @@ $this->view->variable = 123;
 {{ submit_button("Sign In", "class":"btn btn-primary btn-block btn-flat") }}
 //select组件,id与name都为type，optionValue为[1,2,3,4],k为ov的value，v为ov的页面显示
 {{ select("type", [1,2,3,4], 'using': ['id', 'name']) }}
+//数字输入框，相当于<input type="number">
+{{ numeric_field("id", 'placeholder':'ID', "size" : 5, "class" : "form-control", "id" : "fieldId") }}
 
 
 //模板继承
