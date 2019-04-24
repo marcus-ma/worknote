@@ -103,6 +103,14 @@ $this->view->variable = 123;
 {% endblock %}
 ```
 
+## flashSession
+```php
+//显示红色提示信息
+$this->flashSession->error("primary key was not found");
+```
+![](https://raw.githubusercontent.com/marcus-ma/worknote/master/flashSession-error.png)
+
+
 ## Phalcon\Image\Adapter\GD
 ```php
 //图像处理【http://docs.iphalcon.cn/reference/volt.html】
