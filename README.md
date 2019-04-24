@@ -9,6 +9,16 @@ var_dump(apcu_fetch('name'));
 //删除k
 apcu_delete('name')
 ```
+
+## flashSession
+```php
+//返回上一页后显示红色提示信息
+$this->flashSession->error("primary key was not found");
+$this->response->back();
+```
+![](https://raw.githubusercontent.com/marcus-ma/worknote/master/flashSession-error.png)
+
+
 ## volt
 ```php
 //值输出
@@ -103,12 +113,6 @@ $this->view->variable = 123;
 {% endblock %}
 ```
 
-## flashSession
-```php
-//显示红色提示信息
-$this->flashSession->error("primary key was not found");
-```
-![](https://raw.githubusercontent.com/marcus-ma/worknote/master/flashSession-error.png)
 
 
 ## Phalcon\Image\Adapter\GD
