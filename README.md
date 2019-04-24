@@ -102,3 +102,32 @@ $this->view->variable = 123;
     <p class="important">Welcome on my awesome homepage.</p>
 {% endblock %}
 ```
+
+## Phalcon\Image\Adapter\GD
+```php
+//图像处理【http://docs.iphalcon.cn/reference/volt.html】
+//读取图像句柄
+$image = new Phalcon\Image\Adapter\GD('C:/Users/53505/Desktop/test.jpg');
+
+//设置生成图片的尺寸
+//第一个参数是指定宽度，第二个参数指定高度，第三个参数指定了缩放方式，默认为 PhalconImage::AUTO
+$image->resize(200, 200);
+
+//可以添加水印到指定位置
+//先获取水印的图片
+$mask = new Phalcon\Image\Adapter\GD('watermark.jpg');
+//添加到图片的制定位置上
+$image->watermark($watermark, -10, -10, 90);
+
+//可以添加文本到指定位置，下面的示例将会添加文本到图像正中间位置：
+$image->text('Hello world');
+
+//图像另存`save` 的第一个参数是指定保存路径，如果为空，将覆盖原始文件，第二个参数指定图像质量 [1-100] 之间。
+$image->save('unit-tests/assets/production/gd-resize.jpg');
+
+//直接渲染，获取二进制字符串
+$bytes = $image->render();
+$this->response->setContentType('image/png');
+$this->response->setContent($bytes);
+$this->response->send();
+```
