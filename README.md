@@ -32,6 +32,10 @@ $this->flashSession->notice("ts was created successfully");
 $this->flashSession->warning("ts was created successfully");
 $this->response->back();
 ```
+如果在某action下的volt模板中存在
+{{ flashSession.output() }}，
+同时该action函数中若又存在$this->flashSession的提示函数，
+则每次加载模板都会第一时间把提示框显示出来
 
 
 ## volt
