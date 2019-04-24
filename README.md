@@ -90,6 +90,10 @@ $this->view->variable = 123;
 {{ select("type", [1,2,3,4], 'using': ['id', 'name']) }}
 //数字输入框，相当于<input type="number">
 {{ numeric_field("id", 'placeholder':'ID', "size" : 5, "class" : "form-control", "id" : "fieldId") }}
+//相当于a标签,<a href="ts-campaign/search" class="btn btn-default" >back</a>
+{{ link_to("ts-campaign/search", "back", 'class': 'btn btn-default') }}
+//隐藏文本框，相当于<input type="hidden" id="id" name="id" value="marcus">
+{{ hidden_field("id","value":"marcus") }}
 
 
 //模板继承
