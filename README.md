@@ -18,6 +18,13 @@ $this->response->back();
 ```
 ![](https://raw.githubusercontent.com/marcus-ma/worknote/master/flashSession-error.png)
 
+```php
+//返回上一页后显示绿色提示信息
+$this->flashSession->success("ts was created successfully");
+$this->response->back();
+```
+![](https://raw.githubusercontent.com/marcus-ma/worknote/master/flashSession-success.png)
+
 
 ## volt
 ```php
