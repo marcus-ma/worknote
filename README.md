@@ -152,6 +152,8 @@ $this->view->variable = 123;
 {% endif %}
 //判断变量是否被定义
 {% if profile is defined %}
+//结合在action中的$this->tag->setDefault('phone',111),判断是否设置
+{% if tag.getValue('phone') %}
 
  
 //遍历
