@@ -168,3 +168,8 @@ $this->response->setContentType('image/png');
 $this->response->setContent($bytes);
 $this->response->send();
 ```
+
+
+## Bootstrap table
+详细概念可以参考文章[https://blog.csdn.net/tyrant_800/article/details/50269723]和[https://www.cnblogs.com/laowangc/p/8875526.html]
+
