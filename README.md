@@ -267,6 +267,34 @@ $this->response->setContent($bytes);
 $this->response->send();
 ```
 
+### searchAction
+```php
+对于所有search行为的控制器，生成表单数据的方法为
+if ($this->request->isPost()) {
+    $model = new {MODEL}();
+    $builder = $model->dataTableBuilder();
+    //此处的数组，是用于将的当前的一些模型字段进行自定义的转换
+    $transform = [];
+    //打个例子：现在在模板的字段有status，department，ip(对应datatable的table中的data-field="xxx")。
+    //其中department字段是要与部门model相互关联的
+    $transform = [
+            'status' => function($data){
+	       return model::status[$data->status]??'-';
+             },
+            'department' => function($data){
+	       return $data->departmodel->name;
+             }
+            'ip' => function($data){
+	       //UtiLib::geo方法是本系统封装好的工具函数，会把ip转化成数组,解析为国家、城市、运行商、ip
+	       return UtiLib::geo($data->ip)
+	       //此时返回的是数组，在模板数据渲染的时候记得要调用{{ partial('widget/extra', ['formatter':['ip']]) }}
+             }
+
+    ];
+   
+    return $this->response->paginate($builder, $transform);
+}
+```
 
 ## Bootstrap table
 详细概念可以参考文章[https://blog.csdn.net/tyrant_800/article/details/50269723] 和 [https://www.cnblogs.com/laowangc/p/8875526.html]
