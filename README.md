@@ -150,6 +150,9 @@ $this->view->variable = 123;
 {% if variable == 'password' %}
 {% elseif variable =='phone' %}
 {% endif %}
+//判断变量是否被定义
+{% if profile is defined %}
+
  
 //遍历
 {% for item in set %}
