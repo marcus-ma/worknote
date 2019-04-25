@@ -10,6 +10,94 @@ var_dump(apcu_fetch('name'));
 apcu_delete('name')
 ```
 
+## Phalcon\Model
+`initialize` 
+```php
+public function initialize()
+{
+       //选择连接的DB
+       $this->setConnectionService("DB1");
+        //指定数据库，跟上面的一样
+        $this->setSchema("DB1");
+        //制定连接的表
+        $this->setSource("table1");
+        //必填，具体机制有待探究
+        $this->addBehavior(
+            new BlameableLib()
+        );
+}
+
+```
+
+`validation[校验机制的详细属性参考文章【https://blog.csdn.net/u014691098/article/details/80295304】]`
+```php
+new Validation\Validator
+public function validation()
+{
+       $validator = new Validation();
+       //检验唯一性	
+       $validator->add('字段属性', new Uniqueness([
+           'message' => '名称已经被使用',
+       ]));
+       //检验是否存在
+       $validator->add('字段属性', new PresenceOf([
+           'message' => '名称必需填写',
+       ]));
+       //自定义检验
+       $validator->add('age', new Callback([
+          'callback' => function(){
+		           return $this->age >= $this->min_age;
+          }
+             'message' => '年龄一定大于法定最小年龄',
+        ]));
+       //校验是否存在于集合中
+       $validator->add('字段属性', new InclusionIn([
+           "domain" => [1,2],
+       ]));
+-----------------------------------------------------------------------
+       //校验是否为URL 【除了提供Url外，还提供Email】
+       $validator->add('字段属性url', new Url([
+           'message' => '页面地址必需是有效的url',
+       ]));
+-----------------------------------------------------------------------
+        //校验长度
+        $validator->add('字段属性phone', new StringLength([
+            'min' => '11',
+           'max' => '11',
+           'messageMaximum' => '手机号不正确：'.$this->phone,
+           'messageMinimum' => '手机号不正确：'.$this->phone,
+        ]));
+        //利用正则校验
+        $validator->add('字段属性phone', new Regex([
+            'pattern' => '/^1\d{10}$/',
+           'message' => '错误的手机号码'.$this->phone,
+        ]));
+        return $this->validate($validator);
+}
+
+```
+
+`in的用法` 
+```php
+   $bind['_user'] = $ids;//[1,2,3,4,5,6]
+   $records = self::find([
+    	'conditions' => 'user_id in ({_user:array})'.$queryWhere,
+    	 'bind' => $bind,
+   ]);
+```
+
+`数据保存失败的提示获取(在控制器层)` 
+```php
+if (!$model->save()) {
+   foreach ($model->getMessages() as $message) {
+       $this->flashSession->error($message);
+    }
+    //准备将之前保存失败的内容显示回在之前的页面上
+    $this->tag::setDefaults(get_object_vars($model));
+    return $this->dispatcher->forward(['controller' => 'xxx', 'action' => 'xxx',]);
+}
+```
+
 ## flashSession
 ```php
 //返回上一页后显示红色提示信息
