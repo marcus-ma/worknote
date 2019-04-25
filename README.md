@@ -77,6 +77,16 @@ public function validation()
 
 ```
 
+`静态方法map的用法` 
+```php
+  //map方法是本系统封装好的一个方法，其作用是查出制定的数据组成关联数组
+  //第一个参数传递作为数组key的模型字段，第二个参数传递最为数组value的墨子那个字段
+  //第三个参数是sql的where条件
+  $kvArray = model::map('id','created_at',['order'=>'created_at asc']);
+  //[1=>'2019/2/10',2=>'2019/3/1']
+```
+
+
 `in的用法` 
 ```php
    $bind['_user'] = $ids;//[1,2,3,4,5,6]
