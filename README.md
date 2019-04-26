@@ -298,6 +298,28 @@ if ($this->request->isPost()) {
     ];
    
     return $this->response->paginate($builder, $transform);
+-----------------------------------------------------------------------
+//如果想要直接用返回一个对象直接在模板填充，做法是
+$transform = [
+     'user'' => function($data){
+            return isset($data->id) && $data->id ? Users::findFirst($data->id) : null;
+      },
+];
+```
+```html
+在模板上则为
+<th data-field="name" data-formatter="nameFormatter" data-align="center">姓名</th>
+<th data-field="sex" data-formatter="sexFormatter" data-align="center">性别</th>
+ <th data-field="status" data-formatter="statusFormatter" data-align="center">状态</th>
+
+function nameFormatter(value, row, index){
+        return '<span>'+row.user.name+'</span>';
+}
+function sexFormatter(value, row, index){
+        return '<span>'+row.user.sex+'</span>';
+}
+function statusFormatter(value, row, index){
+        return '<span>'+row.user.status+'</span>';
 }
 ```
 
