@@ -209,6 +209,8 @@ $this->view->variable = 123;
 {{ link_to("ts-campaign/search", "back", 'class': 'btn btn-default') }}
 //隐藏文本框，相当于<input type="hidden" id="id" name="id" value="marcus">
 {{ hidden_field("id","value":"marcus") }}
+//file文件上传组件,相当于<input type="file" data-name="code_url" id="fieldCode">
+{{ file_field('data-name':"code_url", "size" : 30, "class" : "form-control upload-file", "id" : "fieldCode")  }}
 
 
 //模板继承
