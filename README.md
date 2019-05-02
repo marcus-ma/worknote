@@ -328,3 +328,107 @@ function statusFormatter(value, row, index){
 ## Bootstrap table
 详细概念可以参考文章[https://blog.csdn.net/tyrant_800/article/details/50269723] 和 [https://www.cnblogs.com/laowangc/p/8875526.html]
 
+## MongoDB
+```php
+//连接数据库(client->库->表)"mongodb://username:password@host/database";
+$collection = (new MongoDB\Client("mongodb://localhost:27017"))->test->users;
+
+//插入数据
+//insertOne插入一条
+//insertMany插入多条
+$insertOneResult = $collection->insertOne([
+    'username' => 'admin',
+    'email' => 'admin@example.com',
+    'name' => 'Admin User',
+]);
+//返回插入条数
+printf("Inserted %d document(s)\n", $insertOneResult->getInsertedCount());
+//返回插入的文档id(字符串)
+var_dump($insertOneResult->getInsertedId()->__toString());
+
+//查询
+$doc = $collection->findOne(['username' => 'admin']);
+var_dump($doc->email,$doc->name,$doc->_id->__toString());
+
+//按文档id查询(由于储存的`_id`字段是一个BSON类型的object,所以要按_id字段来查的话,要先进行类型转换）
+$mongo_id = new MongoDB\BSON\ObjectId('5ccad4f30af1432e9c002352');
+$doc = $collection->findOne(['_id' => $mongo_id]);
+//如果没有找到,返回值为null，找到返回值是一个对象,这里我们可以将他强制类型转换`$info = (array)$info`
+var_dump((array)$doc);
+
+//多个查询find
+//多个查询有两个数组参数,第一个是查询的条件,第二个是选项
+//第一个数组的查询条件要注意下`$gt`这是查询选择器,表示大于
+//第二个数组的选项意义为:
+//`projection`指定返回哪些字段,`skip`跳过0条数据,`limit`查询10条数据,`sort`按age字段正序排序(1为正序,-1为倒序)
+$info = $collection->find(
+    ['name'=>'Dullcat','age'=>['$gt'=>'1']],
+    [
+        'projection'=>['id' => 1, 'age' => 1, 'name' => 1],
+        'skip'=>0,
+        'limit'=>10,
+        'sort'=>['age'=>1]
+    ]
+);
+//这时请注意,多个查询返回的是游标(Cursor),需要的进行处理
+//您可以用函数转换$info_array = $info->toArray();
+//也可以用foreach迭代该对象
+foreach($info as $value){
+$info_array [] = $value;
+}
+
+
+//更新
+//单条更新updateOne，多条更新updateMany
+//单个更新和多个更新的用法一模一样,但是要注意的是他的操作符和选项
+//update方法有三个数组参数
+//第一个数组是查询条件，
+//第二数组是更新操作符,例如下面的
+//`['$set'=>['age'=>'23']]`,意义为:更改age字段为23
+//第三个数组是选项,可以选择各种参数,例如下面的
+//`['upsert'=>true]`,意义为当能查询到就进行更改,如果没有查询到就进行新增操作
+$result = $collection->updateOne(
+    array('username'=>'admin'),
+    array('$set'=>array('name'=>'Admin Marcus')),
+    array('upsert'=>true)
+);
+var_dump($result);
+
+
+//删除
+//单个删除deleteOne，多个删除deleteMany
+//单个删除和多个删除的用法一模一样,只是单个删除只删除查询到的第一条数据,而多个删除则删除匹配到的所有数据
+//单个删除：
+$result = $collection->deleteOne(array('name'=>'DullCat'));
+//多个删除：
+$result = $collection->deleteMany(['id' => ['$in' => array[1, 2]]]);
+//拿到删除数据的条数：
+$count = $result->getDeletedCount();
+
+//去重
+$fileName = 'name';
+$where = ['id' => ['$lt' => 100]];
+$ret = $collection->distinct($fileName,$where);
+
+
+//聚合
+$ops = [
+    ['$match' =>['type'=>['$in'=>[2,4]]]],
+    //sort顺序不能变，否则会造成排序混乱，注意先排序再分页
+    ['$sort' => ['list.create_time' => -1]],
+    ['$skip' => 0],
+    ['$limit' => 20000],
+];
+$data = $collection->aggregate($ops);
+foreach ($data as $document) {var_dump($document);}
+
+
+//模糊查询(正则)
+$filter = ['username' => ['$in' => [new MongoDB\BSON\Regex('^ad','i')]]];
+$doc = $collection->findOne($filter);
+var_dump($doc);
+
+```
+
+
+
