@@ -330,6 +330,7 @@ function statusFormatter(value, row, index){
 
 ## MongoDB
 ```php
+//https://segmentfault.com/a/1190000017279755
 //连接数据库(client->库->表)"mongodb://username:password@host/database";
 $collection = (new MongoDB\Client("mongodb://localhost:27017"))->test->users;
 
