@@ -429,6 +429,50 @@ $filter = ['username' => ['$in' => [new MongoDB\BSON\Regex('^ad','i')]]];
 $doc = $collection->findOne($filter);
 var_dump($doc);
 
+-----------------------------------------------------------------------------------------------------|
+//demo：采用mongodb的2d平面索引就能完成附近的好友搜索了
+$collection = (new MongoDB\Client("mongodb://localhost:27017"))->test->lbs;
+
+//loc是一个经纬度的数组,当然也可以是'loc'=>['lng'=>115.993067,'lat'=> 28.67606]，但官方推荐数组。
+$insertOneResult = $collection->insertMany([
+    ['name'=>'杨帅哥', 'loc'=>[115.993121,28.676436]],
+  ['name'=>'王美眉', 'loc'=>[116.000093,28.679402]],
+ ['name'=>'张美眉', 'loc'=>[115.999967,28.679743]],
+ ['name'=>'李美眉', 'loc'=>[115.995593,28.681632]],
+ ['name'=>'彭美眉',  'loc'=>[115.975543,28.679509]],
+ ['name'=>'赵美眉',  'loc'=>[115.968428,28.669368]],
+ ['name'=>'廖美眉',  'loc'=>[116.035262,28.677037]],
+ ['name'=>'余帅哥',  'loc'=>[116.02477,28.68667]],
+ ['name'=>'吴帅哥', 'loc'=>[116.002384,28.683865]],
+ ['name'=>'何帅哥',  'loc'=>[116.000821,28.68129]],
+]);
+printf("Inserted %d document(s)\n", $insertOneResult->getInsertedCount());
+
+//设置2d索引,因为以二维平面上点的方式存储的数据，想要进行LBS查询，那么要设置2d索引
+$res=$collection->createIndex(['loc'=>'2d']);
+var_dump($res);
+
+//查询附近200米的人
+//查询附近的人，首先的指导当前用户所在的经纬度，
+//如果不仅想要得到数据还要得到距离，那么可以使用$geoNear指令，
+//如果距离自己去计算可以使用$near或者$geoWithin然后在手动计算距离。
+//此处采用$geoNear指令查询附近2000m的人。
+$ops = [
+    ['$geoNear'=>[
+        'near'=> [115.999567,28.681813], // 当前坐标
+        'spherical'=> true, // 计算球面距离
+        'distanceMultiplier'=>6378137, // 地球半径,单位是米,那么的除的记录也是米
+        'maxDistance'=>2000/6378137, // 过滤条件2000米内，需要弧度
+        'distanceField'=> "distance" // 距离字段别名
+    ]]
+];
+$data = $collection->aggregate($ops);
+foreach ($data as $document) {
+    var_dump($document->name);
+}
+//6个人"何帅哥" "张美眉""王美眉" "吴帅哥" "李美眉" "杨帅哥"
+-----------------------------------------------------------------------------------------------------|
+
 ```
 
 
