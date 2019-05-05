@@ -333,6 +333,8 @@ function statusFormatter(value, row, index){
 //https://segmentfault.com/a/1190000017279755
 //连接数据库(client->库->表)"mongodb://username:password@host/database";
 $collection = (new MongoDB\Client("mongodb://localhost:27017"))->test->users;
+//在本系统的调用方法是：('test' => ['uri' => 'mongodb://127.0.0.1:27017', 'db' => 'test'],)
+//$collection = MongoLib::db('test', 'test')->users;
 
 //插入数据
 //insertOne插入一条
