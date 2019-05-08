@@ -199,6 +199,8 @@ $this->view->variable = 123;
 
 //input-text组件(name属性,k:v,…………)
 {{ text_field("email", 'id':'email', "class" : "form-control", "placeholder" : "Email", "required":"required") }}
+//textarea组件
+{{ text_area("content",'id':'content', "class" : "form-control", "placeholder" : "Content",) }}
 //提交按钮组件(value按钮值,k:v属性,…………)
 {{ submit_button("Sign In", "class":"btn btn-primary btn-block btn-flat") }}
 //select组件,id与name都为type，optionValue为[1,2,3,4],k为ov的value，v为ov的页面显示
