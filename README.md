@@ -108,6 +108,27 @@ if (!$model->save()) {
 }
 ```
 
+## PHP技巧
+```php
+//按照某key来将数组进行排序
+$b = [
+    ['id'=>1,'na'=>'m'],
+    ['id'=>2,'na'=>'a'],
+    ['id'=>3,'na'=>'r'],
+    ['id'=>4,'na'=>'c']
+];
+array_multisort(array_column($b, 'id'), SORT_DESC, $b);
+var_dump($b);
+$b = [
+    ['id'=>4,'na'=>'c']
+    ['id'=>3,'na'=>'r'],
+    ['id'=>2,'na'=>'a'],
+    ['id'=>1,'na'=>'m'],
+];
+
+```
+
+
 ## flashSession
 ```php
 //返回上一页后显示红色提示信息
