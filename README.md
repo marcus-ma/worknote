@@ -1,6 +1,6 @@
 # worknote
 
-## apcu
+## apcu [注意！在php-cli下运行缓存无效的]
 ```php
 //存储K-v-TTL(s)
 apcu_store('name', 'marcus', 60);
