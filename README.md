@@ -13,7 +13,9 @@ apcu_delete('name')
 ### CMD命令
 1:[快速打开网页]start http://xxxx.com
 </br>
-2:[发起POST请求]curl http://127.0.0.1:8080/test -X POST -d "name=marcus&token=test"
+2:[发起POST请求]
+</br>表单:curl http://127.0.0.1:8080/test -X POST -d "name=marcus&token=test" 
+</br>json:curl -H "Content-Type:application/json" http://127.0.0.1:8080/test -X POST -d '{"user": "admin", "passwd":"12345678"}'
 
 ## Phalcon\Model
 `initialize` 
