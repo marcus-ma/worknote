@@ -10,6 +10,11 @@ var_dump(apcu_fetch('name'));
 apcu_delete('name')
 ```
 
+### CMD命令
+1:[快速打开网页]start http://xxxx.com
+</br>
+2:[发起POST请求]curl http://127.0.0.1:8080/test -X POST -d "name=marcus&token=test"
+
 ## Phalcon\Model
 `initialize` 
 ```php
@@ -347,6 +352,7 @@ function statusFormatter(value, row, index){
         return '<span>'+row.user.status+'</span>';
 }
 ```
+
 
 ## Bootstrap table
 详细概念可以参考文章[https://blog.csdn.net/tyrant_800/article/details/50269723] 和 [https://www.cnblogs.com/laowangc/p/8875526.html]
