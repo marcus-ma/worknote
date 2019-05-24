@@ -174,7 +174,7 @@ $this->view->variable = 123;
 //数组形式的值
 {{ variable['col']}}
 //数组长度
-{{ array|length }}
+{{ variableArr |length }}
 
 //判断
 {% if variable == 'password' %}
