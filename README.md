@@ -510,5 +510,144 @@ foreach ($data as $document) {
 
 ```
 
+## IM常用函数
+```html
+<div>
+    <!--调用相机-->
+    <input type="file" id="camer" accept="image/*" capture="camera" onchange="takingPhoto(this)">
+    <!--相片预览区域-->
+    <img id="ig" src="">
+    <!--相片发送-->
+    <button id="img-send" onclick="upload()">发送图片</button>
+</div>
+
+<div>
+    <!--录音-->
+    <input value="请按住说话" type="button" id="speak" style="margin-top: 5px;width: 100%; text-align: center"  />
+    <audio id="audio" style="display: none"></audio>
+    <audio id="audio4play"></audio>
+</div>
+```
+
+```js
+ function takingPhoto(obj) {
+        photoPreview(obj,document.getElementById("ig"))
+    }
+    
+    function upload(){
+        uploadfile("upload",document.getElementById("camer"),function (res) {
+            alert(res);
+        })
+    }
+//照片预览
+    function photoPreview(fileDom,imgDom) {
+        var file = fileDom.files[0],
+            reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function(e){
+            imgDom.setAttribute("src", e.target.result);
+        };
+    }
+    //文件上传
+    function uploadfile(url,fileDom,callback){
+        //H5新特性
+        let formdata = new FormData();
+        //获得一个文件file.files[0]
+        formdata.append("file",fileDom.files[0]);
+        //console.log(formdata);
+        // formdata.append("filetype",".png");//.mp3制定后缀
+        var xhr = new XMLHttpRequest();//ajax初始化
+        var url = "http://"+location.host+"/"+url;
+        xhr.open("POST",url,true);
+        xhr.onreadystatechange = function () {
+            if(xhr.readyState == 4&& xhr.status == 200){
+                callback(JSON.parse(xhr.responseText))
+            }
+        };
+        xhr.send(formdata);
+    }
+    
+    
+    //按钮按住触发事件
+     document.getElementById("speak").addEventListener('touchstart', startrecorder, false);
+     //按钮松开触发事件
+     document.getElementById("speak").addEventListener('touchend', stoprecorder, false);
+     //录音函数
+     function startrecorder(){
+        let audioTarget = document.getElementById('audio');
+        var types = ["video/webm",
+            "audio/webm",
+            "video/webm\;codecs=vp8",
+            "video/webm\;codecs=daala",
+            "video/webm\;codecs=h264",
+            "audio/webm\;codecs=opus",
+            "video/mpeg"];
+        var suporttype ="";
+        for (var i in types) {
+            if(MediaRecorder.isTypeSupported(types[i])){
+                suporttype = types[i];
+            }
+        }
+        if(!suporttype){
+            alert("编码不支持");
+            return ;
+        }
+
+        this.duration = new Date().getTime();
+        navigator.mediaDevices.getUserMedia({audio: true, video: false})
+            .then(function(stream){
+                this.showprocess = true;
+                this.recorder = new MediaRecorder(stream);
+                audioTarget.srcObject = stream;
+		//配置数据可用的回调,发生在按钮松开的时候	
+                this.recorder.ondataavailable = (event) => {
+                    console.log("ondataavailable");
+                    uploadblob("upload",event.data,".mp3",res=>{
+		        //记录语音长度
+                        var duration = Math.ceil((new Date().getTime()-this.duration)/1000);
+			//拼接语音的信息
+                        this.sendaudiomsg(res.data,duration);
+                    });
+                    stream.getTracks().forEach(function (track) {
+                        track.stop();
+                    });
+                    this.showprocess = false
+                };
+                this.recorder.start();
+            }.bind(this)).
+        catch(function(err){
+            console.log(err);
+            alert(err);
+            this.showprocess = false
+        }.bind(this));
+    }
+
+    function stoprecorder() {
+        if(typeof this.recorder.stop=="function"){
+            this.recorder.stop();
+        }
+        this.showprocess = false;
+        console.log("stoprecorder")
+
+    }
+
+    function uploadblob(uri,blob,filetype,fn){
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST","http://"+location.host+"/"+uri, true);
+        // 添加http头，发送信息至服务器时内容编码类型
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 304)) {
+                fn.call(this, JSON.parse(xhr.responseText));
+            }
+        };
+        var _data=[];
+        var formdata = new FormData();
+        formdata.append("filetype",filetype);
+        formdata.append("file",blob);
+        xhr.send(formdata);
+    }
+     
+```
+
 
 
