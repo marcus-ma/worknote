@@ -539,7 +539,7 @@ foreach ($data as $document) {
             alert(res);
         })
     }
-//照片预览
+    //照片预览
     function photoPreview(fileDom,imgDom) {
         var file = fileDom.files[0],
             reader = new FileReader();
@@ -646,6 +646,30 @@ foreach ($data as $document) {
         formdata.append("file",blob);
         xhr.send(formdata);
     }
+    //图片粘贴事件
+    document.addEventListener('paste', function (e) {
+        console.info(e);
+        const cbd = e.clipboardData;
+        const fr = new FileReader();
+        const html = '';
+        for (let i = 0; i < cbd.items.length; i++) {
+            const item = cbd.items[i];
+            console.info(item);
+            if (item.kind == "file") {
+                const blob = item.getAsFile();
+                if (blob.size === 0) {
+                    return;
+                }
+                //此处的blob就是为图片的blob对象，要上传的话就直接传它即可
+                console.info(blob);
+                fr.readAsDataURL(blob);
+                fr.onload = function (e) {
+		    //显示文件
+		    document.getElementById("ig").src = this.result;
+                }
+            }
+        }
+    });
      
 ```
 
