@@ -382,6 +382,10 @@ printf("Inserted %d document(s)\n", $insertOneResult->getInsertedCount());
 //返回插入的文档id(字符串)
 var_dump($insertOneResult->getInsertedId()->__toString());
 
+//根据条件查询数据条数
+$total = $collection->count(['user'=>'marcus']);
+var_dump($total);
+
 //查询
 $doc = $collection->findOne(['username' => 'admin']);
 var_dump($doc->email,$doc->name,$doc->_id->__toString());
