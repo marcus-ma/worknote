@@ -465,8 +465,11 @@ foreach ($data as $document) {var_dump($document);}
 
 //模糊查询(正则)
 $filter = ['username' => ['$in' => [new MongoDB\BSON\Regex('^ad','i')]]];
+//OR
+$filter = ['username' => ['$regex' => 'ad']];
 $doc = $collection->findOne($filter);
 var_dump($doc);
+
 
 -----------------------------------------------------------------------------------------------------|
 //demo：采用mongodb的2d平面索引就能完成附近的好友搜索了
