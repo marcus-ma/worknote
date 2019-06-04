@@ -653,6 +653,38 @@ foreach ($data as $document) {
         formdata.append("file",blob);
         xhr.send(formdata);
     }
+    
+    //图片压缩
+    function compress() {
+    	//<div>
+    	   //<img id="img" src="">
+           //<input id="file" type="file" onchange="compress()">
+	//</div>
+        let fileObj = document.getElementById('file').files[0]; //上传文件的对象
+        let reader = new FileReader();
+        reader.readAsDataURL(fileObj);
+        reader.onload = function(e) {
+            let image = new Image(); //新建一个img标签（还没嵌入DOM节点)
+            image.src = e.target.result;
+            image.onload = function() {
+                let canvas = document.createElement('canvas'),
+                    context = canvas.getContext('2d'),
+                    imageWidth = image.width / 2,    //压缩后图片的大小
+                    imageHeight = image.height / 2,
+                    data = '';
+
+                canvas.width = imageWidth;
+                canvas.height = imageHeight;
+
+                context.drawImage(image, 0, 0, imageWidth, imageHeight);
+                data = canvas.toDataURL('image/jpeg');
+
+                //压缩完成
+                document.getElementById('img').src = data;
+            }
+        }
+    }
+    
     //图片粘贴事件
     document.addEventListener('paste', function (e) {
         console.info(e);
