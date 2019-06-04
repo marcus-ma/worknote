@@ -656,6 +656,7 @@ foreach ($data as $document) {
     
     //图片压缩
     function compress() {
+    //demo::https://blog.csdn.net/yasha97/article/details/83629510
     	//<div>
     	   //<img id="img" src="">
            //<input id="file" type="file" onchange="compress()">
@@ -665,7 +666,7 @@ foreach ($data as $document) {
         reader.readAsDataURL(fileObj);
         reader.onload = function(e) {
             let image = new Image(); //新建一个img标签（还没嵌入DOM节点)
-            image.src = e.target.result;
+            image.src = e.target.result;//转成base格式了
             image.onload = function() {
                 let canvas = document.createElement('canvas'),
                     context = canvas.getContext('2d'),
