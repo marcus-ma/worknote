@@ -713,10 +713,10 @@ foreach ($data as $document) {
      
 ```
 
-### MySQL in 查询，并通过 FIELD 函数按照查询条件顺序返回结果
+## MySQL in 查询，并通过 FIELD 函数按照查询条件顺序返回结果
 详细概念可以参考文章[http://martin91.github.io/blog/articles/2015/09/13/mysql-in-query-and-order-by-field-function/] 
 
-### 函数柯里化
+## 函数柯里化
 ```js
 //原本
     function bling(a,other) {
