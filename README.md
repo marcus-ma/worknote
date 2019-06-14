@@ -773,8 +773,63 @@ foreach ($data as $document) {
             }
         }
     });
+    
+    
      
 ```
+
+## 视频流播放(采用blob对象)
+
+```html
+<div>
+    <video src=""></video>
+</div>
+```
+
+```js
+
+    //资源链接
+    var assetURL = '//f.us.sinaimg.cn/003bcPotlx07uDCIGR9m01041200nK1u0E010.mp4?label=mp4_720p&template=1280x720.23.0&Expires=1560485362&ssig=rIbEZ81VFV&KID=unistore,video';
+    //video标签
+    var video = document.querySelector('video');
+    //创建MediaSource对象
+    var mediaSource = new MediaSource;
+    //相互关联
+    video.src = URL.createObjectURL(mediaSource);
+    //添加注册事件触发当上述“连接”结束之后的回调处理。注意：回调处理就是需要赋值 视频数据 的地方
+    mediaSource.addEventListener('sourceopen', sourceOpen);
+
+    function sourceOpen(){
+        var mediaSource = this;
+        //构建一个存放视屏数据的 Buffer
+        var sourceBuffer = mediaSource.addSourceBuffer('video/mp4; codecs="avc1.42E01E, mp4a.40.2"');
+
+        fetchAB(assetURL,function (buf) {
+            //在往 Buffer 中存放数据结束之后会触发事件
+            sourceBuffer.addEventListener('updateend', function () {
+                //通过注册这个事件的回调，可以知晓数据已经加载完毕
+                mediaSource.endOfStream();
+                //视频开始播放
+                video.play();
+            });
+            sourceBuffer.appendBuffer(buf); // buf is the arraybuffer to store the video data
+        });
+    }
+
+    //获取视频的数据源
+    function fetchAB (url, cb) {
+        console.log(url);
+        var xhr = new XMLHttpRequest;
+        xhr.open('get', url);
+        xhr.responseType = 'arraybuffer';
+        xhr.onload = function () {
+            cb(xhr.response);
+        };
+        xhr.send();
+    }
+
+```
+
 
 ## MySQL in 查询，并通过 FIELD 函数按照查询条件顺序返回结果
 详细概念可以参考文章[http://martin91.github.io/blog/articles/2015/09/13/mysql-in-query-and-order-by-field-function/] 
