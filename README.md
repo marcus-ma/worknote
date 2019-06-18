@@ -133,6 +133,12 @@ $b = [
     ['id'=>1,'na'=>'m'],
 ];
 
+//数组合并
+$json = ['name'=>'marcus'];
+$json+= ['age'=>78];
+var_dump($json); //['name'=>'marcus','age'=>78]
+
+
 ```
 
 ## PHP封裝的常用函数
