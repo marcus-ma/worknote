@@ -863,6 +863,11 @@ foreach ($data as $document) {
     let cCss = aCss("c");
 ```
 
+## Go的二三事
+```go
+//多个defer的执行顺序是以栈的特性先进后出来执行，越写在前面就越后执行
+```
+
 
 
 
