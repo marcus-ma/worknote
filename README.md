@@ -953,6 +953,71 @@ func main(){
 
 ```
 
+### 服务器统一出错处理
+```go
+import (
+	"fmt"
+	"io/ioutil"
+	"net/http"
+	"os"
+)
+
+type appHandler func(w http.ResponseWriter, r *http.Request) error
+
+//中间件
+func errWrapper(handler appHandler) func(http.ResponseWriter, *http.Request){
+	return func(w http.ResponseWriter, r *http.Request){
+		var (
+			err  error
+			code int
+		) 
+		if err = handler(w,r);err!=nil{
+			code = http.StatusOK
+			switch  {
+			case os.IsNotExist(err):
+				code = http.StatusNotFound
+			case os.IsPermission(err):
+				code = http.StatusForbidden
+			default:
+				code = http.StatusInternalServerError
+			}
+			http.Error(w,http.StatusText(code),code)
+		}
+		
+	}
+}
+
+//把可能出现的错误都返回出去，把错误交给errWrapper中间件处理
+func HandleFileList(w http.ResponseWriter, r *http.Request) error {
+	var (
+		path string
+		err error
+		file *os.File
+		all []byte
+	)
+	//获取后缀的文件名
+	path = r.URL.Path[len("/list/"):]
+	if file,err = os.Open(path);err!=nil{
+		return err
+	}
+	defer file.Close()
+	//读取文件
+	if all,err = ioutil.ReadAll(file);err!=nil{
+		return err
+	}
+
+	w.Write(all)
+	return nil
+}
+
+
+func main(){
+   //读取文件夹中的文件并展示出来
+   http.HandleFunc("/list/",errWrapper(HandleFileList))
+   http.ListenAndServe(":8888",nil)
+}
+```
+
 
 
 
