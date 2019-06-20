@@ -971,6 +971,14 @@ func errWrapper(handler appHandler) func(http.ResponseWriter, *http.Request){
 			err  error
 			code int
 		) 
+		//捕捉不可估计的错误
+		defer func() {
+			if rec = recover();rec!=nil{
+				code = http.StatusInternalServerError
+				log.Printf("Panic: %v",rec)
+				http.Error(w,http.StatusText(code),code)
+			}
+		}()
 		if err = handler(w,r);err!=nil{
 			code = http.StatusOK
 			switch  {
