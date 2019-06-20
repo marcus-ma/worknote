@@ -864,9 +864,29 @@ foreach ($data as $document) {
 ```
 
 ## Go的二三事
+### defer执行顺序
+多个defer的执行顺序是以栈的特性先进后出来执行，越写在前面就越后执行
+
+
+### 使用bufio来提升文件写入速率
 ```go
-//多个defer的执行顺序是以栈的特性先进后出来执行，越写在前面就越后执行
+func printFile(filename string)  {
+	file,err:= os.Create(filename)
+	if err!=nil {
+		panic(err.Error())
+	}
+	defer file.Close()
+
+	//使用buffer先将内容写入其中
+	writer := bufio.NewWriter(file)
+	//最后再一起把内容刷到文件中去
+	defer writer.Flush()
+
+	//将内容写到buffer中
+	fmt.Fprintln(writer,"hello")
+}
 ```
+
 
 
 
