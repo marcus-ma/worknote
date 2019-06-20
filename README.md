@@ -870,6 +870,11 @@ foreach ($data as $document) {
 
 ### 使用bufio来提升文件写入速率
 ```go
+import (
+	"bufio"
+	"fmt"
+	"os"
+)
 func printFile(filename string)  {
 	file,err:= os.Create(filename)
 	if err!=nil {
@@ -886,6 +891,45 @@ func printFile(filename string)  {
 	fmt.Fprintln(writer,"hello")
 }
 ```
+
+### 使用bufio和io.Reader来构建万能读取函数
+```go
+import (
+	"bufio"
+	"fmt"
+	"io"
+	"os"
+	"strings"
+)
+func printFileContents(reader io.Reader)  {
+	//创建buffer读取器，将传入的io型reader
+	scanner := bufio.NewScanner(reader)
+	//逐行扫描打印
+	for scanner.Scan()  {
+		fmt.Println(scanner.Text())
+	}
+}
+
+func main(){
+   //demo1：读取文件的内容
+   file,err:= os.Open(filename)
+   if err!=nil {
+	   panic(err.Error())
+   }
+   defer file.Close()
+   printFileContents(file)
+   
+   //demo2：读取字符串
+   //通过``来构建多行的内容字符串
+   s1 := `abc"d"
+	kkk
+	1234
+	p`
+   printFileContents(strings.NewReader(s1))
+}
+
+```
+
 
 
 
