@@ -963,7 +963,11 @@ import (
 )
 
 type appHandler func(w http.ResponseWriter, r *http.Request) error
-
+//定义展示给用户看的信息接口
+type userError interface {
+	error
+	Message() string
+}
 //中间件
 func errWrapper(handler appHandler) func(http.ResponseWriter, *http.Request){
 	return func(w http.ResponseWriter, r *http.Request){
@@ -980,6 +984,11 @@ func errWrapper(handler appHandler) func(http.ResponseWriter, *http.Request){
 			}
 		}()
 		if err = handler(w,r);err!=nil{
+			//返回定义好的友好的给用户看的错误信息
+			if userErr,ok:=err.(userError);ok{
+				http.Error(w,userErr.Message(),http.StatusBadRequest)
+				return
+			}
 			code = http.StatusOK
 			switch  {
 			case os.IsNotExist(err):
@@ -995,6 +1004,15 @@ func errWrapper(handler appHandler) func(http.ResponseWriter, *http.Request){
 	}
 }
 
+
+//实现展示给用户看的信息接口
+type userErrorShow string
+func (e userErrorShow) Error() string {
+	return e.Message()
+}
+func (e userErrorShow) Message() string {
+	return string(e)
+}
 //把可能出现的错误都返回出去，把错误交给errWrapper中间件处理
 func HandleFileList(w http.ResponseWriter, r *http.Request) error {
 	var (
@@ -1002,9 +1020,15 @@ func HandleFileList(w http.ResponseWriter, r *http.Request) error {
 		err error
 		file *os.File
 		all []byte
+		prefix string
 	)
+	prefix = "/list/"
+	//当用户在浏览器没有按照指定前缀输入，就返回指定的用户看的错误信息
+	if strings.Index(r.URL.Path,prefix)!=0 {
+		return userErrorShow("path must start with "+prefix)
+	}
 	//获取后缀的文件名
-	path = r.URL.Path[len("/list/"):]
+	path = r.URL.Path[len(prefix):]
 	if file,err = os.Open(path);err!=nil{
 		return err
 	}
