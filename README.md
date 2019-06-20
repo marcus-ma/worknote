@@ -868,7 +868,7 @@ foreach ($data as $document) {
 多个defer的执行顺序是以栈的特性先进后出来执行，越写在前面就越后执行
 
 
-### 使用runtime.Gosched()来让协程交出控制权[IO操作(如fmt.Println)会自动进行控制权切换]
+### 使用runtime.Gosched()来让协程交出控制权[I/O操作(如fmt.Println)或者select会自动进行控制权切换]
 ```go
 import (
    "runtime"
