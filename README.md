@@ -867,6 +867,32 @@ foreach ($data as $document) {
 ### defer执行顺序
 多个defer的执行顺序是以栈的特性先进后出来执行，越写在前面就越后执行
 
+
+### 使用runtime.Gosched()来让协程交出控制权[IO操作(如fmt.Println)会自动进行控制权切换]
+```go
+import (
+   "runtime"
+   "time"
+   "fmt"
+)
+
+func main(){
+   var a [10]int
+   for i:=0;i<10;i++{
+   	go func(i int){
+		for{
+		   //指令操作,不会自动交出控制权
+		   a[i]++
+		   //让出控制权
+		   runtime.Gosched()
+		}
+	}(i)
+   }
+   time.Sleep(time.Millisecond)
+   fmt.Println(a)
+}
+```
+
 ### 不可思议的接口函数
 #### 利用String()接口使结构体可被直接Println
 ```go
