@@ -867,6 +867,29 @@ foreach ($data as $document) {
 ### defer执行顺序
 多个defer的执行顺序是以栈的特性先进后出来执行，越写在前面就越后执行
 
+### 不可思议的接口函数
+#### 利用String()接口使结构体可被直接Println
+```go
+import "fmt"
+
+type Student struct {
+   Content string
+}
+
+//String接口,当调用者直接fmt.Println结构体时候会调用该方法
+func (s *Student) String() string {
+	return fmt.Sprintf(
+		"Student:{Contents=%s}",s.Content)
+}
+
+func main(){
+   s:=&Student{Content:"I am student"}
+   fmt.Println(s)//Student:{Contents=I am student}
+}
+```
+
+
+
 
 ### 使用bufio来提升文件写入速率
 ```go
