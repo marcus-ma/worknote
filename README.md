@@ -139,6 +139,9 @@ $json+= ['age'=>78];
 var_dump($json); //['name'=>'marcus','age'=>78]
 
 
+//数字格式化
+echo number_format(111123435); //111,123,435
+
 ```
 
 ## PHP封裝的常用函数
