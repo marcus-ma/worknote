@@ -857,6 +857,27 @@ foreach ($data as $document) {
 
 ```
 
+## js分享第三方平台
+### 分享到微博
+```js
+    //title微博内容,url添加到微博内容的链接,picurl图片的url
+    function shareToWeibo(title,url,picurl){
+            var sharesinastring='http://v.t.sina.com.cn/share/share.php?title='+title+'&url='+url+'&content=utf-8&sourceUrl='+url+'&pic='+picurl;
+            window.open(sharesinastring,'newwindow','height=400,width=400,top=100,left=100');
+    }
+    //微博分享API参数说明
+    //&url=将页面地址转成短域名，并显示在内容文字后面。(可选，允许为空)【在手机端上点击"返回继续浏览"会跳到该链接上】
+    //&title=分享时所示的文字内容，为空则自动抓取分享页面的title值(可选，允许为空)
+    //&pic=自定义图片地址，作为微博配图(可选，允许为空)
+    
+     //由于window.open很容易被浏览器拦截，可以直接这样:
+    //<a href="http://service.weibo.com/share/share.php?appkey=&title=&url=&pic=&searchPic=false&style=simple" target="_blank">
+    //当然，如果你采用这种方式了，记得一定要把appkey=&title=&url=&pic=里你自定义的参数做一次encodeURIComponent之后再嵌入。
+    
+```
+
+
+
 
 ## MySQL in 查询，并通过 FIELD 函数按照查询条件顺序返回结果
 详细概念可以参考文章[http://martin91.github.io/blog/articles/2015/09/13/mysql-in-query-and-order-by-field-function/] 
