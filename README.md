@@ -514,10 +514,12 @@ $result = $collection->deleteMany(['id' => ['$in' => array[1, 2]]]);
 //拿到删除数据的条数：
 $count = $result->getDeletedCount();
 
+
 //去重
 $fileName = 'name';
 $where = ['id' => ['$lt' => 100]];
 $ret = $collection->distinct($fileName,$where);
+
 
 
 //聚合
@@ -530,6 +532,22 @@ $ops = [
 ];
 $data = $collection->aggregate($ops);
 foreach ($data as $document) {var_dump($document);}
+
+
+//根据筛选条件查询数据
+$filter = [];
+////时间范围内
+$filter['create_time'] = [
+     '$gte' => $start_time,
+     '$lte' => $end_time
+];
+////模糊查询
+$filter['name'] = ['$regex' =>$keyword];
+
+$doc = $collection->find($filter, $options)->toArray();
+var_dump($doc);
+
+
 
 
 //模糊查询(正则)
