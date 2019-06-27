@@ -607,7 +607,7 @@ foreach ($data as $document) {
 
 ```
 
-## IM常用函数
+## IM常用函数 详细概念可以参考文章[https://blog.csdn.net/tiantangyouzui/article/details/77540611/] 
 ```html
 <div>
     <!--调用相机-->
