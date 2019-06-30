@@ -910,6 +910,69 @@ foreach ($data as $document) {
 多个defer的执行顺序是以栈的特性先进后出来执行，越写在前面就越后执行
 
 
+### 获取命令行参数
+```go
+//文件名 test.go
+import (
+   "os"
+   "fmt"
+)
+
+func main(){
+   //获取
+   fmt.PrintLn(os.Args)
+   if len(os.Args)>1{
+   	//os.Args[0]为文件所在详细路径
+   	fmt.PrintLn("参数"，os.Args[1])
+   }
+   //退出
+   os.Exit(0)
+}
+
+> go run test.go chao
+chao
+```
+
+### 快速设置连续值
+```go
+const (
+  Monday = iota + 1
+  Tuesday 
+  Wednesday
+  Thursday
+  Friday
+  Saturday
+  Sunday
+)
+
+const (
+  Readable = 1 << iota
+  Writable 
+  Executable
+)
+func main(){
+   a := 7 //0111
+   fmt.PrintLn(a&Readable==Readable,a&Writable==Writable,a&Executable==Executable)
+   //true true true
+}
+
+```
+
+
+### string类型初始化为空字符串
+```go
+func main(){
+   var s string
+   fmt.PrintLn("*"+s+"*")//**
+   fmt.PrintLn(len(s))//0
+   if s == ""{
+   	fmt.PrintLn("hello")
+   }
+}
+```
+
+
+
 ### 使用runtime.Gosched()来让协程交出控制权[I/O操作(如fmt.Println)或者select会自动进行控制权切换]
 ```go
 import (
