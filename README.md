@@ -913,6 +913,27 @@ foreach ($data as $document) {
 ### 没有前置运算符
 不存在++a或者--a，只有a++和a--
 
+### 统计汉字字符串个数
+```go
+import (
+   "fmt"
+)
+func main(){
+     str := "中文"
+     fmt.Println(len(str))//6
+     c:=[]rune(str)
+     fmt.Println(len(c))//2
+     
+     //golang中string底层是通过byte数组实现的。
+     //中文字符在unicode下占2个字节，在utf-8编码下占3个字节，而golang默认编码正好是utf-8。
+     //因此直接使用len(str)得出6
+     //而是经过rune转换后就会得出想要的结果
+     //byte 等同于int8，常用来处理ascii字符
+     //rune 等同于int32,常用来处理unicode或utf-8字符
+}
+
+```
+
 
 ### 获取命令行参数
 ```go
