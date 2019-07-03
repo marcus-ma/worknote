@@ -1024,6 +1024,36 @@ func main(){
 ```
 
 
+### 计算函数耗时的函数式编程
+```go
+import (
+   "fmt"
+   "time"
+)
+//计算传入函数执行的耗时
+func timeSpent(innerFunc func(op int)int) func(op int) int {
+	return func(i int) int {
+		//记录开始时间
+		start := time.Now()
+		ret := innerFunc(i)
+		//计算出整个耗时
+		fmt.Println("time spent:",time.Since(start).Seconds())
+		return ret
+	}
+}
+
+func main(){
+   test:= func(op int) int {
+	 time.Sleep(time.Second)
+	 return op
+   }
+
+   ret := timeSpent(test)
+   ret(30)
+}
+
+
+```
 
 
 ### 使用bufio来提升文件写入速率
