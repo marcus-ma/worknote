@@ -1026,6 +1026,45 @@ func main(){
 }
 ```
 
+### 利用buffer Channel来解决开多任务协程泄漏问题
+```go
+//案例情景：开多协程来执行任务,只要一收到结果马上停止程序
+//优化前：
+//任务函数
+func runTask(i int) string {
+	//Do something …………
+	time.Sleep(10 * time.Millisecond)
+	return fmt.Sprintf("The result is from %d",i)
+}
+//
+func getResponse() string {
+	//协程数
+	taskNum := 10
+	//准备一个channel来接受协程返回的数据
+	c := make(chan string)
+	for i:=0;i< taskNum;i++{
+		go func(i int) {
+			ret := runTask(i)
+			c <- ret
+		}(i)
+	}
+	//获取数据
+	return <-c
+}
+func main(){
+   	//打印函数执行前协程数
+	fmt.Println("Before:",runtime.NumGoroutine())
+	fmt.Println("receve:",getResponse())
+	time.Sleep(1*time.Second)
+	//打印函数执行后的协程数
+	fmt.Println("after:",runtime.NumGoroutine())
+}
+//上面的程序执行后我们注意到"after:"打印出的协程数非常多，证明在getResponse()函数执行完后，之前开的协程并没有结束还在内存中
+//造成的原因是因为创建的channel不是buffer的，这样就会造成只有最快的一个协程可以把数据放入，其他只会一直阻塞在那里，协程无法释放
+//优化方案：把c := make(chan string)改成c := make(chan string,taskNum)即可，协程们只要把数据放进去就可以立刻释放
+
+```
+
 
 ### 使用runtime.Gosched()来让协程交出控制权[I/O操作(如fmt.Println)或者select会自动进行控制权切换]
 ```go
