@@ -996,6 +996,35 @@ func main(){
 }
 ```
 
+### 利用sync.Once构建单例
+```go
+type Singleton struct {}
+var (
+    singleInstance *Singleton
+    once sync.Once
+    )
+
+func GetSingletonObj() *Singleton {
+	//只会执行一次
+   once.Do(func() {
+	   fmt.Println("Create obj")
+	   singleInstance = new(Singleton)
+   })
+   return singleInstance
+}
+func main(){
+   var wg sync.WaitGroup
+   for i:=0;i<10 ;i++  {
+	wg.Add(1)
+	go func() {
+	   obj := GetSingletonObj()
+	   fmt.Printf("%x\n",unsafe.Pointer(obj))//打印内存地址
+	   wg.Done()
+	}()
+    }
+    wg.Wait()
+}
+```
 
 
 ### 使用runtime.Gosched()来让协程交出控制权[I/O操作(如fmt.Println)或者select会自动进行控制权切换]
