@@ -1065,6 +1065,63 @@ func main(){
 
 ```
 
+### 利用buffer Channel来构成对象池
+```go
+//对象类型
+type ReusableObj struct {}
+
+//对象池
+type ObjPool struct {
+	bufChan chan *ReusableObj //用于缓冲可重用的对象
+}
+//创建对象池
+func NewObjPool(numOfObj int) *ObjPool {
+	objPool := ObjPool{}
+	objPool.bufChan = make(chan *ReusableObj,numOfObj)
+	for i:=0;i<numOfObj;i++{
+		objPool.bufChan <- &ReusableObj{}
+	}
+	return &objPool
+}
+//获取对象
+func (p *ObjPool)GetObj(timeout time.Duration) (*ReusableObj,error)  {
+	select {
+	case ret:= <-p.bufChan:
+		return ret,nil
+	case <-time.After(timeout):
+		//超时控制
+		return nil,errors.New("time out")
+	}
+}
+//释放对象
+func (p *ObjPool) ReleaseObj(obj *ReusableObj) error {
+	select {
+	case p.bufChan<- obj:
+		return nil
+	default://当放入bufChan发生异常(如chan满了或者放入类型不对)就会走这个分支
+		return errors.New("overflow")
+	}
+}
+
+func main(){
+	pool := NewObjPool(10)
+	//释放
+	if err:= pool.ReleaseObj(&ReusableObj{});err!=nil{
+		fmt.Println(err)
+	}
+	for i:=0;i<11;i++{
+		if v,err:= pool.GetObj(3*time.Second);err!=nil{
+			fmt.Println(err)
+		}else {
+			fmt.Println("%T\n",v)
+			if err := pool.ReleaseObj(v);err!=nil{
+				fmt.Println(err)
+			}
+		}
+	}
+}
+```
+
 ### sync.Pool对象缓存
 ```go
 //sync.Pool对象的生命周期
