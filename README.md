@@ -935,6 +935,28 @@ func main(){
 ```
 
 
+### 高效字符串拼接方法
+```go
+func main(){
+	//字符串拼接
+	//1.10以後的版本
+	var builder strings.Builder
+	for i:=0;i<10;i++{
+		builder.WriteString("1")
+	}
+	fmt.Println(builder.String())
+	
+	
+	//以前的版本
+	var buf bytes.Buffer
+	for i:=0;i<10;i++{
+		buf.WriteString("1")
+	}
+	fmt.Println(buf.String())
+}
+```
+
+
 ### 获取命令行参数
 ```go
 //文件名 test.go
