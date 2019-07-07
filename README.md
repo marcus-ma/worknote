@@ -1065,6 +1065,31 @@ func main(){
 
 ```
 
+### sync.Pool对象缓存
+```go
+//sync.Pool对象的生命周期
+//GC会清除其缓存的对象
+//对象的缓存有效期为下一系的GC之前
+pool := &sync.Pool{
+	New: func() interface{} {
+		fmt.Println("Create a new object");
+		return 100
+	},
+}
+
+v := pool.Get().(int)
+fmt.Println(v)//100
+pool.Put(3)
+runtime.GC()//GC 会清除sync.Pool中的缓存对象
+v1,_:=pool.Get().(int)
+fmt.Println(v1)//100
+
+//适合于通过复用来降低复杂对象的创建和GC的代价
+//协程安全，但会有锁的开销
+//生命周期受GC的影响，不适合于做连接池等，需要自己管理生命周期的资源的池化
+
+```
+
 
 ### 使用runtime.Gosched()来让协程交出控制权[I/O操作(如fmt.Println)或者select会自动进行控制权切换]
 ```go
