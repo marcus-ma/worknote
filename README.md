@@ -1148,6 +1148,7 @@ fmt.Println(v1)//100
 ```
 
 
+
 ### 使用runtime.Gosched()来让协程交出控制权[I/O操作(如fmt.Println)或者select会自动进行控制权切换]
 ```go
 import (
@@ -1287,6 +1288,84 @@ func main(){
    printFileContents(strings.NewReader(s1))
 }
 
+```
+
+
+### 反射
+```go
+//reflect.TypeOf() 返回类型(reflect.Type)
+//reflect.ValueOf() 返回值(reflect.Value)
+//可以从reflect.Value中获得类型
+//通过kind来判断类型
+func CheckType(v interface{})  {
+	t:= reflect.TypeOf(v)
+	switch t.Kind() {
+	case reflect.Float32,reflect.Float64:
+		fmt.Println("Float")
+	case reflect.Int,reflect.Int32,reflect.Int64:
+		fmt.Println("Integer")
+	default:
+		fmt.Println("Unknown",t)
+	}
+}
+
+func testBasicType()  {
+	var f float64 = 12
+	CheckType(f)//Float
+	CheckType(&f)//Unknown &float64
+}
+
+func testTypeAndValue()  {
+	var f int64 = 10
+	fmt.Println(reflect.TypeOf(f),reflect.ValueOf(f))//int64,10
+	fmt.Println(reflect.ValueOf(f).Type())//int64
+}
+
+
+
+//利用反射编写灵活的代码
+//按名字访问结构的成员
+//reflect.ValueOf(*e).FieldByName("name")
+//按名字访问结构的方法
+//reflect.ValueOf(e).MethodByName("UpdateAge").Call([]reflect.Value{reflect.ValueOf(1)})
+//注意!:reflect.Type和reflect.Value都有FieldByName方法，但却有区别的
+type Employee struct {
+	Employee string
+	Name string `format:"normal"`
+	Age int
+}
+
+func (e *Employee) UpdateAge(newValue int)  {
+	e.Age = newValue
+}
+
+type Customer struct {
+	Cookie string
+	Name string
+	Age int
+}
+
+func testInvokeByName()  {
+	e:=&Employee{"1","Mike",30}
+	//按名字获取成员
+	fmt.Printf("Name: value(%[1]v),Type(%[1]T)",
+		reflect.ValueOf(*e).FieldByName("Name"))
+	//Name: value(Mike),Type(reflect.Value)
+
+	if nameField,ok:= reflect.TypeOf(*e).FieldByName("Name");!ok {
+		//不存在该属性
+		fmt.Println("Failed to get 'Name' field")
+	}else {
+		//访问structTag
+		fmt.Println("Tag:format ",
+			nameField.Tag.Get("format"))
+		//Tag:format normal
+	}
+
+	reflect.ValueOf(e).MethodByName("UpdateAge").
+		Call([]reflect.Value{reflect.ValueOf(1)})
+	fmt.Println("Updated Age:",e)// Updated Age:&{1 Mike 1}
+}
 ```
 
 ### 服务器统一出错处理(把error都传到中间件来统一处理)
