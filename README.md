@@ -1390,6 +1390,22 @@ func testInvokeByName()  {
 }
 ```
 
+
+### 利用reflect.DeepEqual来让切片之间或者map之间进行比较判断
+```go
+//DeepEqual
+	//切片与map的比较(原本是无法进行比较的)
+	a := map[int]string{1:"one",2:"two",3:"three"}
+	b := map[int]string{1:"one",2:"two",4:"four"}
+	//直接a == b 是会报语法错误的
+	//而用reflect.DeepEqual就可以来判断
+	fmt.Println(reflect.DeepEqual(a,b))
+	//切片也可以比较了
+	s1 := []int{1,2,3}
+	s2 := []int{1,2,3}
+	fmt.Println(reflect.DeepEqual(s1,s2))
+```
+
 ### 服务器统一出错处理(把error都传到中间件来统一处理)
 ```go
 import (
