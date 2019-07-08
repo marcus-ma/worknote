@@ -433,6 +433,25 @@ function statusFormatter(value, row, index){
 ## Bootstrap table
 详细概念可以参考文章[https://blog.csdn.net/tyrant_800/article/details/50269723] 和 [https://www.cnblogs.com/laowangc/p/8875526.html]
 
+## 游戏g值的生成
+```js
+let a = [
+    "",//app_id
+    "",//平台(1:ios,2:安卓)
+    "",//app_key
+    "",//token_key
+    "https://api.xxx.com",//接口地址
+    "https://res.xxx.com/main/images/app_id对应的图片.jpg",//要加载的背景图片
+    "0",//adid
+    "1"//是否为小程序
+];
+let b = btoa(a.join(","));
+let c = b.split("").reverse().join("");
+console.log(c)
+//打印出来的=符号后面的字符串
+
+```
+
 ## MongoDB
 ```php
 //https://segmentfault.com/a/1190000017279755
