@@ -1106,6 +1106,42 @@ func main(){
 
 ```
 
+### 利用close(chan)来停止goroutine
+```go
+//判断channel是否已经关闭
+func isCancelled(cancelChan <-chan struct{}) bool  {
+	select {
+		case <-cancelChan: return true
+		default: return false
+	}
+}
+
+func cancel_1(cancelChan chan struct{})  {
+	cancelChan <- struct{}{}
+}
+
+//广播式
+func cancel_2(cancelChan chan struct{})  {
+	close(cancelChan)
+}
+
+func testCancel()  {
+	cancelChan := make(chan struct{},0)
+	for i:=0;i<5;i++{
+		go func(i int,cancelCh chan struct{}) {
+			for  {
+				if isCancelled(cancelCh){break}
+				time.Sleep(5*time.Millisecond)
+			}
+			fmt.Println(i,"Cancelled")
+		}(i,cancelChan)
+	}
+	//cancel_1(cancelChan)//只会打印 0 Cancelled，因为只有最快的一个可以收到关闭信息
+	cancel_2(cancelChan)//会打印全部
+	time.Sleep(1*time.Second)
+}
+```
+
 ### 利用buffer Channel来构成对象池
 ```go
 //对象类型
