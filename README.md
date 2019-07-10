@@ -1425,6 +1425,88 @@ func testInvokeByName()  {
 	fmt.Println(reflect.DeepEqual(s1,s2))
 ```
 
+
+### 实时读取显示文件最新内容
+```go
+type LogProcess struct {
+	rc chan []byte //读取器把读取的数据放入rc
+	wc chan string //把从rc读取到的数据巾帼处理放入到wc
+	reader Reader //读取器
+	writer Writer //写入器
+}
+
+func (l *LogProcess)Process()  {
+	//解析模块
+	for v := range l.rc{
+		l.wc <- strings.ToUpper(string(v))
+	}
+}
+
+
+type Reader interface {
+	read(rc chan []byte)
+}
+
+type Writer interface {
+	write(wc chan string)
+}
+
+type txtRead struct {
+	path string
+}
+func (r *txtRead)read(rc chan []byte)  {
+	f,err := os.Open(r.path)
+	if err!=nil{
+		panic(fmt.Sprintf("open file error:%s",err.Error()))
+	}
+	//从文件末尾开始逐行读取文件内容
+	f.Seek(0,2)
+	rd := bufio.NewReader(f)
+
+	for  {
+		line,err := rd.ReadBytes('\n')
+		if err == io.EOF{
+			time.Sleep(500 * time.Millisecond)
+			continue
+		}else if err!=nil {
+			panic(fmt.Sprintf("ReadBytes error:%s",err.Error()))
+		}
+		//把换行符去掉
+		rc <- line[:len(line)-1]
+	}
+}
+
+type txtWrite struct {}
+func (r *txtWrite)write(wc chan string)  {
+	for v := range wc{
+		fmt.Println(v)
+	}
+}
+
+func main(){
+	r := &txtRead{path:"test.log"}
+	w := &txtWrite{}
+
+	l := &LogProcess{
+		rc:make(chan []byte),
+		wc:make(chan string),
+		reader:r,
+		writer:w,
+	}
+
+	go l.reader.read(l.rc)
+	go l.Process()
+	go l.writer.write(l.wc)
+	select{}
+}
+```
+
+```shell
+echo hello >> test.log
+echo marcus >> test.log
+```
+
+
 ### 服务器统一出错处理(把error都传到中间件来统一处理)
 ```go
 import (
