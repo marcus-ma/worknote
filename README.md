@@ -1224,6 +1224,16 @@ fmt.Println(v1)//100
 
 ```
 
+### ctrl+c退出程序
+```go
+func mian(){
+	go func(){}()
+	// Ctrl+C 退出
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
+	fmt.Printf("quit (%v)\n", <-sig)
+}
+```
 
 
 ### 使用runtime.Gosched()来让协程交出控制权[I/O操作(如fmt.Println)或者select会自动进行控制权切换]
