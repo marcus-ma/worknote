@@ -1738,6 +1738,11 @@ func demo2(){
 //使用第三方库来识别cron命令
 //go get github.com/gorhill/cronexpr
 
+type CronJob struct {
+	expr *cronexpr.Expression
+	nextTime time.Time
+}
+
 func demo3()  {
 	var (
 		expr *cronexpr.Expression
