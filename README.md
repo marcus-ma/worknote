@@ -1651,7 +1651,77 @@ func main(){
 ```
 
 
+### 任务调度器专栏
+#### 利用os/exec包来执行linux命令
+```go
+import (
+   "os/exec"
+   "log"
+   "error"
+   "fmt"
+   "context"
+   "time"
+)
+//在win10中的用户文件夹中存在一个隐藏的文件夹与文件/bin/bash.exe
+//利用它可以向linux一样执行linux命令
+func demo1(){
+   //配置要执行的命令:参数1为bash器，后面的参数可自由添加
+   //此处的命令为:列出当前文件，然后沉睡1s，往test.log文件追加内容"golang"；然后沉睡5s，输出ok
+   cmd := exec.Command("./bash.exe","-c",
+	"ls -l;sleep 1;echo golang >> test.log;sleep 5;echo ok")
+   //執行命令，并且去捕获子进程的输出(pipe)
+   output, err := cmd.CombinedOutput()
+   if err!=nil{
+	log.Fatal("error:",err)
+	return
+   }
+   //打印子进程的输出(output为[]byte)
+   fmt.Println(string(output))
+}
 
+//用于存放命令执行后的结果信息体
+type Res struct {
+   output []byte
+   err error
+}
 
+func demo2(){
+	//执行一个cmd，让其在一个协程中执行，让其执行2s;sleep 2;echo hello;
+	//1s的时候我们杀死进程,然后看看会结果返回什么
+	var (
+		ctx context.Context//chan byte
+		cancelFunc context.CancelFunc//close(chan byte)
+		cmd *exec.Cmd
+		resChan chan *Res
+		res *Res
+	)
+	//创建一个上下文
+	ctx , cancelFunc = context.WithCancel(context.TODO())
+	//创建一个结果队列
+	resChan = make(chan *Res,1000)
 
+	//创建子协程
+	go func() {
+		var  (
+			output []byte
+			err error
+		)
+		//配置命令
+		cmd = exec.CommandContext(ctx,"./bash.exe","-c","sleep 2;echo hello")
+		//执行任务，捕获输出
+		output,err = cmd.CombinedOutput()
+		//把人物输出结果传回main协程
+		resChan<- &Res{output:output,err:err}
+	}()
+	//沉睡1s
+	time.Sleep(1*time.Second)
+	//取消上下文
+	cancelFunc()
+	//等待子协程退出，并打印任务执行结果
+	res = <- resChan
+	//打印结果信息
+	fmt.Println(res.err,string(res.output))
+	//打印出：exit status 1
+}
 
+```
