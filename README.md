@@ -1768,4 +1768,68 @@ func demo3()  {
 
 	time.Sleep(5*time.Second)
 }
+
+
+type CronJob struct {
+	//cron表达式
+	expr *cronexpr.Expression
+	//下一次的执行时间
+	nextTime time.Time
+}
+func demo4(){
+	//需要有1个调度协程，它能定时检查所有的cron任务，谁过期了就执行谁
+	var (
+		scheduleTable map[string]*CronJob
+		now time.Time
+		expr *cronexpr.Expression
+		cron *CronJob
+	)
+	//存儲表
+	scheduleTable = make(map[string]*CronJob)
+	//当前时间
+	now = time.Now()
+
+	//定义2个cronJob
+	expr = cronexpr.MustParse("*/5 * * * * * *")
+	cron = &CronJob{
+		expr:expr,
+		nextTime:expr.Next(now),
+	}
+	scheduleTable["job1"] = cron
+
+	expr = cronexpr.MustParse("*/5 * * * * * *")
+	cron = &CronJob{
+		expr:expr,
+		nextTime:expr.Next(now),
+	}
+	scheduleTable["job2"] = cron
+
+	//启动一个调度协程
+	go func() {
+		//定时检查一下任务
+		for  {
+			now := time.Now()
+			for k,v := range scheduleTable{
+				//判断是否过期
+				if v.nextTime.Before(now) || v.nextTime.Equal(now){
+				   //启动协程执行这个任务
+				   go func(name string) {
+					fmt.Println("执行任务",name)
+				   }(k)
+				   //计算下一次调度的时间
+				   v.nextTime = v.expr.Next(now)
+				   fmt.Println(k,"下次任务执行的时间:",v.nextTime)
+				}
+			}
+
+			select {
+			   //睡眠100毫秒后返回
+			   case <-time.NewTimer(100*time.Millisecond).C:
+			}
+		}
+
+	}()
+	//睡眠100s观察状况
+	time.Sleep(100*time.Second)
+}
 ```
