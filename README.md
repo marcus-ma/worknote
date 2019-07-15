@@ -1725,3 +1725,42 @@ func demo2(){
 }
 
 ```
+
+#### 利用gorhill/cronexpr包与cron命令来构建定时任务器
+```go
+//Cron常见用法
+//  * * * * *
+//  分(0-59) 时(0-23) 日(1-31) 月(1-12) 星期(0-7)
+//  */5 * * * * echo hello > test.log 每5分钟执行一次
+//  1-5 * * * * echo hello > test.log 第1-5分钟执行5次
+//  0 10,20 * * * echo bye | tail -1 每天10点,22点整执行一次
+
+//使用第三方库来识别cron命令
+//go get github.com/gorhill/cronexpr
+
+func demo3()  {
+	var (
+		expr *cronexpr.Expression
+		err error
+		now,nextTime time.Time
+	)
+	//* * * * * * *
+	//秒粒度，年配置(2018-2099)
+	//每5秒执行1次
+	if expr,err = cronexpr.Parse("*/5 * * * * * *");err!=nil{
+		fmt.Println("error:",err)
+		return
+	}
+
+	//当前时间
+	now = time.Now()
+	//下次调度时间
+	nextTime = expr.Next(now)
+	//等待这个定时器超时
+	time.AfterFunc(nextTime.Sub(now), func() {
+		fmt.Println("下次被调度时间：",nextTime)
+	})
+
+	time.Sleep(5*time.Second)
+}
+```
