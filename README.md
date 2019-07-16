@@ -1552,7 +1552,7 @@ echo hello >> test.log
 echo marcus >> test.log
 ```
 
-### 扇入
+### 扇入模式
 ```go
 func testFanIn(){
 	//假设有2个channel来接受2个协程的数据
