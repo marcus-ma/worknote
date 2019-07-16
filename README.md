@@ -1552,6 +1552,48 @@ echo hello >> test.log
 echo marcus >> test.log
 ```
 
+### 扇入
+```go
+func testFanIn(){
+	//假设有2个channel来接受2个协程的数据
+	c1,c2:=make(chan int),make(chan int)
+
+	//现在要将2个channel的数据合并成一个channel
+	//需要设计这样的扇入函数
+	merge:= func(cs...<-chan int) <-chan int {
+		//利用wg来控制同步
+		var wg sync.WaitGroup
+		//创建一个统一的输出的channel
+		out := make(chan int)
+		//为每个输入 channel 启动一个 goroutine
+		output := func(c <-chan int) {
+			for v := range c {
+				out <- v
+			}
+			wg.Done()
+		}
+		//控制同步
+		wg.Add(len(cs))
+		//开始合并数据
+		for _,c := range cs{
+			go output(c)
+		}
+		// 启动一个 goroutine 负责在所有的输入 channel 关闭后，关闭这个唯一的输出 channel
+		go func() {
+			wg.Wait()
+			close(out)
+		}()
+		return out
+	}
+
+	//将数据统一取出
+	for n := range merge(c1,c2){
+		fmt.Println(n)
+	}
+
+}
+```
+
 
 ### 服务器统一出错处理(把error都传到中间件来统一处理)
 ```go
