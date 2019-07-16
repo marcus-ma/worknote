@@ -1917,7 +1917,7 @@ func initAndPutKV()  {
    }
 }
 
-
+//初始化etcd与获取kv
 func initAndGetKV()  {
    var (
 	config clientv3.Config
@@ -1960,5 +1960,47 @@ func initAndGetKV()  {
 	}
 	
    }
+}
+
+//初始化etcd与删除kv
+func initAndDeleteKV()  {
+   var (
+	config clientv3.Config
+	client *clientv3.Client
+	err error
+	kv clientv3.KV
+	delResp *clientv3.DeleteResponse
+	v *mvccpb.KeyValue
+   )
+   //初始化 start-------
+   //客户端配置
+   config = clientv3.Config{
+	Endpoints:[]string{"127.0.0.1:2379"},
+	DialTimeout:5*time.Second,
+   }
+   //建立连接
+   if client,err = clientv3.New(config);err!=nil{
+	fmt.Println(err)
+	return
+   }
+   //初始化 end-------
+
+   //用于读写etcd的kv键值对
+   kv = clientv3.NewKV(client)
+   //删除k（clientv3.WithPrevKV()为删除前获取旧的值）
+   //如果想删除指定前缀的所有k，则参数为:context.TODO(),"/test/",clientv3.WithPrefix()
+   //以后会添加说明:clientv3.WithFromKey(),clientv3.WithLimit(2)
+   if delResp,err = kv.Delete(context.TODO(),"/test/job1",clientv3.WithPrevKV());err!=nil{
+	fmt.Println(err)
+   }else{
+	//查看被删除之前是什么
+	if len(delResp.PrevKvs) != 0 {
+	   for _,v = range delResp.PrevKvs{
+		fmt.Println(string(v.Key),string(v.Value))
+	   }
+	}
+	
+   }
+   
 }
 ```
