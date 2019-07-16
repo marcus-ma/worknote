@@ -1942,7 +1942,7 @@ func initAndGetKV()  {
 
    //用于读写etcd的kv键值对
    kv = clientv3.NewKV(client)
-   //添加k（clientv3.WithPrevKV()为查看前一次的v值）
+   //获取k的值
    if getResp,err = kv.Get(context.TODO(),"/test/job1");err!=nil{
 	fmt.Println(err)
    }else{
@@ -1952,10 +1952,10 @@ func initAndGetKV()  {
 	fmt.Println(getResp.Kvs,getResp.Count)
 	//需要通过遍历来具体获取值
 	for _,v = range getResp.Kvs{
-		fmt.Println(string(v.Key))
-		fmt.Println(string(v.Value))
-		fmt.Println(v.CreateRevision)
-		fmt.Println(v.ModRevision)
+	   fmt.Println(string(v.Key))
+	   fmt.Println(string(v.Value))
+	   fmt.Println(v.CreateRevision)
+	   fmt.Println(v.ModRevision)
 	}
 	
    }
