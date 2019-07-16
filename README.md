@@ -1877,6 +1877,7 @@ func demo4(){
 ```
 
 #### etcd入门操作
+详细相关可以参考文章[https://yuerblog.cc/2017/12/12/etcd-v3-sdk-usage/] 
 ```go
 //下载官方的库：go get go.etcd.io/etcd/clientv3
 //初始化etcd与创建kv
