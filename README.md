@@ -1916,4 +1916,48 @@ func initAndPutKV()  {
 	}
    }
 }
+
+
+func initAndGetKV()  {
+   var (
+	config clientv3.Config
+	client *clientv3.Client
+	err error
+	kv clientv3.KV
+	getResp *clientv3.GetResponse
+	v *mvccpb.KeyValue
+   )
+   //初始化 start-------
+   //客户端配置
+   config = clientv3.Config{
+	Endpoints:[]string{"127.0.0.1:2379"},
+	DialTimeout:5*time.Second,
+   }
+   //建立连接
+   if client,err = clientv3.New(config);err!=nil{
+	fmt.Println(err)
+	return
+   }
+   //初始化 end-------
+
+   //用于读写etcd的kv键值对
+   kv = clientv3.NewKV(client)
+   //添加k（clientv3.WithPrevKV()为查看前一次的v值）
+   if getResp,err = kv.Get(context.TODO(),"/test/job1");err!=nil{
+	fmt.Println(err)
+   }else{
+	//查看
+	//getResp.Kvs为[]*mvccpb.KeyValue,每个切片包含key、create_revision、mod_revision、value
+	//getResp.Count为查询的是数量
+	fmt.Println(getResp.Kvs,getResp.Count)
+	//需要通过遍历来具体获取值
+	for _,v = range getResp.Kvs{
+		fmt.Println(string(v.Key))
+		fmt.Println(string(v.Value))
+		fmt.Println(v.CreateRevision)
+		fmt.Println(v.ModRevision)
+	}
+	
+   }
+}
 ```
