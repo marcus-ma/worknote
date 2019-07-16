@@ -2003,4 +2003,69 @@ func initAndDeleteKV()  {
    }
    
 }
+
+
+//初始化etcd与租约挂钩
+func initAndApplyLease ()  {
+   var (
+	config clientv3.Config
+	client *clientv3.Client
+	err error
+	lease clientv3.Lease
+	leaseGrantResp *clientv3.LeaseGrantResponse
+	leaseId  clientv3.LeaseID
+	kv clientv3.KV
+	putResp *clientv3.PutResponse
+   )
+   //初始化 start-------
+   //客户端配置
+   config = clientv3.Config{
+	Endpoints:[]string{"127.0.0.1:2379"},
+	DialTimeout:5*time.Second,
+   }
+   //建立连接
+   if client,err = clientv3.New(config);err!=nil{
+	fmt.Println(err)
+	return
+   }
+   //初始化 end-------
+
+   //申请一个租约
+   lease = clientv3.NewLease(client)
+   //申请一个10s的租约
+   if leaseGrantResp,err = lease.Grant(context.TODO(),10);err!=nil{
+	fmt.Println(err)
+	return
+   }
+   //拿到租约id
+   leaseId = leaseGrantResp.ID
+   
+   //创建一个k，让其与租约相关联，从而实现10s后自动过期
+   kv = clientv3.NewKV(client)
+   if putResp,err = kv.Put(context.TODO(),"/test/job3","hhh",clientv3.WithLease(leaseId));err!=nil{
+	fmt.Println(err)
+	return
+   }
+   fmt.Println("写入成功,",putResp.Header.Revision)
+
+   //定时看一下key过期了没有
+	for {
+		getResp,err := kv.Get(context.TODO(),"/test/job3")
+		if err!=nil{
+			fmt.Println(err)
+			return
+		}
+		if getResp.Count == 0 {
+			fmt.Println("kv过期了")
+			break
+		}
+		fmt.Println("没有过期",getResp.Kvs)
+
+		time.Sleep(2*time.Second)
+	}
+
+	fmt.Println("ok!")
+   
+}
+
 ```
