@@ -1875,3 +1875,44 @@ func demo4(){
 	time.Sleep(100*time.Second)
 }
 ```
+
+#### etcd
+```go
+//下载官方的库：go get go.etcd.io/etcd/clientv3
+//初始化etcd与创建kv
+func initAndPutKV()  {
+   var (
+	config clientv3.Config
+	client *clientv3.Client
+	err error
+	kv clientv3.KV
+	putResp *clientv3.PutResponse
+   )
+   //初始化 start-------
+   //客户端配置
+   config = clientv3.Config{
+	Endpoints:[]string{"127.0.0.1:2379"},
+	DialTimeout:5*time.Second,
+   }
+   //建立连接
+   if client,err = clientv3.New(config);err!=nil{
+	fmt.Println(err)
+	return
+   }
+   //初始化 end-------
+
+   //用于读写etcd的kv键值对
+   kv = clientv3.NewKV(client)
+   //添加k（clientv3.WithPrevKV()为查看前一次的v值）
+   if putResp,err = kv.Put(context.TODO(),"/test/job1","is best",clientv3.WithPrevKV());err!=nil{
+	fmt.Println(err)
+   }else{
+	//查看当前版本
+	fmt.Println("Revision:",putResp.Header.Revision)
+	if putResp.PrevKv!=nil{
+	   //打印该k前一次的v
+	   fmt.Println("PrevValue:",string(putResp.PrevKv.Value))
+	}
+   }
+}
+```
