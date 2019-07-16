@@ -1942,7 +1942,8 @@ func initAndGetKV()  {
 
    //用于读写etcd的kv键值对
    kv = clientv3.NewKV(client)
-   //获取k的值
+   //获取指定k的值
+   //如果想获取指定前缀的所有k，则参数为:context.TODO(),"/test/",clientv3.WithPrefix()
    if getResp,err = kv.Get(context.TODO(),"/test/job1");err!=nil{
 	fmt.Println(err)
    }else{
