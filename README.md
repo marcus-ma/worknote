@@ -1876,7 +1876,7 @@ func demo4(){
 }
 ```
 
-#### etcd
+#### etcd入门操作
 ```go
 //下载官方的库：go get go.etcd.io/etcd/clientv3
 //初始化etcd与创建kv
