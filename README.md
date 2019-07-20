@@ -2379,6 +2379,80 @@ func initAndTxn()  {
 	defer cancelFunc()
 	defer lease.Revoke(context.TODO(),leaseId)
 }
+```
+
+#### mongo入门操作
+go get go.mongodb.org/mongo-driver/mongo
+```go
+import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+)
+//初始化mongo
+func initConn()(*mongo.Collection){
+   	var(
+	     ctx context.Context
+	     client *mongo.Client
+	     err error
+	     collection *mongo.Collection
+	)
+	//1.建立连接
+	ctx,_ = context.WithTimeout(context.TODO(),time.Second*5)
+	if client,err=
+		mongo.Connect(ctx,options.Client().ApplyURI("mongodb://127.0.0.1:27017"));err!=nil{
+		fmt.Println(err)
+		return
+	}
+	//2.选择数据库和表collection
+	collection = client.Database("cron").Collection("log")
+	return collection
+}
+
+//插入记录
+//任务的执行时间点
+type TimePoint struct {
+     StartTime int64 `bson:"start_time"`
+     EndTime int64 `bson:"end_time"`
+}
+
+//一条日志
+type LogRecord struct {
+     JobName string `bson:"job_name"`//任务名
+     Command string `bson:"command"`//shell命令
+     Err string `bson:"err"`//脚本错误
+     Content string `bson:"content"`//脚本输出
+     TimePoint TimePoint `bson:"time_point"`//执行时间点
+}
+
+func insertOneToMongo(){
+   	var(
+	     err error
+	     collection *mongo.Collection
+	     record *LogRecord
+	     result *mongo.InsertOneResult
+	     docId primitive.ObjectID
+	)
+	collection = initConn()
+	//插入记录(bson)
+	record = &LogRecord{
+		"job11",
+		"echo hello world",
+		"",
+		"Hello world",
+		TimePoint{
+			StartTime:time.Now().Unix(),
+			EndTime:time.Now().Unix()+10,
+		},
+	}
+	if result,err = collection.InsertOne(context.TODO(),record);err!=nil{
+		fmt.Println(err)
+		return
+	}
+	//_id:默认生成一个全局唯一的ID值,ObjectID(12字节的二进制)
+	docId = result.InsertedID.(primitive.ObjectID)
+	fmt.Println("自增id：",docId.Hex())
+}
 
 
 ```
