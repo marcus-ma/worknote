@@ -2536,5 +2536,42 @@ func deleteToMongo(){
 	fmt.Println("删除的行数:",delResult.DeletedCount)
 }
 
+```
 
+
+#### master构造
+master架构
+任务管理[http]->etcd[/cron/jobs/]
+<br>
+任务日志[http]->mongodb
+<br>
+任务控制[http]->etcd[/cron/killer/]
+<br>
+任务管理->保存到etcd的任务会被实时同步到所有worker
+<br><br>
+cron/jobs/任务名 ->{
+        name,//任务名
+        command,//shell命令
+        cronExpr,//cron表达式}
+<br><br>
+任务日志->请求mongodb，按任务名来查看最近的执行日志<br>
+{	<br>
+	job_name,//任务名<br>
+	 command,//shell命令<br>
+	 err,//执行报错信息<br>
+	 output,//执行输出<br>
+	 start_time,//开始时间<br>
+	 end_time,//结束时间<br>
+ }
+ <br><br>
+任务控制
+<br>
+cron/killer/任务名 ->
+<br>
+worker监听/cron/killer/目录下的所有put操作
+<br>
+master将要结束的任务名put在/cron/killer/目录下，触发worker立即结束shell任务
+<br>
+
+```go
 ```
