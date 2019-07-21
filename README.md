@@ -2575,3 +2575,40 @@ master将要结束的任务名put在/cron/killer/目录下，触发worker立即�
 
 ```go
 ```
+
+#### worker构造
+worker架构
+任务同步：监听etcd中的/cron/jobs/目录变化<br>
+任务调度: 基于cron表达式计算，触发过期任务<br>
+任务执行：协程池并发执行多任务，基于etcd分布式锁抢占<br>
+日志保存：捕获任务执行输出，保存到MongoDB<br>
+<br><br>
+
+/cron/jobs/—>监听协程—[任务变化]—>cron调度协程->执行协程池[/cron/lock/ 任务抢占]—[任务执行结果]—>cron调度协程->日志协程—[存储日志]—>MongoDB
+<br>
+/cron/killer/->监听协程—[任务变化]—>cron调度协程—[杀死shell子进程]—>执行协程池
+<br><br>
+
+监听协程<br>
+利用watch API，监听/cron/jobs/与/cron/killer/目录的变化<br>
+将变化事件通过channel推送到调度协程，更新内存中的任务信息<br>
+<br><br>
+
+调度协程<br>
+监听任务变更event,更新内存中维护的任务列表<br>
+检查任务cron表达式，扫描到期任务，交给执行协程运行<br>
+监听任务控制event，强制中断正在执行中的子进程<br>
+监听任务执行result，更新内存中任务状态，投递执行日志<br>
+<br><br>
+
+执行协程<br>
+在etcd中抢占分布式乐观锁:/cron/lock/任务名<br>
+抢占成功则通过Command类来执行那个shell任务<br>
+捕获Command输出并等待子进程介绍，将执行结果投递给调度协程<br>
+<br><br>
+
+日志协程<br>
+监听调度发来的执行日志，放入一个batch中<br>
+对新的batch启动定时器，超时未满自动提交<br>
+若batch被放满，那么立即提交并取消自动提交定时器<br>
+<br><br>
