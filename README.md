@@ -2409,7 +2409,6 @@ func initConn()(*mongo.Collection){
 	return collection
 }
 
-//插入记录
 //任务的执行时间点
 type TimePoint struct {
      StartTime int64 `bson:"start_time"`
@@ -2424,7 +2423,7 @@ type LogRecord struct {
      Content string `bson:"content"`//脚本输出
      TimePoint TimePoint `bson:"time_point"`//执行时间点
 }
-
+//插入记录
 func insertOneToMongo(){
    	var(
 	     err error
@@ -2452,6 +2451,53 @@ func insertOneToMongo(){
 	//_id:默认生成一个全局唯一的ID值,ObjectID(12字节的二进制)
 	docId = result.InsertedID.(primitive.ObjectID)
 	fmt.Println("自增id：",docId.Hex())
+}
+
+//jobName过滤条件
+type FindByJobName struct {
+     JobName string `bson:"job_name"`
+}
+//查询记录
+func findToMongo(){
+	var(
+	     err error
+	     collection *mongo.Collection
+	     record *LogRecord
+	     cond *FindByJobName
+	     cursor *mongo.Cursor
+	)
+	collection = initConn()
+	
+	//按照job_name字段过滤，想找出job_name为10，找出5条
+	cond = &FindByJobName{JobName:"job10"}//{"job_name":"job10"}
+
+	//查询(过滤+翻页参数)
+	if cursor,err = collection.Find(
+		context.TODO(),
+		cond,//过滤条件
+		options.Find().SetSkip(0),//设置跳过第几条
+		options.Find().SetLimit(2));//设置获取几条
+	   err!=nil{
+		fmt.Println(err)
+		return
+	}
+	//释放游标
+	defer cursor.Close(context.TODO())
+
+	//遍历结果集
+	for cursor.Next(context.TODO()){
+	    //定义一个日志对象
+	    record = &LogRecord{}
+	    //反序列化bson到对象
+	    if err = cursor.Decode(record);err!=nil{
+		fmt.Println(err)
+		return
+	     }
+	     //把日志打印出来
+	     fmt.Println(*record)
+	}
+	
+
 }
 
 
