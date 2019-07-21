@@ -2497,7 +2497,52 @@ func findToMongo(){
 	     fmt.Println(*record)
 	}
 	
+}
 
+//删除数据
+//start_time小于某时间
+//{"$lt":timestamp}
+type TimeBeforeCond struct {
+     Before int64 `bson:"$lt"`
+}
+//{"time_point.start_time":{"$lt":timestamp}}
+type DeleteCond struct {
+     beforeCond TimeBeforeCond `bson:"time_point.start_time"`
+}
+
+func deleteToMongo(){
+	var(
+	   ctx context.Context
+	   client *mongo.Client
+	   err error
+	   collection *mongo.Collection
+	   delCond *DeleteCond
+	   delResult *mongo.DeleteResult
+	)
+	//1.建立连接
+	ctx,_ = context.WithTimeout(context.TODO(),time.Second*5)
+	if client,err=
+	   mongo.Connect(ctx,options.Client().ApplyURI("mongodb://127.0.0.1:27017"));err!=nil{
+		fmt.Println(err)
+		return
+	}
+	//2.选择数据库和表collection
+	collection = client.Database("cron").Collection("log")
+
+	//删除开始时间早于当前时间的所有日志(lt:less than)
+	//delete({"time_point.start_time":{"$lt":当前时间}})
+	delCond = &DeleteCond{
+		beforeCond:TimeBeforeCond{
+		     Before:time.Now().Unix(),
+		}}
+
+	//执行
+	if delResult,err = collection.DeleteMany(context.TODO(),delCond);err!=nil{
+	   fmt.Println(err)
+	   return
+	}
+
+	fmt.Println("删除的行数:",delResult.DeletedCount)
 }
 
 
