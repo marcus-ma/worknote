@@ -2573,9 +2573,6 @@ worker监听/cron/killer/目录下的所有put操作
 master将要结束的任务名put在/cron/killer/目录下，触发worker立即结束shell任务
 <br>
 
-```go
-```
-
 #### worker构造
 worker架构
 任务同步：监听etcd中的/cron/jobs/目录变化<br>
