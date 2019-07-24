@@ -895,6 +895,140 @@ foreach ($data as $document) {
     
 ```
 
+## itemCF demo
+```php
+// 从文件中获取数据流
+function get_user_click($rating_file){
+    //存储用户选择过的item容器
+    $user_click = [];
+    //存储用户选择过的item的时间戳容器
+    $user_click_time = [];
+    $file = fopen($rating_file, "r");
+    while(! feof($file))
+    {
+        $line =  fgets($file)."\n";//fgets()函数从文件指针中读取一行
+        $a = explode(",",$line);
+        list($user_id,$item_id,$rating,$timestamp) = $a;
+        //评分小于3.0则为不喜欢，数据跳过
+        if ($rating<3.0) {
+            continue;
+        }
+        if(!isset($user_click[$user_id])){$user_click[$user_id] = [];}
+        //存储用户选择过的item
+        $user_click[$user_id][] = $item_id;
+        //存储选择该item时的时间戳
+        if(!isset($user_click_time[$user_id.'_'.$item_id])){$user_click_time[$user_id.'_'.$item_id] = $timestamp;}
+    }
+    fclose($file);
+    return [$user_click,$user_click_time];
+}
+
+// 计算惩罚时间差越大的用户的权重
+function base_contribute_score($click_time_i,$click_time_j){
+    $click_time_i = floatval($click_time_i);
+    $click_time_j = floatval($click_time_j);
+    $delata_time =abs($click_time_i-$click_time_j);
+	//将时间戳单位换算为天
+	$total_sec=60*60*24;
+	$delata_time=$delata_time/$total_sec;
+	return 1/(1+$delata_time);
+}
+
+// 计算相似度
+function cal_item_sim($user_click,$user_click_time){
+    //存储item被用户的选择次数
+    $item_user_click_count = [];
+    //存储相似度数据
+    $co_appear = [];
+    //存储item的相似度得分
+    $item_sim_score = [];
+    //循环选择序列数据，user是每个用户的id，itemlist是每个用户的选择序列
+    foreach ($user_click as $user=>$itemList){
+        foreach ($itemList as $index_i=>$itemId_i){
+            if (!isset( $item_user_click_count[$itemId_i])){$item_user_click_count[$itemId_i] = 0;}
+            $item_user_click_count[$itemId_i]+=1;
+
+            //计算每个item的id和其他item的id共同出现在一个用户的选择序列中的数值
+            $ts = $itemList;
+            //删除第一个元素
+            array_shift($ts);
+            foreach ($ts as $index_j=>$itemId_j){
+                //获取点击的时间戳
+                //增加时间衰减因子对推荐的考虑
+                $click_time_i=0;
+                $click_time_j=0;
+                if (isset( $user_click_time[$user.'_'.$itemId_i])){$click_time_i = $user_click_time[$user.'_'.$itemId_i];}
+                if (isset( $user_click_time[$user.'_'.$itemId_j])){$click_time_j = $user_click_time[$user.'_'.$itemId_j];}
+
+                //计算所有item的id中，两两id的共同出现次数
+                if (!isset( $co_appear[$itemId_i])){$co_appear[$itemId_i] = [];}
+                if (!isset( $co_appear[$itemId_i][$itemId_j])){$co_appear[$itemId_i][$itemId_j] = 0;}
+                $co_appear[$itemId_i][$itemId_j]+=base_contribute_score($click_time_i,$click_time_j);
+
+                if (!isset( $co_appear[$itemId_j])){$co_appear[$itemId_j] = [];}
+                if (!isset( $co_appear[$itemId_j][$itemId_i])){$co_appear[$itemId_j][$itemId_i] = 0;}
+                $co_appear[$itemId_j][$itemId_i]+=base_contribute_score($click_time_i,$click_time_j);
+
+            }
+        }
+    }
+    //相似度计算
+    foreach ($co_appear as $itemId_i=>$relate_item){
+        foreach ($relate_item as $itemId_j=>$co_time){
+            //相似度计算
+            //原数学公式为：(选择i的数量集数与选择j的数量集数)的交集/[(选择i的数量集数与选择j的数量集数)的并集]开根号
+            $sim_score = $co_time / sqrt(floatval($item_user_click_count[$itemId_i]*$item_user_click_count[$itemId_j]));
+            if (!isset( $item_sim_score[$itemId_i])){$item_sim_score[$itemId_i] = [];}
+            $item_sim_score[$itemId_i][$itemId_j] = $sim_score;
+        }
+    }
+    return $item_sim_score;
+}
+
+// 对相似度进行降序排序
+function sore_item_sim($sim_info){
+    foreach( $sim_info as $itemid=>$value){
+        arsort($value);
+        $sim_info[$itemid] = $value;
+    }
+    return $sim_info;
+}
+
+// 计算每个用户的推荐（与喜好item相似度较高的）物品
+function cal_recom_result($sim_info,$user_click){
+    $recom_info = [];
+    //选取用户的前三个选择item作为item样本，找寻它们的相似item进行推荐
+    $recent_click_num = 3;
+    //取item样本中电影相似度前topk的电影
+    $topk = 5;
+    foreach ($user_click as $user=>$click_list){
+        if(isset($recom_info[$user])){$recom_info[$user] = [];}
+
+        $ts = array_slice($click_list,0,$recent_click_num);
+        foreach ($ts as $item_id){
+            if(!isset($sim_info[$item_id])){continue;}
+            //找寻与item相似度前topk的item
+            $tp = array_slice($sim_info[$item_id],0,$topk);
+            foreach ($tp as $itemsimid=>$itemsimscore){
+                $recom_info[$user][$itemsimid] = $itemsimscore;
+            }
+        }
+
+    }
+
+    return $recom_info;
+}
+
+function main_flow(){
+    list($user_click,$user_click_time) = get_user_click('p.txt');
+    $sim_info = sore_item_sim(cal_item_sim($user_click,$user_click_time));
+    $recom_info = cal_recom_result($sim_info,$user_click);
+    var_dump($recom_info["1"]);    
+}
+
+main_flow();
+```
+
 
 
 
