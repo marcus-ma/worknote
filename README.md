@@ -896,6 +896,7 @@ foreach ($data as $document) {
 ```
 
 ## itemCF demo
+详细相关可以参考文章[https://blog.csdn.net/Smart3S/article/details/86764297] 
 ```php
 // 从文件中获取数据流
 function get_user_click($rating_file){
