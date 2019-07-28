@@ -2518,6 +2518,7 @@ func initAndTxn()  {
 
 #### mongo入门操作
 go get go.mongodb.org/mongo-driver/mongo
+用法API可以参考文章[https://blog.csdn.net/tyrant_800/article/details/50269723] 
 ```go
 import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
