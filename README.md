@@ -1060,6 +1060,31 @@ main_flow();
 ```
 
 ## Go的二三事
+### 在win下编译linux可执行文件
+cmd控制台到要编译的go文件的目录下
+<br>
+键入以下命令：【GOOS:目标平台的操作系统(linux、darwin、freebsd、window)；GOARCH:目标平台的体系结构(386[编译32位可执行程序]、amd64
+、arm)；交叉编译不支持CGO所以禁用它】
+```shell
+>set CGO_ENABLED=0
+>set GOOS=linux
+>set GOARCH=amd64
+>go build main.go
+```
+即可生成一个没有后缀的二进制文件，然后将该文件放到linux系统某个文件下，并赋予权限
+```shell
+>chmod 777 main
+```
+最后就可以执行了:
+```shell
+>./main
+```
+如果想让文件在后台执行,命令为：
+```shell
+>nohub ./main &
+```
+
+
 ### defer执行顺序
 多个defer的执行顺序是以栈的特性先进后出来执行，越写在前面就越后执行
 
