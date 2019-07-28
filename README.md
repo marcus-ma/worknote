@@ -1092,6 +1092,18 @@ cmd控制台到要编译的go文件的目录下
 ### 没有前置运算符
 不存在++a或者--a，只有a++和a--
 
+
+### struct tag
+只要在相关tag中写上`omitempty`，只要在struct初始化时没有赋值的字段，就会省略掉，如：
+```golang
+type Response struct{
+    Code int `json:"code"`
+    Msg  string `json:"msg,omitempty"`
+}
+
+r := &Response{Code:404}
+```
+
 ### 统计汉字字符串个数
 ```go
 import (
