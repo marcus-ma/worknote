@@ -1097,11 +1097,13 @@ cmd控制台到要编译的go文件的目录下
 只要在相关tag中写上`omitempty`，只要在struct初始化时没有赋值的字段，就会省略掉，如：
 ```golang
 type Response struct{
-    Code int `json:"code"`
+    Code int `json:"code" bson:"name,omitempty"`
     Msg  string `json:"msg,omitempty"`
 }
 
-r := &Response{Code:404}
+r1 := &Response{Code:404}
+r2 := &Response{Msg:"error"}
+
 ```
 
 ### 统计汉字字符串个数
