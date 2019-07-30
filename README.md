@@ -394,12 +394,12 @@ if ($this->request->isPost()) {
              },
             'department' => function($data){
 	       return $data->departmodel->name;
-             }
+             },
             'ip' => function($data){
 	       //UtiLib::geo方法是本系统封装好的工具函数，会把ip转化成数组,解析为国家、城市、运行商、ip
 	       return UtiLib::geo($data->ip)
 	       //此时返回的是数组，在模板数据渲染的时候记得要调用{{ partial('widget/extra', ['formatter':['ip']]) }}
-             }
+             },
 
     ];
    
