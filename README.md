@@ -10,12 +10,12 @@
 - [volt](#volt)
 - [Phalcon\Image\Adapter\GD](#Phalcon\Image\Adapter\GD)
 - [searchAction](#searchAction)
-- [Bootstrap table](#Bootstrap table)
+- [Bootstrap-table](#Bootstrap-table)
 - [MongoDB](#MongoDB)
 - [IM常用函数](#IM常用函数)
 - [视频流播放](#视频流播放)
-- [window API函数](#window API函数)
-- [itemCF demo](#itemCF demo)
+- [window-API函数](#window-API函数)
+- [itemCF-demo](#itemCF-demo)
 - [MySQL的in的查询结果集按顺序](#MySQL的in的查询结果集按顺序)
 - [Go的二三事](#Go的二三事)
 -------------------------
@@ -450,7 +450,7 @@ function statusFormatter(value, row, index){
 ```
 
 
-## Bootstrap table
+## Bootstrap-table
 详细概念可以参考文章[https://blog.csdn.net/tyrant_800/article/details/50269723] 和 [https://www.cnblogs.com/laowangc/p/8875526.html]
 
 ## 游戏g值的生成
@@ -895,7 +895,7 @@ foreach ($data as $document) {
     }
 
 ```
-## window API函数
+## window-API函数
 具体参考文章[https://www.cnblogs.com/dfsxh/archive/2010/11/29/1890984.html#2007524]
 
 ## js分享第三方平台
@@ -917,7 +917,7 @@ foreach ($data as $document) {
     
 ```
 
-## itemCF demo
+## itemCF-demo
 详细相关可以参考文章[https://blog.csdn.net/Smart3S/article/details/86764297] 
 ```php
 // 从文件中获取数据流
