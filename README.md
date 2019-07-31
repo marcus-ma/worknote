@@ -875,6 +875,8 @@ foreach ($data as $document) {
     }
 
 ```
+## window API函数
+具体参考文章[https://www.cnblogs.com/dfsxh/archive/2010/11/29/1890984.html#2007524]
 
 ## js分享第三方平台
 ### 分享到微博
