@@ -3,6 +3,7 @@
 -------------------------
 - [Apcu](#apcu)
 - [CMD命令](#CMD命令)
+- [网页摆脱鼠标快捷键](#网页摆脱鼠标快捷键)
 - [Phalcon\Model](#Phalcon\Model)
 - [PHP技巧](#PHP技巧)
 - [PHP封裝的常用函数](#PHP封裝的常用函数)
@@ -36,6 +37,10 @@ apcu_delete('name')
 2:[发起POST请求]
 </br>表单:curl http://127.0.0.1:8080/test -X POST -d "name=marcus&token=test" 
 </br>json:curl -H "Content-Type:application/json" http://127.0.0.1:8080/test -X POST -d '{"user": "admin", "passwd":"12345678"}'
+
+### 网页摆脱鼠标快捷键
+1:[在不同的tag选项卡中切换]shift+ctrl
+2:[网页中的链接切换选中]shift+Fn
 
 ## Phalcon\Model
 `initialize` 
