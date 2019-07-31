@@ -44,6 +44,13 @@ apcu_delete('name')
 2:[网页中的链接切换选中]Fn+Tab
 </br>
 
+### IDE中的快捷操作
+1:[批量删除全部文件]
+</br>
+先选中第一个开始删除的文件，按住shift键，再选中最后一个要删除的文件，松开shift，会发现全选中了
+</br>
+
+
 ## Phalcon\Model
 `initialize` 
 ```php
