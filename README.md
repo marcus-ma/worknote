@@ -40,7 +40,9 @@ apcu_delete('name')
 
 ### 网页摆脱鼠标快捷键
 1:[在不同的tag选项卡中切换]shift+ctrl
+</br>
 2:[网页中的链接切换选中]shift+Fn
+</br>
 
 ## Phalcon\Model
 `initialize` 
