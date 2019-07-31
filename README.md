@@ -39,9 +39,9 @@ apcu_delete('name')
 </br>json:curl -H "Content-Type:application/json" http://127.0.0.1:8080/test -X POST -d '{"user": "admin", "passwd":"12345678"}'
 
 ### 网页摆脱鼠标快捷键
-1:[在不同的tag选项卡中切换]shift+ctrl
+1:[在不同的tag选项卡中切换]ctrl+Tab
 </br>
-2:[网页中的链接切换选中]shift+Fn
+2:[网页中的链接切换选中]Fn+Tab
 </br>
 
 ## Phalcon\Model
