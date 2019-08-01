@@ -2747,6 +2747,21 @@ func deleteToMongo(){
 	fmt.Println("删除的行数:",delResult.DeletedCount)
 }
 
+
+//根据ObjectId查询数据(字符串转ObjectId)
+func findOneToMongoByObjectId(){
+	var(
+	   ctx context.Context
+	   err error
+	   collection *mongo.Collection
+	)
+	
+	collection = initConn()
+	id:= "iuiuvrtgiuhrtiughriuthgu"
+	objectId,_ := primitive.ObjectIDFromHex(id)
+	collection.FindOne(context.TODO(),Bson.M{"_id":objectId})
+}
+
 ```
 
 
