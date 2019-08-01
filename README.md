@@ -2762,6 +2762,40 @@ func findOneToMongoByObjectId(){
 	collection.FindOne(context.TODO(),Bson.M{"_id":objectId})
 }
 
+//在未定义的结构上查询数据
+func findUndefinedStructToMongo(){
+	var(
+	   ctx context.Context
+	   err error
+	   collection *mongo.Collection
+	   cursor *mongo.Cursor
+	)
+	
+	collection = initConn()
+	
+	//从mongo中获取所有数据
+	if cursor,err = collection.Find(context.TODO(),bson.M{});err!=nil{
+		return
+	}
+	//释放游标
+	defer cursor.Close(context.TODO())
+
+	//遍历结果集
+	for cursor.Next(context.TODO()){
+		var item =  bson.D{}
+		//反序列化bson到struct
+		if err = cursor.Decode(&item);err!=nil{
+			continue
+		}
+		//item = {[_id jhgtyugy],[ {[name marcus],[age 31]} ]}
+		fmt.Println(item)
+		id:=item[0].Value.(primitive.ObjectID).Hex()
+		name:=item[1].(bson.D)[0].Value.(string)
+		fmt.Println(item,id,name)
+	}
+	
+}
+
 ```
 
 
