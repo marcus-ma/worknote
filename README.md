@@ -4,6 +4,7 @@
 - [Apcu](#apcu)
 - [CMD命令](#CMD命令)
 - [网页摆脱鼠标快捷键](#网页摆脱鼠标快捷键)
+- [win10快速打开powershell](#win10快速打开powershell)
 - [Phalcon\Model](#Phalcon\Model)
 - [PHP技巧](#PHP技巧)
 - [PHP封裝的常用函数](#PHP封裝的常用函数)
@@ -43,6 +44,9 @@ apcu_delete('name')
 </br>
 2:[网页中的链接切换选中]Fn+Tab
 </br>
+
+### win10快速打开powershell
+空白处 + Shift键 + 鼠标右键 
 
 ### IDE中的快捷操作
 1:[批量删除全部文件]
