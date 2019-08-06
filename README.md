@@ -2878,4 +2878,51 @@ worker架构
 ```
 
 #### web常用
+##### 读取json
+```go
+func handlerGetJson(w http.ResponseWriter,r *http.Request){
+    var(
+       data []byte
+       err error
+    )
+    //读取json
+    if data,err = ioutil.ReadAll(r.Body);err!=nil{
+	io.WriteString(w,err.Error())
+	return
+    }
+    //序列化
+    user = struct {}{}
+    if err = json.Unmarshal(data,user);err!=nil{
+	io.WriteString(w,err.Error())
+	return
+    }
+    
+}
+```
+##### 读取URL上的get参数
+```go
+func handlerGetQueryParam(w http.ResponseWriter,r *http.Request){
+     var(
+     	err error
+	name string//任务名称
+	skipParam string//从第几条开始
+	limitParam string//返回数据条数
+	skip int
+	limit int
+     )
+     //解析GET参数
+     if err = r.ParseForm();err!=nil{
+    	io.WriteString(w,err.Error())
+	return
+     }
+     
+     //获取请求参数：?name=job&skip=0&limit=10
+     name = r.Form.Get("name")
+     skipParam = r.Form.Get("skip")
+     if skip,err = strconv.Atoi(skipParam);err!=nil{skip = 0}
+     limitParam = r.Form.Get("limit")
+     if limit,err = strconv.Atoi(limitParam);err!=nil{limit = 20}
+     
+}
+```
 
