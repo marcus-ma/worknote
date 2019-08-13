@@ -31,6 +31,8 @@ var_dump(apcu_fetch('name'));
 //删除k
 apcu_delete('name')
 ```
+## 常用git命令
+1.取消本次修改，状态回到上一次提交的状态：git reset --hard 
 
 ### CMD命令
 1:[快速打开网页]start http://xxxx.com
