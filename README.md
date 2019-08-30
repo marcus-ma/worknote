@@ -4,6 +4,7 @@
 - [Apcu](#apcu)
 - [CMD命令](#CMD命令)
 - [网页摆脱鼠标快捷键](#网页摆脱鼠标快捷键)
+- [常用功能网址](#常用功能网址)
 - [win10快速打开powershell](#win10快速打开powershell)
 - [Phalcon\Model](#Phalcon\Model)
 - [PHP技巧](#PHP技巧)
@@ -56,6 +57,10 @@ apcu_delete('name')
 先选中第一个开始删除的文件，按住shift键，再选中最后一个要删除的文件，松开shift，会发现全选中了
 </br>
 
+### 常用功能网址
+1：B站视频在线解析[http://www.xbeibeix.com/bilibili/] </br>
+2: 网盘搜索 [https://dalipan.com/search?keyword=] </br>
+3: 短视频去水印 [https://dy.kukutool.com/] </br>
 
 ## Phalcon\Model
 `initialize` 
