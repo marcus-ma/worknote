@@ -64,7 +64,7 @@ apcu_delete('name')
 3: 短视频去水印 [https://dy.kukutool.com/] </br>
 
 ### ffmpeg常用命令
-1:音视频文件倍数改变：ffmpeg -i bgm.mp3 -filter_complex "[0:v]setpts=0.5*PTS[v];[0:a]atempo=2.0[a]" -map "[v]" -map "[a]" bgm2.0.mp3
+1:音视频文件播放倍数改变[将bgm.mp3播放速度改为原来的2倍]：ffmpeg -i bgm.mp3 -filter_complex "[0:v]setpts=0.5*PTS[v];[0:a]atempo=2.0[a]" -map "[v]" -map "[a]" bgm2.0.mp3
 
 
 ## Phalcon\Model
