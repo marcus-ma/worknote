@@ -6,6 +6,7 @@
 - [网页摆脱鼠标快捷键](#网页摆脱鼠标快捷键)
 - [常用功能网址](#常用功能网址)
 - [win10快速打开powershell](#win10快速打开powershell)
+- [ffmpeg常用命令](#ffmpeg常用命令)
 - [Phalcon\Model](#Phalcon\Model)
 - [PHP技巧](#PHP技巧)
 - [PHP封裝的常用函数](#PHP封裝的常用函数)
@@ -61,6 +62,10 @@ apcu_delete('name')
 1：B站视频在线解析[http://www.xbeibeix.com/bilibili/] </br>
 2: 网盘搜索 [https://dalipan.com/search?keyword=] </br>
 3: 短视频去水印 [https://dy.kukutool.com/] </br>
+
+### ffmpeg常用命令
+1:音视频文件倍数改变：ffmpeg -i bgm.mp3 -filter_complex "[0:v]setpts=0.5*PTS[v];[0:a]atempo=2.0[a]" -map "[v]" -map "[a]" bgm2.0.mp3
+
 
 ## Phalcon\Model
 `initialize` 
