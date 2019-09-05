@@ -75,6 +75,8 @@ apcu_delete('name')
 合并音频和视频，保留视频原声【此时需要将mp3文件放在前面，MP4文件放在后面，否则会没有背景音乐】`ffmpeg -i bgm.mp3 -i input.mp4  -t 7.1 -y output.mp4`
 </br></br>
 
+4:推流命令：`ffmpeg -re -stream_loop -1 -fflags +genpts -i input.mp4  -vcodec copy -acodec copy -strict -2 -f flv -y rtmp://localhost:1935/live/room`
+
 ## Phalcon\Model
 `initialize` 
 ```php
