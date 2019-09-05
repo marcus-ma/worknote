@@ -62,6 +62,7 @@ apcu_delete('name')
 1：B站视频在线解析[http://www.xbeibeix.com/bilibili/] </br>
 2: 网盘搜索 [https://dalipan.com/search?keyword=] </br>
 3: 短视频去水印 [https://dy.kukutool.com/] </br>
+4: 电子书搜索 [https://www.jiumodiary.com/] </br>
 
 ### ffmpeg常用命令
 1:音视频文件播放倍数改变[将bgm.mp3播放速度改为原来的2倍]：`ffmpeg -i bgm.mp3 -filter_complex "[0:v]setpts=0.5*PTS[v];[0:a]atempo=2.0[a]" -map "[v]" -map "[a]" bgm2.0.mp3`
@@ -74,8 +75,8 @@ apcu_delete('name')
 </br>
 合并音频和视频，保留视频原声【此时需要将mp3文件放在前面，MP4文件放在后面，否则会没有背景音乐】`ffmpeg -i bgm.mp3 -i input.mp4  -t 7.1 -y output.mp4`
 </br></br>
-
 4:推流命令：`ffmpeg -re -stream_loop -1 -fflags +genpts -i input.mp4  -vcodec copy -acodec copy -strict -2 -f flv -y rtmp://localhost:1935/live/room`
+</br></br>
 
 ## Phalcon\Model
 `initialize` 
