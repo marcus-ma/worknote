@@ -77,6 +77,8 @@ apcu_delete('name')
 </br></br>
 4:推流命令：`ffmpeg -re -stream_loop -1 -fflags +genpts -i input.mp4  -vcodec copy -acodec copy -strict -2 -f flv -y rtmp://localhost:1935/live/room`
 </br></br>
+5:调节音频的音量大小,混音【增加/减少3dB:+/-3dB】：`ffmpeg -i input.mp3 -af volume=+3dB output.mp3`
+</br></br>
 
 ## Phalcon\Model
 `initialize` 
