@@ -1694,6 +1694,25 @@ func testInvokeByName()  {
 }
 ```
 
+### log日志收集到一个文件
+```go
+func main() {
+	// 按照所需读写权限创建文件
+	f, err := os.OpenFile("filename.log", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
+	// 完成后延迟关闭，而不是习惯!
+	defer f.Close()
+
+	//设置日志输出到 f
+	log.SetOutput(f)
+	//测试用例
+	log.Println("check to make sure it works")
+}
+```
+运行后filename.log文件的内容为：2019/09/20 10:20:34 check to make sure it works
+
 
 ### 利用reflect.DeepEqual来让切片之间或者map之间进行比较判断
 ```go
