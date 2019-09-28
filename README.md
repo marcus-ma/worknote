@@ -1214,6 +1214,28 @@ func main(){
 }
 ```
 
+### 生成随机数
+```go
+import (
+	"fmt"
+	"math/rand"
+	"time"
+)
+
+func main(){
+	//以时间戳作为随机数种子
+	seed := time.now().UnixNano()
+	//生成一个0到9的随机数
+	code:= rand.New(rand.NewSource(seed)),Intn(10)
+	
+	//随机获取切片的一个元素
+	List = []string{"m","a","r","c","u","s"}
+	count := len(List)
+	index := rand.New(rand.NewSource(seed)).Int31n(int32(count))
+	elem := List[index]
+}
+```
+
 
 ### 获取命令行参数
 ```go
