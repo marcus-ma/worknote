@@ -5,6 +5,7 @@
 - [CMD命令](#CMD命令)
 - [网页摆脱鼠标快捷键](#网页摆脱鼠标快捷键)
 - [常用功能网址](#常用功能网址)
+- [在网页中插入网易云播放器](#在网页中插入网易云播放器)
 - [win10快速打开powershell](#win10快速打开powershell)
 - [ffmpeg常用命令](#ffmpeg常用命令)
 - [Phalcon\Model](#Phalcon\Model)
@@ -63,6 +64,12 @@ apcu_delete('name')
 2: 网盘搜索 [https://dalipan.com/search?keyword=] </br>
 3: 短视频去水印 [https://dy.kukutool.com/] </br>
 4: 电子书搜索 [https://www.jiumodiary.com/] </br>
+
+### 在网页中插入网易云播放器
+```html
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="450" src="//music.163.com/outchain/player?type=0&id=12345678&auto=0&height=430"></iframe>
+```
+上面的id使用的是你想要播放的歌单的id，歌单id就是网易云网页版歌单播放的地址：`https://music.163.com/#/my/m/music/playlist?id=`
 
 ### ffmpeg常用命令
 1:音视频文件播放倍数改变[将bgm.mp3播放速度改为原来的2倍]：`ffmpeg -i bgm.mp3 -filter_complex "[0:v]setpts=0.5*PTS[v];[0:a]atempo=2.0[a]" -map "[v]" -map "[a]" bgm2.0.mp3`
