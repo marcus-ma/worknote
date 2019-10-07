@@ -89,7 +89,7 @@ apcu_delete('name')
 </br></br>
 
 ## SQL优化
-1:【分页查询优化】在分页查询大量数据时候，采用主键索引来定位快,一般的查询是会逐一统计数据条数。如SELECT * FROM table WHERE id>500000 LIMIT 100 的查询速度会比一般分页查询SELECT * FROM table LIMIT 500000,100
+1:【分页查询优化】在分页查询大量数据时候，采用主键索引来定位快,一般的查询采用limit是会逐一统计数据条数。如SELECT * FROM table WHERE id>500000 AND id<=500000+100 的查询速度会比一般分页查询SELECT * FROM table LIMIT 500000,100。
 
 ## Phalcon\Model
 `initialize` 
