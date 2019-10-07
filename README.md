@@ -8,6 +8,7 @@
 - [在网页中插入网易云播放器](#在网页中插入网易云播放器)
 - [win10快速打开powershell](#win10快速打开powershell)
 - [ffmpeg常用命令](#ffmpeg常用命令)
+- [SQL优化](#SQL优化)
 - [Phalcon\Model](#Phalcon\Model)
 - [PHP技巧](#PHP技巧)
 - [PHP封裝的常用函数](#PHP封裝的常用函数)
@@ -86,6 +87,9 @@ apcu_delete('name')
 </br></br>
 5:调节音频的音量大小,混音【增加/减少3dB:+/-3dB】：`ffmpeg -i input.mp3 -af volume=+3dB output.mp3`
 </br></br>
+
+## SQL优化
+1:【分页查询优化】在分页查询大量数据时候，采用主键索引来定位快。如SELECT * FROM table WHERE id>500000 LIMIT 100 的查询速度会比一般分页查询SELECT * FROM table LIMIT 500000,100
 
 ## Phalcon\Model
 `initialize` 
