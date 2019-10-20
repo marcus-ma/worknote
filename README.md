@@ -3003,3 +3003,36 @@ func handlerGetQueryParam(w http.ResponseWriter,r *http.Request){
 }
 ```
 
+##### 头尾html和主题html拼接
+```go
+//渲染模板(加上头html和尾部html)
+func renderTemplate(file string) string {
+	files := []string{file}
+
+	files = append([]string{"static/header.html"}, files...)
+	files = append(files, "static/footer.html")
+
+	return concatHtmlFiles(files)
+}
+
+//拼接html文件
+func concatHtmlFiles(files []string) string {
+
+	buf := bytes.NewBuffer(nil)
+	for _, filename := range files {
+		f, _ := os.Open(filename) // Error handling elided for brevity.
+		io.Copy(buf, f)           // Error handling elided for brevity.
+		f.Close()
+	}
+	return string(buf.Bytes())
+}
+http.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
+	io.WriteString(w, renderTemplate("static/upload.html"))
+})
+```
+##### 设置静态资源访问目录
+```go
+fs := http.FileServer(http.Dir("static"))
+http.Handle("/static/", http.StripPrefix("/static/", fs))
+```
+
