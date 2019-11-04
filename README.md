@@ -23,6 +23,7 @@
 - [视频流播放](#视频流播放)
 - [window-API函数](#window-API函数)
 - [itemCF-demo](#itemCF-demo)
+- [DAG任务调度器-demo](#DAG任务调度器-demo)
 - [MySQL的in的查询结果集按顺序](#MySQL的in的查询结果集按顺序)
 - [Go的二三事](#Go的二三事)
 -------------------------
@@ -1108,6 +1109,169 @@ function main_flow(){
 }
 
 main_flow();
+```
+
+## DAG任务调度器-demo
+```php
+interface Executor{
+    public function execute();
+}
+
+class Task implements Executor{
+    private $id;
+    private $name;
+    private $state;
+
+    public function __construct($id,$name,$state)
+    {
+        $this->id = $id;
+        $this->name = $name;
+        $this->state = $state;
+    }
+
+
+    public function execute()
+    {
+        echo "Task id:[ {$this->id} ], task name: [{$this->name}] is running\n";
+        $this->state = 1;
+        return true;
+    }
+
+    public function hasExecuted(){return $this->state == 1;}
+
+
+    public function getId()
+    {
+        return $this->id;
+    }
+}
+
+class Digraph {
+    private $tasks=[];//['taskId1'=>$taskClass1]
+    private $taskPrevMap = [];//['taskId3'=>[$taskId1,$taskId2],'taskId2'=>[$taskId1]]
+
+    public function addEdge($task,$prevTask)
+    {
+        $taskId = $task->getId();
+        $prevTaskId = $prevTask->getId();
+
+        if(!isset($this->tasks[$taskId])||!isset($this->tasks[$prevTaskId]))return false;
+        if (!isset($this->taskPrevMap[$taskId])){$this->taskPrevMap[$taskId]=[];}
+        if (isset($this->taskPrevMap[$taskId][$prevTaskId]))return false;
+        $this->taskPrevMap[$taskId][]=$prevTaskId;
+    }
+
+    public function addTask($task)
+    {
+        $taskId = $task->getId();
+        if (isset($this->tasks[$taskId]))return false;
+        $this->tasks[$taskId]=$task;
+    }
+
+    public function remove($task)
+    {
+        $taskId = $task->getId();
+
+        if (!isset($this->tasks[$taskId]))return false;
+        if (isset($this->taskPrevMap[$taskId]))unset($this->taskPrevMap[$taskId]);
+        foreach ($this->taskPrevMap as $taskName=>$taskPrevMap){
+            if (in_array($taskId,$taskPrevMap)){unset($taskPrevMap[array_keys($taskPrevMap,$taskId)[0]]);}
+        }
+    }
+
+    public function getTasks()
+    {
+        return $this->tasks;
+    }
+
+    public function setTasks($tasks)
+    {
+        $this->tasks = $tasks;
+    }
+
+    public function getTaskPrevMap()
+    {
+        return $this->taskPrevMap;
+    }
+
+    public function setTaskPrevMap($taskPrevMap)
+    {
+        $this->taskPrevMap = $taskPrevMap;
+    }
+
+    public function scheduler()
+    {
+        while (true){
+            $todo = [];
+            foreach ($this->getTasks() as $taskId=>$task){
+                if (!$task->hasExecuted()){
+                    if ( isset($this->getTaskPrevMap()[$taskId]) && !empty( $this->getTaskPrevMap()[$taskId] )){
+                        $toAdd = true;
+                        foreach ($this->getTaskPrevMap()[$taskId] as $prevId){
+                            if (!$this->getTasks()[$prevId]->hasExecuted()) {
+                                $toAdd = false;
+                                break;
+                            }
+                        }
+
+                        if ($toAdd)$todo[]=$task;
+                    }else{
+                        $todo[]=$task;
+                    }
+                }
+            }
+
+            if (!empty($todo)){
+                foreach ($todo as $task){
+                    if (!$task->execute()) {
+                        echo "error\n";
+                    }
+                }
+            }else{
+                break;
+            }
+        }
+    }
+
+}
+
+$d = new Digraph();
+$t1 = new Task(1,'t1',0);
+$t2 = new Task(2,'t2',0);
+$t3 = new Task(3,'t3',0);
+$t4 = new Task(4,'t4',0);
+$t5 = new Task(5,'t5',0);
+$t6 = new Task(6,'t6',0);
+
+$d->addTask($t3);
+$d->addTask($t1);
+$d->addTask($t2);
+$d->addTask($t6);
+$d->addTask($t4);
+$d->addTask($t5);
+//   3        4
+//   |        |
+//   |____2___|     5
+//        |         |
+//     6__|         |
+//        |_____1___|      
+//               
+$d->addEdge($t1, $t2);//先执行t2再执行t1
+$d->addEdge($t1, $t5);//先执行t5再执行t1
+$d->addEdge($t6, $t2);//先执行t2再执行t6
+$d->addEdge($t2, $t3);//先执行t3再执行t2
+$d->addEdge($t2, $t4);//先执行t4再执行t2
+
+$d->scheduler();
+
+//输出的执行顺序为：
+//Task id:[ 3 ], task name: [t3] is running
+//Task id:[ 4 ], task name: [t4] is running
+//Task id:[ 5 ], task name: [t5] is running
+//Task id:[ 2 ], task name: [t2] is running
+//Task id:[ 1 ], task name: [t1] is running
+//Task id:[ 6 ], task name: [t6] is running
+
 ```
 
 
