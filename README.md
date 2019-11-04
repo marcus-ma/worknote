@@ -24,6 +24,7 @@
 - [window-API函数](#window-API函数)
 - [itemCF-demo](#itemCF-demo)
 - [Trie树关键词搜索](#Trie树关键词搜索)
+- [图的知识-Graph](#图的知识-Graph)
 - [DAG任务调度器-demo](#DAG任务调度器-demo)
 - [MySQL的in的查询结果集按顺序](#MySQL的in的查询结果集按顺序)
 - [Go的二三事](#Go的二三事)
@@ -1194,6 +1195,197 @@ $node->append('我们');
 $res = $node->match("我们都是科学家,你们说的对不对？我们觉得对");
 var_dump($res);
 ```
+
+## 图的知识-Graph
+```php
+//稠密图-邻接矩阵
+////0 1 2
+//0 f t f    0<-->1(无向图) 0->1(有向图)
+//1 t f f
+//2 f f f
+class DenseGraph{
+    private $n,$m,$directed,$g=[];
+
+    public function __construct($n,$directed)
+    {
+        $this->n=$n;//定点个数
+        $this->m=0;//初始边都为0
+        $this->directed=$directed;//是否有向(是a->b还是a<->b)
+        for ($i=0;$i<$n;$i++){
+            array_push($this->g,array_fill(0,$n,false));
+        }
+
+    }
+
+    public function V(){return $this->n;}
+    public function E(){return $this->m;}
+
+    private function hasEdge($v,$w){
+        if ($v<0 || $v>=$this->n){return false;}
+        if ($w<0 || $w>=$this->n){return false;}
+        return $this->g[$v][$w];
+    }
+
+    public function addEdge($v,$w)
+    {
+        if ($v<0 || $v>=$this->n){return false;}
+        if ($w<0 || $w>=$this->n){return false;}
+        if ($this->hasEdge($v,$w)){return false;}
+
+        $this->g[$v][$w]=true;
+        if (!$this->directed){$this->g[$w][$v]=true;}
+        $this->m++;
+    }
+
+    public function show()
+    {
+        for ($i=0;$i<$this->n;$i++){
+            for ($j=0;$j<$this->n;$j++){
+                echo $this->g[$i][$j]."\t";
+            }
+            echo "\n";
+        }
+    }
+
+    public function echo()
+    {
+        return $this->g;
+    }
+
+}
+//创建一个有3个节点的无向图
+$g = new DenseGraph(3,false);
+//给节点0和1添加一条边
+$g->addEdge(0,1);
+//打印图
+print_r($g->echo());
+
+
+//稀疏图-邻接表
+//0 1 2   0->1,0->2              0
+//1 2     1->2                   |---
+//2                              |   |
+//			         1---2
+class SparseGraph{
+    private $n,$m,$directed,$g=[];
+
+    public function __construct($n,$directed)
+    {
+        $this->n=$n;//定点个数
+        $this->m=0;//初始边都为0
+        $this->directed=$directed;//是否有向(是a->b还是a<->b)
+        for ($i=0;$i<$n;$i++){
+            array_push($this->g,[]);
+        }
+
+    }
+
+    public function V(){return $this->n;}
+    public function E(){return $this->m;}
+
+    private function hasEdge($v,$w){
+        if ($v<0 || $v>=$this->n){return false;}
+        if ($w<0 || $w>=$this->n){return false;}
+        for ($i=0;$i<count($this->g[$v]);$i++){
+            if($this->g[$v][$i]==$w)return true;
+            return false;
+        }
+    }
+
+    public function addEdge($v,$w)
+    {
+        if ($v<0 || $v>=$this->n){return false;}
+        if ($w<0 || $w>=$this->n){return false;}
+
+        $this->g[$v][]=$w;
+        if ($v!=$w && !$this->directed){$this->g[$w][]=$v;}
+        $this->m++;
+    }
+
+    public function echo()
+    {
+        return $this->g;
+    }
+}
+//创建一个有3个节点的有向图
+$g = new SparseGraph(3,true);
+//给0到1添加一条边
+$g->addEdge(0,1);
+//给0到2添加一条边
+$g->addEdge(0,2);
+//给1到2添加一条边
+$g->addEdge(1,2);
+//打印图
+var_dump($g->echo());
+
+//在做遍历邻边的时候，邻接矩阵复杂度为o(v)
+//邻接矩阵
+////0 1 2 3 4 5 6 7 8
+//0 0 0 0 1 0 1 0 0 1
+//邻接表
+//0 3 5 8
+
+//稀疏图的迭代器，遍历出节点的邻边节点
+class SparseGraphAdjIterator{
+    private $G,$v,$index;
+
+    public function __construct($graph,$v)
+    {
+        $this->G = $graph;//图
+        $this->v = $v;//目标节点
+        $this->index = 0;//迭代值
+    }
+
+    //返回第一个要迭代的元素
+    public function begin()
+    {
+        $this->index = 0;
+        if(count($this->G[$this->v]))return $this->G[$this->v][$this->index];
+        return -1;
+    }
+    //当前迭代的元素的下一个元素
+    public function next()
+    {
+        $this->index ++;
+        if($this->index < count($this->G[$this->v]))return $this->G[$this->v][$this->index];
+        return -1;
+    }
+
+    //判断遍历终止没有
+    public function end()
+    {
+        return $this->index >= count($this->G[$this->v]);
+    }
+}
+
+
+function test_s_mock(){
+    $N = 20;//节点
+    $M = 100;//要添加的邻边数
+
+    $g = new SparseGraph($N,false);
+    for ($i=0;$i<$M;$i++){
+        $a = rand()%$N;
+        $b = rand()%$N;
+        $g->addEdge($a,$b);
+    }
+
+    for ($v=0;$v<$N;$v++){
+        echo $v.":";
+        $adj = new SparseGraphAdjIterator($g->echo(),$v);
+        for ($w=$adj->begin();!$adj->end();$w=$adj->next()){
+            echo $w." ";
+        }
+        echo "\n";
+    }
+
+    echo "\n";
+
+}
+test_s_mock();
+
+```
+
 
 
 ## DAG任务调度器-demo
