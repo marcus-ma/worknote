@@ -23,6 +23,7 @@
 - [视频流播放](#视频流播放)
 - [window-API函数](#window-API函数)
 - [itemCF-demo](#itemCF-demo)
+- [Trie树关键词搜索](#Trie树关键词搜索)
 - [DAG任务调度器-demo](#DAG任务调度器-demo)
 - [MySQL的in的查询结果集按顺序](#MySQL的in的查询结果集按顺序)
 - [Go的二三事](#Go的二三事)
@@ -1110,6 +1111,90 @@ function main_flow(){
 
 main_flow();
 ```
+
+## Trie树关键词搜索
+```php
+class Trie
+{
+    /**
+     * node struct
+     *
+     * old version
+     * node = array(
+     * val->word
+     * next->array(node)/null
+     * depth->int
+     * )
+     *
+     * new version
+     * node = [val,next]
+     */
+    private $root = [];
+    private $matched = [];
+
+    public function append($keyword)
+    {
+        $words = preg_split('/(?<!^)(?!$)/u', $keyword);
+        array_push($words, '`');
+        $this->insert($this->root, $words);
+    }
+
+    public function match($str)
+    {
+        $this->matched = [];
+        $words = preg_split('/(?<!^)(?!$)/u', $str);
+        while (count($words) > 0) {
+            $matched = [];
+            $res = $this->query($this->root, $words, $matched);
+            if ($res) {
+                $this->matched[] = implode('', $matched);
+            }
+            array_shift($words);
+        }
+        return $this->matched;
+    }
+
+
+    private function insert(&$node, $words)
+    {
+        if (empty($words)) return;
+        $word = array_shift($words);
+
+        if (isset($node[$word])) {
+            $this->insert($node[$word], $words);
+        } else {
+            $word == '`' ? $node[$word] = 1 : $node[$word] = [];
+            $this->insert($node[$word], $words);
+        }
+    }
+
+    private function query($node, $words, &$matched)
+    {
+        $word = array_shift($words);
+        if (isset($node[$word])) {
+            array_push($matched, $word);
+            if (isset($node[$word]['`'])) {
+                return true;
+            }
+            return $this->query($node[$word], $words, $matched);
+        } else {
+            $matched = array();
+            return false;
+        }
+    }
+}
+
+
+$node = new Trie();
+//存入关键词(屏蔽词)
+$node->append("科学");
+$node->append("科学家");
+$node->append('我们');
+//匹配字符串中存在的关键词(屏蔽词)
+$res = $node->match("我们都是科学家,你们说的对不对？我们觉得对");
+var_dump($res);
+```
+
 
 ## DAG任务调度器-demo
 ```php
