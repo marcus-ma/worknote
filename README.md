@@ -2,6 +2,7 @@
 
 -------------------------
 - [Apcu](#apcu)
+- [JB-IDE激活码](#JB-IDE激活码)
 - [CMD命令](#CMD命令)
 - [网页摆脱鼠标快捷键](#网页摆脱鼠标快捷键)
 - [常用功能网址](#常用功能网址)
@@ -41,6 +42,10 @@ apcu_delete('name')
 ```
 ## 常用git命令
 1.取消本次修改，状态回到上一次提交的状态：git reset --hard 
+
+## JB-IDE激活码
+激活码地址[http://pblog.rzepx.cn/activationcode] </br>
+
 
 ### CMD命令
 1:[快速打开网页]start http://xxxx.com
