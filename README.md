@@ -3,6 +3,7 @@
 -------------------------
 - [Apcu](#apcu)
 - [JB-IDE激活码](#JB-IDE激活码)
+- [手机端调试工具插件](#手机端调试工具插件)
 - [CMD命令](#CMD命令)
 - [网页摆脱鼠标快捷键](#网页摆脱鼠标快捷键)
 - [常用功能网址](#常用功能网址)
@@ -45,6 +46,9 @@ apcu_delete('name')
 
 ## JB-IDE激活码
 激活码地址[http://pblog.rzepx.cn/activationcode] </br>
+
+## 手机端调试工具插件
+使用方法教程[https://blog.yurunsoft.com/a/eruda.html] ，感觉比腾讯的vconsole好用</br>
 
 
 ### CMD命令
