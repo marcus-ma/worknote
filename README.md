@@ -99,6 +99,8 @@ apcu_delete('name')
 
 ## SQL优化
 1:【分页查询优化】在分页查询大量数据时候，采用主键索引来定位快,一般的查询采用limit是会逐一统计数据条数。如SELECT * FROM table WHERE id>500000 AND id<=500000+100 的查询速度会比一般分页查询SELECT * FROM table LIMIT 500000,100。
+</br></br>
+2：https://developer.aliyun.com/article/727673?utm_content=g_1000089764
 
 ## MYSQLDump-tips
 1:【导出不影响：mysqldump --single-transaction】--single-transaction参数的作用，设置事务的隔离级别为可重复读，即REPEATABLE READ，这样能保证在一个事务中所有相同的查询读取到同样的数据，也就大概保证了在dump期间，如果其他innodb引擎的线程修改了表的数据并提交，对该dump线程的数据并无影响，在这期间不会锁表。
