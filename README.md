@@ -52,6 +52,8 @@ apcu_delete('name')
 `workflow`
 </br>
 1:`flow`介绍[https://www.helplib.com/GitHub/article_145952]
+</br>
+2:`go-workflow`介绍[https://blog.csdn.net/mumushuiding/article/details/90485196]
 
 ## 手机端调试工具插件
 使用方法教程[https://blog.yurunsoft.com/a/eruda.html] ，感觉比腾讯的vconsole好用</br>
