@@ -47,6 +47,7 @@ apcu_delete('name')
 
 ## JB-IDE激活码
 激活码地址[http://pblog.rzepx.cn/activationcode] </br>
+[http://idea.medeming.com/jet/]</br>
 
 ## TODO-source-code
 `workflow`
