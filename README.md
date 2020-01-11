@@ -117,6 +117,8 @@ apcu_delete('name')
 </br></br>
 5:调节音频的音量大小,混音【增加/减少3dB:+/-3dB】：`ffmpeg -i input.mp3 -af volume=+3dB output.mp3`
 </br></br>
+6:合并视频【将要合并的视频名字写在同级的filelist.txt文件中，格式为 file '1.mp4'】：`ffmpeg -f concat -i filelist.txt -c copy output.mp4`
+</br></br>
 
 ## SQL优化
 1:【分页查询优化】在分页查询大量数据时候，采用主键索引来定位快,一般的查询采用limit是会逐一统计数据条数。如SELECT * FROM table WHERE id>500000 AND id<=500000+100 的查询速度会比一般分页查询SELECT * FROM table LIMIT 500000,100。
