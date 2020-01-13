@@ -93,7 +93,7 @@ apcu_delete('name')
 ### 常用功能网址
 1：B站视频在线解析[http://www.xbeibeix.com/bilibili/] </br> [https://pv.vlogdownloader.com/] </br>
 2: 网盘搜索 [https://dalipan.com/search?keyword=] </br>
-3: 短视频去水印 [https://dy.kukutool.com/] </br>
+3: 短视频去水印 [https://dy.kukutool.com/] </br> [http://douyin.haiya360.com/] </br>
 4: 电子书搜索 [https://www.jiumodiary.com/] </br>
 
 ### 在网页中插入网易云播放器
