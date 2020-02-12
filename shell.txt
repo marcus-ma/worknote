@@ -1,54 +1,57 @@
-crontab
-�״�ʹ��crontab����ʾʹ��ʲ�ᾎ݋�������ѡ��vim.basic
-crontab -l //��ʾ�û���crontab�ļ�������
-crontab -e //�༭�û���crontab�ļ�������
-crontab -r //ɾ���û���crontab�ļ�
+查看pid进程所在的目录
+pwdx pid
 
-�ļ�ͬ��rsync
-#exclude������Ҫ3����������һ������ΪҪ���Ե��ļ����ڶ�������ΪҪͬ�����ļ�(A)����3������Ϊ��ͬ�����ļ�(B)����Ϊ��Aͬ����B��
+crontab
+首次使用crontab會提示使用什麽編輯器，最好选择vim.basic
+crontab -l //显示用户的crontab文件的内容
+crontab -e //编辑用户的crontab文件的内容
+crontab -r //删除用户的crontab文件
+
+文件同步rsync
+#exclude后面需要3个参数，第一个参数为要忽略的文件，第二个参数为要同步的文件(A)，第3个参数为被同步的文件(B)【即为将A同步到B】
 rsync -avz --exclude='' /home/marcus/ng.log /home/marcus/rsy
 
 
-һ���鿴������״̬
-cpu������ ��vmstat
+一：查看服务器状态
+cpu利用率 ：vmstat
 procs -----------memory---------- ---swap-- -----io---- --system-- -----cpu-----
  r  b       swpd   free         buff  cache       si   so        bi    bo   in   cs us sy id wa st
  0  0 1549580 206024  56648 231628  170   48  1305   397    1    2  4  2 92  2  0	
-��Ҫ������us(�û���ʹ��)��sy(ϵͳ��ʹ��)��id��ʣ��ģ�wa�Ǵ���IOʹ����
-��ȡ�ű�д����ʹ��awk����(ÿ�����ݻ��Կո�ָ���)
-demo��vmstat | awk '{print $1}'
+主要看的是us(用户的使用)和sy(系统的使用)，id是剩余的，wa是磁盘IO使用率
+获取脚本写法：使用awk工具(每行数据会以空格分隔开)
+demo：vmstat | awk '{print $1}'
 >>procs
      r
      0
-�˴��ͻ��ȡ��ÿ�еĵ�һ�����ݡ�������Ҫ��ȡ�������ǵ�3�еĵ�13��(us)����14��(sy)��16(wa)��ֵ
-��ˣ��ű���д���ǣ�
+此处就会获取出每行的第一个数据。我们想要获取的数据是第3行的第13列(us)、第14列(sy)、16(wa)的值
+因此，脚本的写法是：
 #!/bin/bash
 function cpu(){
-   #NRΪ������ǰ���к�
+   #NR为代表当前的行号
    util=$(vmstat | awk '{if(NR==3)print $13+$14}')
    iowait=$(vmstat | awk '{if(NR==3)print $16}')
-   echo "CPU - ʹ���� : ${util}% ,�ȴ�����IO��Ӧʹ���ʣ�${iowait}%"
+   echo "CPU - 使用率 : ${util}% ,等待磁盘IO响应使用率：${iowait}%"
 }
 
 
 
-�ڴ棺free -m
+内存：free -m
                     total         used        free      shared  buff/cache   available
 Mem:           8101        6326        1551          17         223        1644
 Swap:         24576         653       23922
-��Ҫ������total��available��ֵ
-�˴�����ֵ������MBΪ��λ�����ǻ�ȡ��ʱ��Ҫת����G
-�ܴ�С��Ҫ��ȡ��2�еĵ�2�У�ʣ���ʹ�õ���Ҫ��ȡ��2�е����һ�У���ʹ�õ��ǵ�2�еĵ�2�м�ȥ���һ��
-��˽ű���д���ǣ�
+主要看的是total和available的值
+此处的数值都是以MB为单位，我们获取的时候要转换成G
+总大小是要获取第2行的第2列，剩余可使用的是要获取第2行的最后一列，已使用的是第2行的第2列减去最后一列
+因此脚本的写法是：
 function memory() {
-   #NFΪ���һ��
+   #NF为最后一列
    total=$(free -m | awk '{if(NR==2)printf "%.1f",$2/1024}}')
    used=$(free -m | awk '{if(NR==2)printf "%.1f",($2-$NF)/1024}')
    available=$(free -m | awk '{if(NR==2)printf "%.1f",$NF/1024}')
-   echo "�ڴ� - �ܴ�С��${total}G����ʹ�ã�${used}G��ʣ�ࣺ${available}"
+   echo "内存 - 总大小：${total}G，已使用：${used}G，剩余：${available}"
 }
 
-���������ʣ�df -h
+磁盘利用率：df -h
 Filesystem          Size    Used Avail  Use% Mounted on
 /dev/sda3          237G  139G   99G  59% /
 none                  237G  139G   99G  59% /dev
@@ -57,48 +60,48 @@ none                  237G  139G   99G  59% /run/lock
 none                  237G  139G   99G  59% /run/shm
 /dev/sda1          237G  139G   99G  59% /run/user
 C:                       237G  139G   99G  59% /mnt/c
-�������������ֻ��Ҫ��/dev/�ķ���
-������Ҫʹ��������ƥ�����"/dev"��ͷ�������У����ж����Ҫʹ��forѭ��������
-��˽ű���д���ǣ�
+上面的数据我们只需要看/dev/的分区
+我们需要使用正则来匹配出以"/dev"开头的数据行，且有多个需要使用for循环来处理
+因此脚本的写法是：
 function disk(){
    fs=$(df -h |awk '/^\/dev/{print $1}')
    for p in $fs; do
-        #awk��v����Ϊ��ֵģʽ���ѵ�ǰѭ����pֵ��ֵ����q
+        #awk的v参数为赋值模式，把当前循环的p值赋值变量q
         mounted=$(df -h | awk -v q=$p '$1==q{print $NF}')
         size=$(df -h |awk -v q=$p '$1==q{print $2}')
         used=$(df -h |awk -v q=$p '$1==q{print $3}')
         used_percent=$(df -h | awk -v q=$p '$1=q{print $5}')
-        echo "Ӳ�� - ���ص� : $mounted ���ܴ�С��$size ����ʹ�ã�$used ��ʹ���ʣ�$used_percent"
+        echo "硬盘 - 挂载点 : $mounted ，总大小：$size ，已使用：$used ，使用率：$used_percent"
    done
 }
 
 
-TCP��������netstat -antp
+TCP连接数：netstat -antp
 Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
 tcp              0	0 localhost:48898		*:*	      LISTEN               12356
 tcp              0	0 localhost:48896		*:*	      LISTEN               12336
 tcp              0	0 localhost:48894		*:*	      ESTABLISHED     12756
 
- �˴�������Ҫ��ȡ����ͳ�Ƶ�6��State��ֵÿ�����ֵĴ���
+ 此处我们需要获取的是统计第6列State的值每个出现的次数
 function tcp_status(){
-   #a[$6]++������ÿ��״̬�Ĵ���������һ�������У�Ȼ��ʹ��forѭ����ֵ���
+   #a[$6]++代表把每个状态的次数都存在一个数组中，然后使用for循环把值输出
    summary=$(netstat -antp | awk '{a[$6]++}END{for(i in a)printf $i":"a[i]" "}')
-   echo "TCP����״̬ - $summary"
+   echo "TCP连接状态 - $summary"
 }
 
-�����ҳ�ռ��CPU/�ڴ���ߵĽ���
-#o���������Զ��������ʽ��pidΪ���̺ţ�pcpuΪռ��cpu��pmemΪռ���ڴ棬argsΪִ�е�����
+二：找出占用CPU/内存过高的进程
+#o参数代表自定义输出格式，pid为进程号，pcpu为占用cpu，pmem为占用内存，args为执行的命令
 ps -eo pid,pcpu,pmem,args --sort=-pcpu | head -n 10
 ps -eo pid,pcpu,pmem,args --sort=-pmem | head -n 10
 
-�������̸澯
+三：磁盘告警
 function alert_disk(){
-   #OFSΪ���һ���ָ�������Ϊ�����ʽ��$NF=$5\n,��Ϊ$5�Ǵ��ٷֱȵ���Ҫת�����ж�
+   #OFS为输出一个分隔符，即为输出格式是$NF=$5\n,因为$5是带百分比的需要转整型判断
    USE_RATE_LIST = $(df -h | awk 'BEGIN{OFS="="}/^\/dev/{print $NF,int($5)}')
    for p in $USE_RATE_LIST;do
-      #ֻҪ��̖��߅��ֵ
+      #只要等號左邊的值
       PART_NAME = ${p%=*}
-      #ֻ������̖��߅��ֵ(�Bͬ��̖����߅��ֵһͬȥ��)
+      #只保留等號右邊的值(連同等號和左邊的值一同去掉)
       USE_RATE=${p#*=}
       if [ $USE_RATE -ge 80 ];then
           echo "Warning: $PART_NAME Partition usage $USE_RATE%!"
@@ -106,7 +109,7 @@ function alert_disk(){
    done 
 }
 
-�ģ�mysql�������
+四：mysql數據備份
 #!bin/bash
 #2020-02-11_15-19-58
 DATE=$(date +%F_%H-%M-%S)
@@ -114,57 +117,57 @@ HOST=localhost
 USER=root
 PASS=123456
 BACKUP_DIR=/data/db_backup
-#s������ȥ��Ĭ����Ϣ��ʾ��e����������Ҫִ�е����egrep����Ĳ���Ϊ�������ݿ��Ĭ�ϵĿ���
+#s參數為去掉默认信息显示，e参数后面是要执行的命令，egrep后面的参数为过滤数据库掉默认的库名
 DB_LIST=$(mysql -h$HOST -u$USER -p$PASS  -s  -e "show databases"; 2>/dev/null | egrep -v "Database|information_schema|mysql|performance_schema|sys")
 
 for DB in $DB_list; do
     BACKUP_NAME=$BACKUP_DIR/${DB}_${DATE}.sql
     if ! mysqldump -h$HOST -u$USER -p$PASS -B $DB  >  $BACKUP_NAME 2>/dev/null; then
-            echo "$BACKUP_NAME ���ʧ��"
+            echo "$BACKUP_NAME 備份失敗"
     fi
 done
  
 
-�壺nginx��־����
-1�����ʴ�������ǰ10��IP
+五：nginx日志分析
+1：访问次数最多的前10个IP
 awk '{a[$1]++}END{for(v in a)print v,a[v]}' ng.log | sort -k2 -nr | head -10
-2������ҳ��Ĵ���
+2：访问页面的次数
 awk '{a[$7]++}END{for(v in a)print v,a[v]}' ng.log
-3������ҳ�����״̬�����5��
+3：访问页面和其状态码大于5次
 awk '{a[$7" "$9]++}END{for(v in a){if(a[v]>5)print v,a[v]}}' ng.log
-4������ʱ��η��ʵ�IP
+4：根据时间段访问的IP
 awk '$4>=[25/Nov/2019:12:06:33" && $4<=[25/Nov/2019:21:06:33" {a[$1]++}END{for(v in a)print v,a[v]}' ng.log
-5��ͳ�Ʒ���UV
+5：统计访问UV
 awk '{a[$1]++}END{print "UV:",length(a);for(v in a)print v,a[v]}' ng.log | sort -k2 -nr | head -10
-6��ͳ�Ʒ���PV
+6：统计访问PV
 awk '{a[$7]++}END{print "PV:",length(a);for(v in a)print v,a[v]}' ng.log | sort -k2 -nr | head -10
-7������ָ���־��Ϣ
-�������õĹ�����lograte,���Ҫ��shell�Ļ���
-#ningx��־�ļ���·��
+7：按天分割日志信息
+市面上用的工具是lograte,如果要用shell的话：
+#ningx日志文件夹路径
 LOG_DIR=/usr/local/nginx/logs
-#ǰ���ʱ��
+#前天的时间
 YESTERDAY_TIME=$(date -d "yesterday" +%F)
-#�и��İ����·��õ���־�ļ���·��
+#切割后的按年月放置的日志文件夹路径
 LOG_MONTH_DIR=$LOG_DIR/$(date +"%Y-%m")
-#��־������
+#日志的名字
 LOG_FILE_LIST="access.log"
 
 for LOG_FILE in $LOG_FILE_LIST; do
-    #�ж������ļ���·���Ƿ���ڣ������ھʹ���
+    #判断年月文件夹路径是否存在，不存在就创建
     [ ! -d $LOG_MOTH_DIR ]  && mkdir -p $LOG_MONTH_DIR
-    #����ǰ��nginx��־�ƶ��������ļ����в��Ұ���ʱ��������
+    #将当前的nginx日志移动到年月文件夹中并且按照时间重命名
     mv $LOG_DIR/$LOG_FILE $LOG_MONTH_DIR/${LOG_FILE}_${YESTERDAT_TIME}
 done
-#������nginx����һ���µ�nginx��־(/var/run/nginx.pid������Ϊnginx�Ľ��̺ţ�ͨ�����������nginx����һ���ź���nginx����������־)
+#重新让nginx生成一份新的nginx日志(/var/run/nginx.pid的内容为nginx的进程号，通过该命令可向nginx发送一个信号让nginx重新生成日志)
 kill -USR1 $(cat /var/run/nginx.pid)
-8����ÿ���ӷ��ʴ�������100��IP���
-#ʱ���������
+8：将每分钟访问次数超过100的IP封掉
+#时间输出到秒
 date +"%F_%T"
 #01/Dec/2019:21:19
 date +%d/%b/%Y:%H:%M
-�ű�����
+脚本如下
 #!/bin/bash
-#��ǰ���ӣ���ʽת��nginx��־��ʱ���ʽ
+#当前分钟，格式转成nginx日志的时间格式
 DATE=$(date +%d/%b/%Y:%H:%M)
 ABNORMAL_IP=$(tail -n5000 access.log | grep $DATE | awk '{a[$1]++}END{for(i in a)if(a[i]>100)print i}')
 for IP in $ABNORMAL_IP; do
@@ -175,20 +178,20 @@ for IP in $ABNORMAL_IP; do
 done
 
 
-������ָ��Ŀ�Ĵ�����ɾ���ļ��������м���
-ʹ�õ��Ĺ��߰��ǣ�inotify-tools
-sudo apt-get install inotify-tools����sudo yum install inotify-tools
-���õ���shell��Ϣ��
+六：对指定目的创建、删除文件操作进行监听
+使用到的工具包是：inotify-tools
+sudo apt-get install inotify-tools或者sudo yum install inotify-tools
+会用到的shell信息：
 MON_DIR=/home/marcus/rsy
-#m(��������)q(����������Ϣ��ֽ��ӡ��Ҫ����Ϣ)r(ʹ�õݹ���ʽ����Ŀ¼)e(�ƶ�Ҫ���ӵ�ʱ�䣬����¼�ʹ�ö��Ÿ���)
-#--timefmt(ʱ���ʽ)  --format(���������ļ��仯����Ϣ:%w(�����¼���Ŀ¼)%f(����ʱ����ļ�)%e(�������¼�)%Xe(�¼���"X"�ָ�)%T(ʱ���ʽ))
-#�¼����ͣ�access(����|��ȡ�ļ�)modify(�޸�)attrib(����)move(�ƶ�)create(����)open(��)close(�ر�)delete(ɾ��)
+#m(持续监听)q(减少冗余信息，纸打印需要的信息)r(使用递归形式监视目录)e(制定要监视的时间，多个事件使用逗号隔开)
+#--timefmt(时间格式)  --format(监听到的文件变化的信息:%w(发生事件的目录)%f(发生时间的文件)%e(发生的事件)%Xe(事件以"X"分隔)%T(时间格式))
+#事件类型：access(访问|读取文件)modify(修改)attrib(属性)move(移动)create(创建)open(打开)close(关闭)delete(删除)
 inotifywait  -mqr  --format %f -e create $MON_DIR | \
-#���������ͨ���ܵ�ִ�к����ļ�������files
+#上面的命令通过管道执行后会把文件名传到files
 while read files; do
       echo "$(date +'%F %T') $files" >> file_mon.log
 done
-demo��������־ng.log���������޸ģ�ִ��sidh.sh�ű�
+demo：监听日志ng.log，当发生修改，执行sidh.sh脚本
 #!/bin/bash
 
 MON_DIR=/home/marcus/ng.log
