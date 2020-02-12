@@ -1438,6 +1438,35 @@ class Digraph {
             }
         }
     }
+    
+    //利用dfs深度遍历方式
+    public function schedulerDFS()
+    {
+        //O(V+E)
+        $visited = [];//遍历过
+        $list = [];
+        $a = array_keys($this->getTasks());
+        array_map(function ($v)use(&$visited){
+            $visited[$v]=false;
+        },$a);
+        foreach ($a as $v){
+            if(!$visited[$v]) {
+                $this->dfs($v,$visited,$list);
+            }
+        }
+        var_dump($list);
+    }
+
+    public function dfs($v,&$visited,&$list)
+    {
+        if (isset($this->getTaskPrevMap()[$v])){
+            foreach ($this->getTaskPrevMap()[$v] as $w){
+                if(!$visited[$w])$this->dfs($w,$visited,$list);
+            }
+        }
+        $visited[$v]=true;//是否执行
+        $list[]=$v;
+    }
 }
 $d = new Digraph();
 $t1 = new Task(1,'t1',0);
@@ -1530,6 +1559,18 @@ cmd控制台到要编译的go文件的目录下
 
 ### defer执行顺序
 多个defer的执行顺序是以栈的特性先进后出来执行，越写在前面就越后执行
+
+### 初始化二维数组
+```golang
+    x := 2
+    y := 4
+
+    table := make([][]int,x)
+    for i:= range table {
+        table[i] = make([]int,y)
+    }
+    
+```
 
 
 ### 没有前置运算符
