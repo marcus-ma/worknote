@@ -1512,6 +1512,7 @@ $d->scheduler();
 </br></br>
 上面的案例都是使用到了`GeoHash`算法：GeoHash将二维的经纬度转换成字符串，如坐标(39.92324, 116.3906)就可以转换成wx4g0ec1
 </br></br>
+参考案例：[https://www.codetd.com/article/4267648]和[https://toutiao.io/posts/i62kms/preview]
 
 
 
