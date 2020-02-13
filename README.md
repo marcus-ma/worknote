@@ -1512,6 +1512,13 @@ $d->scheduler();
 </br></br>
 上面的案例都是使用到了`GeoHash`算法：GeoHash将二维的经纬度转换成字符串，如坐标(39.92324, 116.3906)就可以转换成wx4g0ec1
 </br></br>
+案例一的实现思路：首次获取用户的经纬度信息，通过地图API(如百度)获取附近商圈的信息(由近到远)，再将经纬度信息经过GeoHash获取字符串编码，弄一缓存来存储该信息，以字符串编码为key，商圈信息为value；下次如果有相似字符串编码(前缀匹配)可直接在缓存中查询。
+</br></br>
+案例二的实现思路：根据Feed的经纬度，计算geohash，空间索引使用Redis的zset结构，将geohash作为空间索引的key，feed_id作为member，时间作为score。
+查询时根据用户当前经纬度，计算geohash，就能找到他附近的Feed。但存在边界问题，附近的Feed不一定在同一个矩形区域内。解决这个问题可以在查询时扩大范围，除了查询用户所在的矩形外，还扩散搜索相邻的8个矩形，将9个矩形合并（如下图），按时间排序，过滤掉超出距离范围的Feed，最后做分页查询。但是这种方式查询效率比较低，作为读远远大于写的场景，换了一种思路，在更新Feed空间索引时，将Feed写入相邻的8个矩形，这样每个矩形还包含了相邻矩形的Feed。通过数据冗余的方式，换取了更高的查询效率。将复杂的geo查询，简化为redis的zrange操作，性能提高了一个数量级，平均耗时降到3ms。空间索引通过geohash分片到redis节点，具有数据分布均匀、方便扩容的优势。
+</br></br>
+geohash实现原理：[https://www.cnblogs.com/dengxinglin/archive/2012/12/14/2817761.html]
+</br></br>
 参考案例：[https://www.codetd.com/article/4267648]和[https://toutiao.io/posts/i62kms/preview]
 
 
