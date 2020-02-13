@@ -29,6 +29,7 @@
 - [Trie树关键词搜索](#Trie树关键词搜索)
 - [图的知识-Graph](#图的知识-Graph)
 - [DAG任务调度器-demo](#DAG任务调度器-demo)
+- [GeoHash算法在LBS的应用](#GeoHash算法在LBS的应用)
 - [MySQL的in的查询结果集按顺序](#MySQL的in的查询结果集按顺序)
 - [Go的二三事](#Go的二三事)
 -------------------------
@@ -1502,6 +1503,16 @@ $d->scheduler();
 //Task id:[ 1 ], task name: [t1] is running
 //Task id:[ 6 ], task name: [t6] is running
 ```
+
+
+## GeoHash算法在LBS的应用
+案例1：当打开外卖APP,搜索附近美食,数据总可以按照由近到远展示在面前。
+</br></br>
+案例2：打开信息流APP,可以看到附近5公里范围内最新的Feed。
+</br></br>
+上面的案例都是使用到了`GeoHash`算法：GeoHash将二维的经纬度转换成字符串，如坐标(39.92324, 116.3906)就可以转换成wx4g0ec1
+</br></br>
+
 
 
 
