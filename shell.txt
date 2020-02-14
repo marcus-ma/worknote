@@ -1,3 +1,22 @@
+大文件切割split
+日常工作中需要对日志文件进行分析，当日志文件过大时，Linux中使用vim、cat、vim、grep、awk等这些工具对大文件日志进行分析将会成为梦魇。
+split提供两种方式对文件进行切割：
+根据行数切割，通过-l参数指定需要切割的行数
+根据大小切割，通过-b参数指定需要切割的大小
+demo1：如下以一个3.4G大小的日志文件做切割演示，每一个文件按照50000行做切割，指定文件名为split-line，-d参数以数字的方式显示
+查看文件信息：ls -l 2020011702.log -h
+按行切割:split -l 50000 -d --verbose 2020011702.log split-line
+ #正在创建文件"split-line00"
+ #正在创建文件"split-line01"
+ #正在创建文件"split-line02"
+ #正在创建文件"split-line03"
+查看切割文件行数确认:wc -l split-line00
+查看文件大小:ls -lh split-line0[0-9]
+demo2:除了按照行数切割之外，split还支持通过文件大小进行切割，通过指定-b参数指定文件大小进行切割，文件大小单位支持K, M, G, T, P, E, Z，如下以切割为500M演示文件切割过程.
+split -b 500M -d --verbose 2020011702.log split-size
+ls -lh split-size0*
+
+
 查看pid进程所在的目录
 pwdx pid
 
