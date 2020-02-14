@@ -1503,6 +1503,84 @@ $d->scheduler();
 //Task id:[ 1 ], task name: [t1] is running
 //Task id:[ 6 ], task name: [t6] is running
 ```
+</br></br>
+```golang
+    type Task struct{
+	Name string
+	Commend string
+	PrevTask map[string]*Task
+	Status bool
+}
+
+type WorkFlow struct {
+	task map[string]*Task
+}
+
+func(wf *WorkFlow)add(t *Task){
+	if _, ok := wf.task[t.Name]; ok {
+		fmt.Println("err,exsit")
+	}
+	wf.task[t.Name]=t
+
+}
+
+func(wf *WorkFlow)run(){
+	for _,t := range wf.task{
+		if !t.Status{
+			wf.dsf(t)
+		}
+	}
+}
+
+//深度优先遍历
+func (wf *WorkFlow)dsf(t *Task)  {
+	if t.PrevTask != nil {
+		for _,pt := range t.PrevTask{
+			if !pt.Status{wf.dsf(pt)}
+		}
+	}
+	fmt.Println(t.Name,t.Commend)
+	t.Status=true
+}
+
+func NewWorkFlow()*WorkFlow{
+	return &WorkFlow{
+		task:make(map[string]*Task),
+	}
+}
+func main() {
+
+	wf := NewWorkFlow()
+	t1:=&Task{
+		Name:"t1",
+		Commend:"echo 1",
+		PrevTask:make(map[string]*Task),
+		Status:false,
+	}
+	t2:=&Task{
+		Name:"t2",
+		Commend:"echo 2",
+		PrevTask:make(map[string]*Task),
+		Status:false,
+	}
+	t3:=&Task{
+		Name:"t3",
+		Commend:"echo 3",
+		PrevTask:make(map[string]*Task),
+		Status:false,
+	}
+
+	wf.add(t1)
+	wf.add(t3)
+	wf.add(t2)
+
+	t1.PrevTask[t2.Name]=t2
+	t2.PrevTask[t3.Name]=t3
+
+	wf.run()
+}
+    
+```
 
 
 ## GeoHash算法在LBS的应用
