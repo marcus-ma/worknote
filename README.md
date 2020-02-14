@@ -1581,6 +1581,86 @@ func main() {
 }
     
 ```
+</br></br>
+```golang
+//优化版
+/任务抽象
+type WorkFlowTask interface {
+	Name()string
+	Ready() bool
+	Run()
+}
+
+//任务实例
+type Task struct {
+	name string
+	Commend string
+	PrevTask map[string]*Task
+	status bool
+}
+func(t *Task)Name()string{
+	return t.name
+}
+func(t *Task)Ready()bool{
+	return t.status
+}
+//深度优先遍历(dfs)
+func(t *Task)Run(){
+	if t.PrevTask != nil{
+		for _,pt:=range t.PrevTask{
+			if !pt.Ready(){pt.Run()}
+		}
+	}
+	fmt.Println(t.name,t.Commend)
+	t.status=true
+}
+
+
+//引擎
+type WorkFlow struct {
+	task map[string]WorkFlowTask
+}
+func(wf *WorkFlow)add(t WorkFlowTask){
+	if _, ok := wf.task[t.Name()]; ok {
+		fmt.Println("err,exsit")
+	}
+	wf.task[t.Name()]=t
+}
+func(wf *WorkFlow)run(){
+	for _,t := range wf.task{
+		if !t.Ready(){
+			t.Run()
+		}
+	}
+}
+func NewWorkFlow()*WorkFlow{
+	return &WorkFlow{
+		task:make(map[string]WorkFlowTask),
+	}
+}
+
+func main() {
+
+	wf := NewWorkFlow()
+	t1:=&Task{
+			name:"t1",
+			Commend:"echo 1",
+			PrevTask:make(map[string]*Task),
+			status:false,
+	}
+	t2:=&Task{
+		name:"t2",
+		Commend:"echo 2",
+		PrevTask:make(map[string]*Task),
+		status:false,
+	}
+	wf.add(t1)
+	wf.add(t2)
+	t1.PrevTask[t2.Name()]=t2
+
+	wf.run()
+}
+```
 
 
 ## GeoHash算法在LBS的应用
