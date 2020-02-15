@@ -66,6 +66,12 @@ apcu_delete('name')
 `golang热重启`
 </br>
 1:使用[https://cloud.tencent.com/developer/article/1388556]
+</br></br>
+`1万属性，100亿数据，每秒10万吞吐，架构如何设计？`
+</br>
+1:使用[
+https://cloud.tencent.com/developer/article/1420239]
+</br></br>
 
 
 ## 手机端调试工具插件
