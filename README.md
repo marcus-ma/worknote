@@ -72,7 +72,13 @@ apcu_delete('name')
 1:使用[
 https://cloud.tencent.com/developer/article/1420239]
 </br></br>
-`Windows10 + WSL `
+`Windows10 + WSL`
+</br>
+1:使用[https://www.jianshu.com/p/8404e34feefe]
+</br>
+2:使用[https://blog.csdn.net/qq_36620040/article/details/90301526]
+</br></br>
+`基于Redis实现排行榜周期榜与最近N期榜`
 </br>
 1:使用[https://www.jianshu.com/p/8404e34feefe]
 </br></br>
