@@ -27,6 +27,7 @@ crontab -e //编辑用户的crontab文件的内容
 crontab -r //删除用户的crontab文件
 
 文件同步rsync
+#使用-a标志会保留权限和其他目录属性，同时-v提供详细输出，以便您可以跟踪进度。
 #exclude后面需要3个参数，第一个参数为要忽略的文件，第二个参数为要同步的文件(A)，第3个参数为被同步的文件(B)【即为将A同步到B】
 rsync -avz --exclude='' /home/marcus/ng.log /home/marcus/rsy
 
