@@ -58,11 +58,14 @@ apcu_delete('name')
 2:`go-workflow`介绍[https://blog.csdn.net/mumushuiding/article/details/90485196] 或者 [https://blog.csdn.net/hotqin888/article/details/78822774] 
 </br>
 2:`DAG-demo`介绍[https://blog.csdn.net/github_33719169/article/details/84827256]
-</br>
+</br></br>
 `HLS和m3u8`
 </br>
 1:使用[https://blog.csdn.net/qq_41153478/article/details/84182994]
-
+</br></br>
+`golang热重启`
+</br>
+1:使用[https://cloud.tencent.com/developer/article/1388556]
 
 
 ## 手机端调试工具插件
