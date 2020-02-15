@@ -1,0 +1,101 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Parallax Website</title>
+    <style>
+        body,html{
+            height: 100%;
+            margin: 0;
+            font-size: 16px;
+            font-family: Arial, Helvetica, sans-serif;
+            line-height: 1.8em;
+            color:#666;
+        }
+
+        .pimg1,.pimg2{
+            position: relative;
+            opacity: 0.7;
+            background-position:center ;
+            background-size:cover ;
+            background-repeat:no-repeat ;
+            background-attachment:fixed ;
+        }
+        .pimg1{
+            background-image: url('/static/img/1.jpg');
+            min-height: 100%;
+        }
+        .pimg2{
+            background-image: url('/static/img/2.jpg');
+            min-height: 400px;
+        }
+
+        .section{
+            text-align: center;
+            padding: 50px 80px;
+        }
+
+        .section-light{
+            background-color:#f4f4f4 ;
+            color: #666;
+        }
+
+        .section-dark{
+            background-color:#282e34 ;
+            color: #ddd;
+        }
+
+        .ptext{
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            text-align: center;
+            color: #000;
+            font-size: 27px;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+        }
+        .pimg1 .ptext .border,
+        .pimg2 .ptext .border{
+            background-color: #111;
+            color: #fff;
+            padding: 20px;
+        }
+
+        @media(max-width: 500px) {
+            .pimg1,.pimg2{
+                background-attachment: scroll;
+            }
+
+        }
+
+    </style>
+</head>
+<body>
+<!--此处重点的属性的：background-attachment:fixed-->
+<div class="pimg1">
+    <div class="ptext">
+        <span class="border">
+            MS Online
+        </span>
+    </div>
+</div>
+<section class="section section-light">
+    <h2>米修在线</h2>
+    <p>hello</p>
+</section>
+<div class="pimg2">
+    <div class="ptext">
+        <span class="border">
+            MS Online Two
+        </span>
+    </div>
+</div>
+<section class="section section-dark">
+    <h2>关于我们</h2>
+    <p>about</p>
+</section>
+</body>
+</html>
