@@ -72,6 +72,10 @@ apcu_delete('name')
 1:使用[
 https://cloud.tencent.com/developer/article/1420239]
 </br></br>
+`Windows10 + WSL `
+</br>
+1:使用[https://www.jianshu.com/p/8404e34feefe]
+</br></br>
 
 
 ## 手机端调试工具插件
