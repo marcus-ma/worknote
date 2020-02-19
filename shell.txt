@@ -17,6 +17,50 @@ split -b 500M -d --verbose 2020011702.log split-size
 ls -lh split-size0*
 
 ————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+如何分析查看线上机器的QPS
+背景：线上有一个推荐服务，日志量比较大，想确认下是不是qps过高
+问题：如何根据日志查看一个服务的qps
+
+tail -f XXX.log，可以发现日志格式如下：
+[8708-10 14:51:44 638 INFO ] [async task worker[61]] recommend.components.KeywordService[87] - cateid=252 pageNum=1 
+[8708-10 14:51:44 666 INFO ] [async task worker[62]] recommend.components.KeywordService[87] - cateid=42205 
+[8708-10 14:51:44 673 INFO ] [async task worker[0]] recommend.components.KeywordService[87] - cateid=29 pageNum=2 
+[8708-10 14:51:44 677 INFO ] [async task worker[1]] recommend.components.KeywordService[87] - cateid=252 pageNum=3 
+
+日志规范中，有一列“请求时间”，可以通过这个“请求时间”估算出服务的qps， 步骤如下：
+（1）先找一条使得一个请求有且只有一行的日志，常用工具是grep，此例需要grep recommend.components.KeywordService，得出的结果，一个请求对应一行日志
+（2）取出时间这一列，常用的工具是cut或者awk，这里介绍一下cut（大家到linux上去man一下）
+    -d 参数，按照某个字符分隔
+    -f 参数，取出分隔后的第几列
+    这个例子中，按照“空格”分隔后，时间在第二列
+进行1，2两步操作后，得到的结果为
+    14:51:44
+    14:51:44
+    14:51:45
+    14:51:45
+    14:51:46
+    14:51:46
+（3）对结果进行去重，取计数，常用的工具是uniq，参数是-c
+
+故，整个shell命令是：
+命令：tail -f XXX.log | grep recommend.components.KeywordService | cut -d' ' -f2 | cut -d':' -f3 | uniq -c
+说明：取增量 | 一个请求取一行 | 把时间截取出来 | 把秒数截取出来 | 去重取计数
+得到的结果是
+    136 43
+    126 44
+    115 45
+    131 46
+    132 47
+可以看到，14:51:43，共有136条日志
+    44，有126条日志
+    45，有115条日志
+    ...
+结论，这个模块，单机的qps在120-130左右
+
+需要注意的是，cut的目的是将请求日志时间戳中的“秒”取出来，所以随着请求日志格式的不同，cut的写法也要随机应变~
+
+
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 巧用curl命令定位性能瓶颈
 新建一个txt文件(format.txt)，内容如下：
