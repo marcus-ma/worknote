@@ -16,9 +16,36 @@ demo2:除了按照行数切割之外，split还支持通过文件大小进行切
 split -b 500M -d --verbose 2020011702.log split-size
 ls -lh split-size0*
 
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+
+巧用curl命令定位性能瓶颈
+新建一个txt文件(format.txt)，内容如下：
+  DNS域名解析：	%{time_namelookup}\n
+  TCP连接建立：	%{time_connect}\n
+应用层连接建立：	%{time_appconnect}\n
+服务器收到请求：	%{time_pretransfer}\n
+服务器处理完成：	%{time_starttransfer}\n
+	------------------\n
+        共耗时：    %{time_total}\n
+	
+然后输入命令：curl -w "@format.txt" -o /dev/null -s "https://www.baidu.com"
+就可以查看http请求各个环节的耗时情况，能够帮助我们排查和定位问题。
+-o /dev/null的目的是把响应信息屏蔽掉，-s的目的是把进度信息屏蔽掉
+https://curl.haxx.se/docs/manpage.html这里面，搜索-w，可以看到完整的参数，大家可以根据需求，添加到curl-time.txt文本中~，下面截取部分内容，供大家参考。
+http_code The numerical response code that was found in the last retrieved HTTP(S) or FTP(s) transfer. In 7.18.2 the alias response_code was added to show the same info.
+
+http_connect The numerical code that was found in the last response (from a proxy) to a curl CONNECT request. (Added in 7.12.4)
+
+http_version The http version that was effectively used. (Added in 7.50.0)
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+
+
+
 
 查看pid进程所在的目录
 pwdx pid
+
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 crontab
 首次使用crontab會提示使用什麽編輯器，最好选择vim.basic
@@ -26,10 +53,14 @@ crontab -l //显示用户的crontab文件的内容
 crontab -e //编辑用户的crontab文件的内容
 crontab -r //删除用户的crontab文件
 
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+
 文件同步rsync
 #使用-a标志会保留权限和其他目录属性，同时-v提供详细输出，以便您可以跟踪进度。
 #exclude后面需要3个参数，第一个参数为要忽略的文件，第二个参数为要同步的文件(A)，第3个参数为被同步的文件(B)【即为将A同步到B】
 rsync -avz --exclude='' /home/marcus/ng.log /home/marcus/rsy
+
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 
 一：查看服务器状态
