@@ -82,6 +82,15 @@ https://cloud.tencent.com/developer/article/1420239]
 </br>
 1:使用[https://www.jianshu.com/p/8404e34feefe]
 </br></br>
+`爬去天天基金网接口`
+</br>
+1:使用[https://www.jianshu.com/p/d79d3cd62560]  或者 [https://www.jianshu.com/p/f0607374b8ee?from=timeline&isappinstalled=0]
+</br>
+2:使用[https://blog.csdn.net/chaoren499/article/details/90232332]
+</br></br>
+
+
+//https://www.jianshu.com/p/d79d3cd62560
 
 
 ## 手机端调试工具插件
