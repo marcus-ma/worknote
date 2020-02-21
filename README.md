@@ -739,6 +739,28 @@ foreach ($data as $document) {
 -----------------------------------------------------------------------------------------------------|
 ```
 
+
+## js小功能
+
+```js
+//复制到剪贴板
+function copy() {
+        const input = document.createElement('input');
+        const value = 'value';
+        input.setAttribute('readonly', 'readonly');
+        input.setAttribute('value', value);
+        document.body.appendChild(input);
+        input.setSelectionRange(0, value.length);
+        input.select();
+        if (document.execCommand('copy')) {
+            document.execCommand('copy');
+            alert('礼包码已复制到粘贴板');
+        }
+        document.body.removeChild(input);
+    }
+```
+
+
 ## IM常用函数 详细概念可以参考文章[https://blog.csdn.net/tiantangyouzui/article/details/77540611/] 
 ```html
 <div>
