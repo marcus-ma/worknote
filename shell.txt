@@ -83,7 +83,15 @@ http_connect The numerical code that was found in the last response (from a pro
 http_version The http version that was effectively used. (Added in 7.50.0)
 ————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
+查看内存利用率：head -2 /proc/meminfo
+MemTotal:        1019944 kB
+MemFree:           89520 kB
 
+>>head -2 /proc/meminfo | awk 'NR==1{t=$2}NR==2{f=$2;print (t-f)*100/t "%"}'
+>>90.5532%
+
+
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 
 查看pid进程所在的目录
