@@ -1518,6 +1518,59 @@ class Digraph {
         $visited[$v]=true;//是否执行
         $list[]=$v;
     }
+    
+    //最短路径(从s点到t点)
+    public function schedulerBFS($s,$t)
+    {
+        $visited = [];//遍历过
+        $pre = [];
+        $list = [];
+        $a = array_keys($this->getTasks());
+        array_map(function ($v)use(&$visited){
+            $visited[$v]=false;
+            $pre[$v]=-1;
+        },$a);
+
+
+        $this->dbfs($s,$visited,$pre);
+        
+
+        if(!$visited[$t]) return [];
+
+        $cur = $t;
+        while ($cur!=$s){
+            $list[]=$cur;
+            $cur = $pre[$cur];
+        }
+
+        $list[]=$s;
+
+        return $list;
+
+
+    }
+
+    //广度优先遍历算法
+    public function dbfs($v,&$visited,&$pre)
+    {
+        $queue=[];
+        array_push($queue,$v);
+        $visited[$v]=true;
+        $pre[$v]=$v;
+
+        while (!empty($queue)){
+            $s = array_shift($queue);
+            if (isset($this->getTaskPrevMap()[$s])){
+                foreach ($this->getTaskPrevMap()[$s] as $w){
+                    if(!$visited[$w]){
+                        array_push($queue,$w);
+                        $visited[$w]=true;
+                        $pre[$w]=$s;
+                    }
+                }
+            }
+        }
+    }
 }
 $d = new Digraph();
 $t1 = new Task(1,'t1',0);
