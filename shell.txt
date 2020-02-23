@@ -76,8 +76,9 @@ port_status(){
     quit
     EOF
    ) &>$temp_file
-
-   if egrep "\^]" &> /dev/null;then
+   
+   #分析文件的内容，判断结果
+   if egrep "\^]" $temp_file &> /dev/null;then
       echo "$1 $2 is open"
    else
       echo " $1 $2 is close"
