@@ -61,6 +61,34 @@ tail -f XXX.log，可以发现日志格式如下：
 
 
 ————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+查看服务端口是否正常
+
+port_status(){
+
+   #最少3个X，已达到随机的字符串
+   temp_file=`mktemp port_status.XXX`
+
+   #1:判断以来命令telnet是否存在
+   [ ! -x /usr/bin/telnet ] && echo "telnet: not found command" && exit 1
+
+   #2：此时端口 $1 IP $2 port
+   (telnet $1 $2 <<EOF
+    quit
+    EOF
+   ) &>$temp_file
+
+   if egrep "\^]" &> /dev/null;then
+      echo "$1 $2 is open"
+   else
+      echo " $1 $2 is close"
+   fi
+
+   rm -f $temp_file
+
+}
+
+
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 巧用curl命令定位性能瓶颈
 新建一个txt文件(format.txt)，内容如下：
