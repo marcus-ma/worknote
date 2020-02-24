@@ -90,8 +90,6 @@ https://cloud.tencent.com/developer/article/1420239]
 </br></br>
 
 
-//https://www.jianshu.com/p/d79d3cd62560
-
 
 ## 手机端调试工具插件
 使用方法教程[https://blog.yurunsoft.com/a/eruda.html] ，感觉比腾讯的vconsole好用</br>
@@ -767,6 +765,22 @@ function copy() {
         }
         document.body.removeChild(input);
     }
+    
+//获取url上的参数
+var qs = (function(a) {
+            if (a == "") return {};
+            var b = {};
+            for (var i = 0; i < a.length; ++i)
+            {
+                var p=a[i].split('=', 2);
+                if (p.length == 1)
+                    b[p[0]] = "";
+                else
+                    b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
+            }
+            return b;
+        })(window.location.search.substr(1).split('&'));
+console.log(qs['user_name']);	
 ```
 
 
