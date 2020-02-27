@@ -262,7 +262,7 @@ $b = [
     ['id'=>3,'na'=>'r'],
     ['id'=>4,'na'=>'c']
 ];
-array_multisort(array_column($b, 'id'), SORT_DESC, $b);
+array_multisort(array_column($b, 'id'), SORT_DESC, SORT_NUMERIC,$b);
 var_dump($b);
 $b = [
     ['id'=>4,'na'=>'c']
