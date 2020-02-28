@@ -347,6 +347,28 @@ function friend_date($time)
 //demo
 var_dump(friend_date(time()));
 
+
+
+
+//2-图片base64编码在服务端保存
+public function base64ImageContent($base64){
+        if (preg_match('/^(data:\s*image\/(\w+);base64,)/', $base64, $result)){
+            $type = $result[2] == 'jpeg' ? 'jpg' : $result[2];
+            $path = '/'.date('Ym').'/';
+            $img_name = date('dHis') . uniqid() .'.'. $type;
+            if (!is_dir(dirname($this->nfs.'/image/'.$path))) {
+                mkdir(dirname($this->nfs.'/image/'.$path), 0777, true);
+            }
+            if (file_put_contents($this->nfs.'/image/'.$path . $img_name, base64_decode(str_replace($result[1], '', $base64)))){
+                return $path . $img_name;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
+    }
+
 ```
 
 
