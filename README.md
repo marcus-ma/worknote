@@ -770,6 +770,7 @@ function copy() {
         document.body.removeChild(input);
     }
     
+    
 //获取url上的参数
 var qs = (function(a) {
             if (a == "") return {};
@@ -785,6 +786,22 @@ var qs = (function(a) {
             return b;
         })(window.location.search.substr(1).split('&'));
 console.log(qs['user_name']);	
+
+
+//本地上传的图片预览显示
+<div>
+    <input type="file" id="p" onchange="show(this)">
+    <img src="" alt="" id="pic">
+</div>
+<script>
+    function show(self) {
+        var reader= new FileReader();
+        reader.readAsDataURL(self.files[0]);
+        reader.onload=function(e){
+            document.getElementById("pic").src = e.target.result;
+        }
+    }
+</script>
 ```
 
 
