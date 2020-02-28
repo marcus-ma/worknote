@@ -280,6 +280,10 @@ var_dump($json); //['name'=>'marcus','age'=>78]
 //数字格式化
 echo number_format(111123435); //111,123,435
 
+
+//获取文件格式
+echo pathinfo("record.log", PATHINFO_EXTENSION); //log
+
 ```
 
 ## PHP封裝的常用函数
