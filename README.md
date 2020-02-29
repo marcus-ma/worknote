@@ -1441,6 +1441,49 @@ function test_s_mock(){
     echo "\n";
 }
 test_s_mock();
+
+
+//地铁站demo
+//from,to
+$data = [
+    ['MUC','LHR'],
+    ['JFK','MUC'],
+    ['SFO','SJC'],
+    ['LHR','SFO'],
+];
+
+//寻找从‘JFK’所能到的终点
+function findIt($tickets){
+    $g=[];
+    buildG($tickets,$g);
+    $res = [];
+    dfs($g,$res,'JFK');
+    var_dump($res);
+}
+
+function dfs($g,&$res,$point){
+
+    while (isset($g[$point])&&!empty($g[$point])){
+        $p = array_shift($g[$point]);
+        dfs($g,$res,$p);
+    }
+    //每次添加元素都从头部添加
+    array_unshift($res,$point);
+}
+
+function buildG($tickets,&$g){
+    foreach ($tickets as $item){
+        $from = $item[0];
+        $to = $item[1];
+        $g[$from][]=$to;
+    }
+}
+
+findIt($data);
+
+
+
+
 ```
 
 
