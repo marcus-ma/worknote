@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .ks-day-schedule {
+            box-sizing: border-box;
+            color: #777;
+            font-size: 12px;
+            margin-bottom: 20px;
+            display: inline-block;
+            line-height: 0;
+        }
+        .ks-day-schedule-head {
+            height: 36px;
+            line-height: 36px;
+            text-align: center;
+            user-select: none;
+            display: inline-block;
+            box-sizing: border-box;
+            font-size: 14px;
+            color: rgba(0,0,0,.85);
+            background: #fbfbfb;
+        }
+        .ks-day-schedule .item-head, .ks-day-schedule .time-head {
+            border-left: 1px solid #dfe2e8;
+        }
+        .ks-day-schedule .w240 {
+            width: 240px;
+        }
+        .ks-day-schedule .day-item, .ks-day-schedule .ks-day-schedule-time {
+            height: 20px;
+            line-height: 20px;
+            position: relative;
+        }
+        .ks-day-schedule .w56 {
+            width: 56px;
+        }
+        .ks-day-schedule .w20 {
+            width: 20px;
+        }
+        .pre-select{
+            background: #22b3c6;
+            border: 1px solid #d8d8d8;
+        }
+        .ks-day-schedule span {
+            font-size: 12px;
+            box-sizing: border-box;
+            display: inline-block;
+            height: 100%;
+            text-align: center;
+            border-right: 1px solid #dfe2e8;
+            border-bottom: 1px solid #dfe2e8;
+            vertical-align: middle;
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        .ks-day-schedule div, .ks-day-schedule em, .ks-day-schedule i, .ks-day-schedule span {
+            user-select: none !important;
+        }
+        .ks-day-schedule .day-item .content-list, .ks-day-schedule .ks-day-schedule-time .content-list {
+            cursor: pointer;
+        }
+        .ks-day-schedule span.selected {
+            background: #0097ab;
+        }
+        .ks-day-schedule .show-res {
+            border: 1px solid #dfe2e8;
+            border-radius: 4px;
+            width: 536px;
+            margin-top: 20px;
+        }
+        .ks-day-schedule .show-res h6 {
+            height: 40px;
+            line-height: 40px;
+            font-size: 14px;
+            color: rgba(0,0,0,.85);
+            text-align: left;
+            border-bottom: 1px solid #dfe2e8;
+            padding: 0 12px;
+            margin: 0;
+            box-sizing: border-box;
+        }
+        .ks-day-schedule .show-res h6 i {
+            color: #0097ab;
+            float: right;
+            cursor: pointer;
+        }
+        .ks-day-schedule .show-res .show-wrap {
+            padding: 0 12px 12px;
+            width: 100%;
+            box-sizing: border-box;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            align-content: flex-start;
+            margin-right: -10px;
+        }
+        .ks-day-schedule .show-res .show-wrap .item {
+            display: inline-block;
+            height: 24px;
+            line-height: 24px;
+            padding: 0 10px;
+            text-align: center;
+            margin-top: 12px;
+            margin-right: 8px;
+            font-size: 12px;
+            color: #747a8c;
+            background: rgba(239,241,245,.4);
+            border-radius: 4px;
+            flex: 0 0 160px;
+            border-right: 0;
+            border-bottom: 0;
+        }
+        .ks-day-schedule .show-res .show-wrap .item i {
+            margin-left: 6px;
+            cursor: pointer;
+            position: relative;
+        }
+        .ks-day-schedule .show-res .show-wrap .item i::before {
+            content: " ";
+            position: absolute;
+            transform: rotate(-45deg);
+            background: #747a8c;
+            width: 8px;
+            height: 1px;
+            top: 8px;
+        }
+        .ks-day-schedule .show-res .show-wrap .item i::after {
+            content: " ";
+            position: absolute;
+            transform: rotate(45deg);
+            background: #747a8c;
+            width: 8px;
+            height: 1px;
+            top: 8px;
+        }
+        .ks-day-schedule span {
+            font-size: 12px;
+            box-sizing: border-box;
+            display: inline-block;
+            height: 100%;
+            text-align: center;
+            border-right: 1px solid #dfe2e8;
+            border-bottom: 1px solid #dfe2e8;
+            vertical-align: middle;
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+    </style>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+</head>
+<body>
+<div class="col-sm-10" id="schedule_time_type_text" >
+    <div class="ks-day-schedule">
+        <div class="ks-day-schedule-head">
+            <span class="w56 time-head">时间</span><span class="w240">上午</span><span class="w240">下午</span>
+        </div>
+        <div class="ks-day-schedule-time">
+            <span class="time-head w56">小时</span><span class="w20">0</span><span
+                class="w20">1</span><span class="w20">2</span><span class="w20">3</span><span
+                class="w20">4</span><span class="w20">5</span><span class="w20">6</span><span
+                class="w20">7</span><span class="w20">8</span><span class="w20">9</span><span class="w20">10</span><span class="w20">11</span><span class="w20">12</span><span class="w20">13</span><span class="w20">14</span><span class="w20">15</span><span class="w20">16</span><span class="w20">17</span><span class="w20">18</span><span class="w20">19</span><span class="w20">20</span><span class="w20">21</span><span class="w20">22</span><span class="w20">23</span></div><div class="ks-day-schedule-day"><div class="day-item"><span class="item-head w56"><em>星期一</em></span><span data-row="0" data-day="星期一" data-col="0" class="content-list w20 "></span><span data-row="0" data-day="星期一" data-col="1" class="content-list w20 "></span><span data-row="0" data-day="星期一" data-col="2" class="content-list w20 "></span><span data-row="0" data-day="星期一" data-col="3" class="content-list w20 "></span><span data-row="0" data-day="星期一" data-col="4" class="content-list w20 "></span><span data-row="0" data-day="星期一" data-col="5" class="content-list w20 "></span><span data-row="0" data-day="星期一" data-col="6" class="content-list w20 "></span><span data-row="0" data-day="星期一" data-col="7" class="content-list w20 "></span><span data-row="0" data-day="星期一" data-col="8" class="content-list w20 "></span><span data-row="0" data-day="星期一" data-col="9" class="content-list w20 "></span><span data-row="0" data-day="星期一" data-col="10" class="content-list w20 "></span><span data-row="0" data-day="星期一" data-col="11" class="content-list w20 "></span><span data-row="0" data-day="星期一" data-col="12" class="content-list w20 "></span><span data-row="0" data-day="星期一" data-col="13" class="content-list w20 "></span><span data-row="0" data-day="星期一" data-col="14" class="content-list w20 "></span><span data-row="0" data-day="星期一" data-col="15" class="content-list w20 "></span><span data-row="0" data-day="星期一" data-col="16" class="content-list w20 "></span><span data-row="0" data-day="星期一" data-col="17" class="content-list w20 "></span><span data-row="0" data-day="星期一" data-col="18" class="content-list w20 "></span><span data-row="0" data-day="星期一" data-col="19" class="content-list w20 "></span><span data-row="0" data-day="星期一" data-col="20" class="content-list w20 "></span><span data-row="0" data-day="星期一" data-col="21" class="content-list w20 "></span><span data-row="0" data-day="星期一" data-col="22" class="content-list w20 "></span><span data-row="0" data-day="星期一" data-col="23" class="content-list w20 "></span></div><div class="day-item"><span class="item-head w56"><em>星期二</em></span><span data-row="1" data-day="星期二" data-col="0" class="content-list w20 "></span><span data-row="1" data-day="星期二" data-col="1" class="content-list w20 "></span><span data-row="1" data-day="星期二" data-col="2" class="content-list w20 "></span><span data-row="1" data-day="星期二" data-col="3" class="content-list w20 "></span><span data-row="1" data-day="星期二" data-col="4" class="content-list w20 "></span><span data-row="1" data-day="星期二" data-col="5" class="content-list w20 "></span><span data-row="1" data-day="星期二" data-col="6" class="content-list w20 "></span><span data-row="1" data-day="星期二" data-col="7" class="content-list w20 "></span><span data-row="1" data-day="星期二" data-col="8" class="content-list w20 "></span><span data-row="1" data-day="星期二" data-col="9" class="content-list w20 "></span><span data-row="1" data-day="星期二" data-col="10" class="content-list w20 "></span><span data-row="1" data-day="星期二" data-col="11" class="content-list w20 "></span><span data-row="1" data-day="星期二" data-col="12" class="content-list w20 "></span><span data-row="1" data-day="星期二" data-col="13" class="content-list w20 "></span><span data-row="1" data-day="星期二" data-col="14" class="content-list w20 "></span><span data-row="1" data-day="星期二" data-col="15" class="content-list w20 "></span><span data-row="1" data-day="星期二" data-col="16" class="content-list w20 "></span><span data-row="1" data-day="星期二" data-col="17" class="content-list w20 "></span><span data-row="1" data-day="星期二" data-col="18" class="content-list w20 "></span><span data-row="1" data-day="星期二" data-col="19" class="content-list w20 "></span><span data-row="1" data-day="星期二" data-col="20" class="content-list w20 "></span><span data-row="1" data-day="星期二" data-col="21" class="content-list w20 "></span><span data-row="1" data-day="星期二" data-col="22" class="content-list w20 "></span><span data-row="1" data-day="星期二" data-col="23" class="content-list w20 "></span></div><div class="day-item"><span class="item-head w56"><em>星期三</em></span><span data-row="2" data-day="星期三" data-col="0" class="content-list w20 "></span><span data-row="2" data-day="星期三" data-col="1" class="content-list w20 "></span><span data-row="2" data-day="星期三" data-col="2" class="content-list w20 "></span><span data-row="2" data-day="星期三" data-col="3" class="content-list w20 "></span><span data-row="2" data-day="星期三" data-col="4" class="content-list w20 "></span><span data-row="2" data-day="星期三" data-col="5" class="content-list w20 "></span><span data-row="2" data-day="星期三" data-col="6" class="content-list w20 "></span><span data-row="2" data-day="星期三" data-col="7" class="content-list w20 "></span><span data-row="2" data-day="星期三" data-col="8" class="content-list w20 "></span><span data-row="2" data-day="星期三" data-col="9" class="content-list w20 "></span><span data-row="2" data-day="星期三" data-col="10" class="content-list w20 "></span><span data-row="2" data-day="星期三" data-col="11" class="content-list w20 "></span><span data-row="2" data-day="星期三" data-col="12" class="content-list w20 "></span><span data-row="2" data-day="星期三" data-col="13" class="content-list w20 "></span><span data-row="2" data-day="星期三" data-col="14" class="content-list w20 "></span><span data-row="2" data-day="星期三" data-col="15" class="content-list w20 "></span><span data-row="2" data-day="星期三" data-col="16" class="content-list w20 "></span><span data-row="2" data-day="星期三" data-col="17" class="content-list w20 "></span><span data-row="2" data-day="星期三" data-col="18" class="content-list w20 "></span><span data-row="2" data-day="星期三" data-col="19" class="content-list w20 "></span><span data-row="2" data-day="星期三" data-col="20" class="content-list w20 "></span><span data-row="2" data-day="星期三" data-col="21" class="content-list w20 "></span><span data-row="2" data-day="星期三" data-col="22" class="content-list w20 "></span><span data-row="2" data-day="星期三" data-col="23" class="content-list w20 "></span></div><div class="day-item"><span class="item-head w56"><em>星期四</em></span><span data-row="3" data-day="星期四" data-col="0" class="content-list w20 "></span><span data-row="3" data-day="星期四" data-col="1" class="content-list w20 "></span><span data-row="3" data-day="星期四" data-col="2" class="content-list w20 "></span><span data-row="3" data-day="星期四" data-col="3" class="content-list w20 "></span><span data-row="3" data-day="星期四" data-col="4" class="content-list w20 "></span><span data-row="3" data-day="星期四" data-col="5" class="content-list w20 "></span><span data-row="3" data-day="星期四" data-col="6" class="content-list w20 "></span><span data-row="3" data-day="星期四" data-col="7" class="content-list w20 "></span><span data-row="3" data-day="星期四" data-col="8" class="content-list w20 "></span><span data-row="3" data-day="星期四" data-col="9" class="content-list w20 "></span><span data-row="3" data-day="星期四" data-col="10" class="content-list w20 "></span><span data-row="3" data-day="星期四" data-col="11" class="content-list w20 "></span><span data-row="3" data-day="星期四" data-col="12" class="content-list w20 "></span><span data-row="3" data-day="星期四" data-col="13" class="content-list w20 "></span><span data-row="3" data-day="星期四" data-col="14" class="content-list w20 "></span><span data-row="3" data-day="星期四" data-col="15" class="content-list w20 "></span><span data-row="3" data-day="星期四" data-col="16" class="content-list w20 "></span><span data-row="3" data-day="星期四" data-col="17" class="content-list w20 "></span><span data-row="3" data-day="星期四" data-col="18" class="content-list w20 "></span><span data-row="3" data-day="星期四" data-col="19" class="content-list w20 "></span><span data-row="3" data-day="星期四" data-col="20" class="content-list w20 "></span><span data-row="3" data-day="星期四" data-col="21" class="content-list w20 "></span><span data-row="3" data-day="星期四" data-col="22" class="content-list w20 "></span><span data-row="3" data-day="星期四" data-col="23" class="content-list w20 "></span></div><div class="day-item"><span class="item-head w56"><em>星期五</em></span><span data-row="4" data-day="星期五" data-col="0" class="content-list w20 "></span><span data-row="4" data-day="星期五" data-col="1" class="content-list w20 "></span><span data-row="4" data-day="星期五" data-col="2" class="content-list w20 "></span><span data-row="4" data-day="星期五" data-col="3" class="content-list w20 "></span><span data-row="4" data-day="星期五" data-col="4" class="content-list w20 "></span><span data-row="4" data-day="星期五" data-col="5" class="content-list w20 "></span><span data-row="4" data-day="星期五" data-col="6" class="content-list w20 "></span><span data-row="4" data-day="星期五" data-col="7" class="content-list w20 "></span><span data-row="4" data-day="星期五" data-col="8" class="content-list w20 "></span><span data-row="4" data-day="星期五" data-col="9" class="content-list w20 "></span><span data-row="4" data-day="星期五" data-col="10" class="content-list w20 "></span><span data-row="4" data-day="星期五" data-col="11" class="content-list w20 "></span><span data-row="4" data-day="星期五" data-col="12" class="content-list w20 "></span><span data-row="4" data-day="星期五" data-col="13" class="content-list w20 "></span><span data-row="4" data-day="星期五" data-col="14" class="content-list w20 "></span><span data-row="4" data-day="星期五" data-col="15" class="content-list w20 "></span><span data-row="4" data-day="星期五" data-col="16" class="content-list w20 "></span><span data-row="4" data-day="星期五" data-col="17" class="content-list w20 "></span><span data-row="4" data-day="星期五" data-col="18" class="content-list w20 "></span><span data-row="4" data-day="星期五" data-col="19" class="content-list w20 "></span><span data-row="4" data-day="星期五" data-col="20" class="content-list w20 "></span><span data-row="4" data-day="星期五" data-col="21" class="content-list w20 "></span><span data-row="4" data-day="星期五" data-col="22" class="content-list w20 "></span><span data-row="4" data-day="星期五" data-col="23" class="content-list w20 "></span></div><div class="day-item"><span class="item-head w56"><em>星期六</em></span><span data-row="5" data-day="星期六" data-col="0" class="content-list w20 "></span><span data-row="5" data-day="星期六" data-col="1" class="content-list w20 "></span><span data-row="5" data-day="星期六" data-col="2" class="content-list w20 "></span><span data-row="5" data-day="星期六" data-col="3" class="content-list w20 "></span><span data-row="5" data-day="星期六" data-col="4" class="content-list w20 "></span><span data-row="5" data-day="星期六" data-col="5" class="content-list w20 "></span><span data-row="5" data-day="星期六" data-col="6" class="content-list w20 "></span><span data-row="5" data-day="星期六" data-col="7" class="content-list w20 "></span><span data-row="5" data-day="星期六" data-col="8" class="content-list w20 "></span><span data-row="5" data-day="星期六" data-col="9" class="content-list w20 "></span><span data-row="5" data-day="星期六" data-col="10" class="content-list w20 "></span><span data-row="5" data-day="星期六" data-col="11" class="content-list w20 "></span><span data-row="5" data-day="星期六" data-col="12" class="content-list w20 "></span><span data-row="5" data-day="星期六" data-col="13" class="content-list w20 "></span><span data-row="5" data-day="星期六" data-col="14" class="content-list w20 "></span><span data-row="5" data-day="星期六" data-col="15" class="content-list w20 "></span><span data-row="5" data-day="星期六" data-col="16" class="content-list w20 "></span><span data-row="5" data-day="星期六" data-col="17" class="content-list w20 "></span><span data-row="5" data-day="星期六" data-col="18" class="content-list w20 "></span><span data-row="5" data-day="星期六" data-col="19" class="content-list w20 "></span><span data-row="5" data-day="星期六" data-col="20" class="content-list w20 "></span><span data-row="5" data-day="星期六" data-col="21" class="content-list w20 "></span><span data-row="5" data-day="星期六" data-col="22" class="content-list w20 "></span><span data-row="5" data-day="星期六" data-col="23" class="content-list w20 "></span></div><div class="day-item"><span class="item-head w56"><em>星期日</em></span><span data-row="6" data-day="星期日" data-col="0" class="content-list w20 "></span><span data-row="6" data-day="星期日" data-col="1" class="content-list w20 "></span><span data-row="6" data-day="星期日" data-col="2" class="content-list w20 "></span><span data-row="6" data-day="星期日" data-col="3" class="content-list w20 "></span><span data-row="6" data-day="星期日" data-col="4" class="content-list w20 "></span><span data-row="6" data-day="星期日" data-col="5" class="content-list w20 "></span><span data-row="6" data-day="星期日" data-col="6" class="content-list w20 "></span><span data-row="6" data-day="星期日" data-col="7" class="content-list w20 "></span><span data-row="6" data-day="星期日" data-col="8" class="content-list w20 "></span><span data-row="6" data-day="星期日" data-col="9" class="content-list w20 "></span><span data-row="6" data-day="星期日" data-col="10" class="content-list w20 "></span><span data-row="6" data-day="星期日" data-col="11" class="content-list w20 "></span><span data-row="6" data-day="星期日" data-col="12" class="content-list w20 "></span><span data-row="6" data-day="星期日" data-col="13" class="content-list w20 "></span><span data-row="6" data-day="星期日" data-col="14" class="content-list w20 "></span><span data-row="6" data-day="星期日" data-col="15" class="content-list w20 "></span><span data-row="6" data-day="星期日" data-col="16" class="content-list w20 "></span><span data-row="6" data-day="星期日" data-col="17" class="content-list w20 "></span><span data-row="6" data-day="星期日" data-col="18" class="content-list w20 "></span><span data-row="6" data-day="星期日" data-col="19" class="content-list w20 "></span><span data-row="6" data-day="星期日" data-col="20" class="content-list w20 "></span><span data-row="6" data-day="星期日" data-col="21" class="content-list w20 "></span><span data-row="6" data-day="星期日" data-col="22" class="content-list w20 "></span><span data-row="6" data-day="星期日" data-col="23" class="content-list w20 "></span>
+    </div>
+    </div>
+        <div class="show-res"><h6>已选择时间段<i onclick="clearAllTime();">全部清除</i></h6>
+            <div class="show-wrap">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<input name="schedule_time" id="schedule_time" type="hidden" value="" />
+<script>
+
+    //投放时段 - 选择
+    $(".content-list").click(function () {
+        if($(this).hasClass('selected')){
+            $(this).removeClass('selected');
+        }else{
+            $(this).addClass('selected');
+        }
+        updateTimeResult();
+    });
+
+    //更新已选时间段
+    function updateTimeResult(){
+        $(".show-wrap").html("");
+        var html = "";
+        var last_row = -1;
+        var last_col = -1;
+        var last_day = "";
+        var last_start = -1;
+        var last_end = -1;
+        var time = "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+        var mark = [[],[],[],[],[],[],[]];
+        $(".content-list").each(function () {
+
+            if($(this).hasClass('selected')){
+                let row = $(this).data('row');
+                let col = $(this).data('col');
+                let day = $(this).data('day');
+                mark[row][col] = 1;
+                //连续
+                if (last_row == row && last_end + 1 == col) {
+                    last_end = col;
+                }else{
+                    last_day = day;
+                    last_row = row;
+                    last_col = col;
+                    last_start = col;
+                    last_end = col;
+                }
+            }else{
+                //处理之前选中的元素，并清空上一个选中元素
+                if(last_row!=-1){
+                    $(".show-wrap").append('<span class="item">'+last_day+' '+last_start+':00 ~ '+last_end+':59<i></i></span>');
+                    html = "";
+                    last_row = -1;
+                    last_col = -1;
+                    last_day = "";
+                    last_start = -1;
+                    last_end = -1;
+                }
+            }
+        });
+        //更新schedule_time的值
+        var schedule_time = "";
+        for(let i = 0; i < 7; i++){
+            for(let j = 0; j < 24; j++){
+                if(typeof mark[i][j] != "undefined"){
+                    schedule_time +='1';
+                }else{
+                    schedule_time +='0';
+                }
+            }
+        }
+        $("#schedule_time").val(schedule_time);
+        console.log(schedule_time);
+    }
+
+    //重制已选时段
+    function clearAllTime(){
+        $(".content-list").removeClass('selected');
+        updateTimeResult();
+    }
+
+    //自动加载已选时段
+    loadAllTime();
+    function loadAllTime() {
+        var time = $("#schedule_time").val();
+        if (time.length < 1) {
+            return false;
+        }
+        $(".content-list").each(function () {
+            var row = $(this).data('row');
+            var col = $(this).data('col');
+            var index = row * 24 + col;
+            let result = time.charAt(index);
+            if(result==1){
+                $(this).addClass('selected');
+            }
+        });
+        updateTimeResult();
+    }
+
+    //设置一个全局锚点
+    var point = false;
+    var col1 = 0;
+    var row1 = 0;
+    //当按下鼠标按钮时，绑定激活锚点
+    $(".content-list").mousedown(function(){
+        point = true;
+        col1 = $(this).data('col');
+        row1 = $(this).data('row');
+        clearPreSelect();
+        console.log('设置锚：'+col1+','+row1);
+        $(".content-list").on("mouseover",function () {
+            var col2 = $(this).data('col');
+            var row2 = $(this).data('row');
+            console.log('计算锚:'+col2+","+row2);
+            $(".content-list").each(function () {
+                var col_i = $(this).data('col');
+                var row_i = $(this).data('row');
+                var col_result = false;
+                var row_result = false;
+                //判断当前元素是否在列中
+                if (col1 <= col2 && col1 <= col_i && col_i <= col2) {
+                    col_result = true;
+                }else if(col1 >= col2 && col2 <= col_i && col_i <= col1){
+                    col_result = true;
+                }
+                //判断当前元素是否在行中
+                if (row1 <= row2 && row1 <= row_i && row_i <= row2) {
+                    row_result = true;
+                }else if(row1 >= row2 && row2 <= row_i && row_i <= row1){
+                    row_result = true;
+                }
+                if(col_result&&row_result){
+                    $(this).addClass('pre-select');
+                }else{
+                    $(this).removeClass('pre-select');
+                }
+                console.log('col1:'+col1+" col2:"+col2 +" coli:"+col_i+"result:"+col_result);
+            })
+        });
+    });
+    //当松开鼠标按钮时，结束锚点，并清算数据
+    $(".content-list").mouseup(function(){
+        $(".pre-select").each(function () {
+            if($(this).hasClass('selected')){
+                $(this).removeClass('selected');
+            }else{
+                $(this).addClass('selected');
+            }
+        });
+        point = false;
+        col1 = 0;
+        row1 = 0;
+        console.log('清理锚点');
+        clearPreSelect();
+        $(".content-list").off("mouseover");
+        updateTimeResult();
+    });
+    //清理锚点
+    function clearPreSelect() {
+        $(".content-list").each(function () {
+            $(this).removeClass('pre-select');
+        });
+    }
+
+
+
+</script>
+</body>
+</html>
