@@ -824,6 +824,17 @@ console.log(qs['user_name']);
         }
     }
 </script>
+
+
+
+//上拉刷新
+<script>
+$(window).scroll(function(){
+   if( ($(window).height() + $(window).scrollTop()) > $(document).height() - 20 ){
+   	//TODO::ajax load data
+   }
+});
+</script>
 ```
 
 
