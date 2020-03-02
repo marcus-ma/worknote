@@ -1494,6 +1494,55 @@ findIt($data);
 
 
 
+//寻找有向图是否有环demo
+$data = [
+    ['MUC','LHR'],
+    ['JFK','MUC'],
+    ['SFO','SJC'],
+    ['LHR','SFO'],
+    ["SJC",'JFK']
+];
+
+function findIt($tickets){
+    $g=[];
+    //建立图
+    buildG($tickets,$g);
+    //检测是否有环是通过“染色”
+    $color=[];
+    //先给每个顶点染色为0，遍历过的就染色为1
+    $data = array_keys($g);
+    array_map(function ($val)use(&$color){
+        $color[$val]=0;
+    },$data);
+
+    $res = isCycle($g,$tickets[0][0],$color);
+    var_dump($res,$color);
+}
+
+function isCycle($g,$point, &$color){
+    if (!isset($g[$point])|| empty($g[$point])|| !isset($color[$point]))return false;
+
+    $color[$point]=1;
+    foreach ($g[$point] as $next){
+        if (!isset($color[$next]))return false;
+        if ($color[$next]==1)return true;
+        if ($color[$next]==0 && isCycle($g,$next,$color))return true;
+    }
+
+    $color[$point]=2;
+    return false;
+}
+
+function buildG($tickets,&$g){
+    foreach ($tickets as $item){
+        $from = $item[0];
+        $to = $item[1];
+        $g[$from][]=$to;
+    }
+}
+
+findIt($data);
+
 
 ```
 
