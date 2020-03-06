@@ -147,7 +147,7 @@ https://cloud.tencent.com/developer/article/1420239]
 </br></br>
 6:合并视频【将要合并的视频名字写在同级的filelist.txt文件中，格式为 file '1.mp4'】：`ffmpeg -f concat -i filelist.txt -c copy output.mp4`
 </br></br>
-7:截取制定位置的视频【将视频2.mp4，从5秒开始剪辑到4分45秒生成output.mp4】：`ffmpeg -ss 00:00:05 -t 00:04:41 -i 2.mp4 -vcodec copy -acodec copy output.mp4`
+7:截取制定位置的视频【将视频2.mp4，从5秒开始剪辑时长为4分41秒的视频output.mp4】：`ffmpeg -ss 00:00:05 -t 00:04:41 -i 2.mp4 -vcodec copy -acodec copy output.mp4`
 </br></br>
 
 ## SQL优化
