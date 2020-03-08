@@ -4,6 +4,7 @@
 - [Apcu](#apcu)
 - [JB-IDE激活码](#JB-IDE激活码)
 - [TODO-source-code](#TODO-source-code)
+- [数据分析思维](#数据分析思维)
 - [手机端调试工具插件](#手机端调试工具插件)
 - [CMD命令](#CMD命令)
 - [网页摆脱鼠标快捷键](#网页摆脱鼠标快捷键)
@@ -88,6 +89,11 @@ https://cloud.tencent.com/developer/article/1420239]
 </br>
 2:使用[https://blog.csdn.net/chaoren499/article/details/90232332]
 </br></br>
+
+## 数据分析思维
+### 七技巧
+### 三核心
+
 
 
 
