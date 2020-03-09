@@ -155,6 +155,8 @@ https://cloud.tencent.com/developer/article/1420239]
 </br></br>
 7:截取制定位置的视频【将视频2.mp4，从5秒开始剪辑时长为4分41秒的视频output.mp4】：`ffmpeg -ss 00:00:05 -t 00:04:41 -i 2.mp4 -vcodec copy -acodec copy output.mp4`
 </br></br>
+8:裁剪视频宽高画面【将视频1.mp4的画面高度减去原来高度的1.2成视频output.mp4】：`ffmpeg -i 1.mp4 -strict -2 -vf crop=iw:ih/1.2:0:ih out1.mp4`
+</br></br>
 
 ## SQL优化
 1:【分页查询优化】在分页查询大量数据时候，采用主键索引来定位快,一般的查询采用limit是会逐一统计数据条数。如SELECT * FROM table WHERE id>500000 AND id<=500000+100 的查询速度会比一般分页查询SELECT * FROM table LIMIT 500000,100。
