@@ -323,6 +323,12 @@ echo number_format(111123435); //111,123,435
 //获取文件格式
 echo pathinfo("record.log", PATHINFO_EXTENSION); //log
 
+//获取图像信息
+list($width, $height, $type, $attr) = getimagesize("runoob-logo.png");
+echo "宽度为：" . $width;
+echo "高度为：" . $height;
+echo "类型为：" . $attr;
+
 ```
 
 ## PHP封裝的常用函数
