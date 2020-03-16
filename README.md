@@ -418,7 +418,8 @@ public function base64ImageContent($base64){
             return false;
         }
     }
-    
+   
+   
 //3-使用Client上传文件
 $client = new Client();
         $options = [
@@ -849,7 +850,7 @@ foreach ($data as $document) {
 ## js小功能
 
 ```js
-//复制到剪贴板
+//1：复制到剪贴板
 function copy() {
         const input = document.createElement('input');
         const value = 'value';
@@ -866,7 +867,7 @@ function copy() {
     }
     
     
-//获取url上的参数
+//2：获取url上的参数
 var qs = (function(a) {
             if (a == "") return {};
             var b = {};
@@ -883,7 +884,7 @@ var qs = (function(a) {
 console.log(qs['user_name']);	
 
 
-//本地上传的图片预览显示
+//3：本地上传的图片预览显示
 <div>
     <input type="file" id="p" onchange="show(this)">
     <img src="" alt="" id="pic">
@@ -898,9 +899,31 @@ console.log(qs['user_name']);
     }
 </script>
 
+//4：视频video截图
+//html标签如下：
+ <div>
+    <video id="video" autoplay="true"  width="500" height="400" src="http://vjs.zencdn.net/v/oceans.mp4"></video>
+    <canvas id="canvas" width="500" height="400" ></canvas>
+    <button id="btn">截取</button>
+ </div>
+ <script>
+ var canvas = $("#canvas"),
+  ctx = canvas[0].getContext("2d"),
+  width = $("#video").width(),
+  height = $("#video").height(),
+  drawImg = function(){
+        ctx.drawImage($("#video")[0], 0, 0, width, height);
+	//输出画布图像的base64格式(注意！如果video的链接跟当前域名非同源的话是会报错的)
+        console.log(document.getElementById("canvas").toDataURL());
+    }
+  $("#btn").on("click", function(){
+        drawImg();
+   });
+ </script>
 
 
-//上拉刷新
+
+//5：上拉刷新
 <script>
 $(window).scroll(function(){
    if( ($(window).height() + $(window).scrollTop()) > $(document).height() - 20 ){
