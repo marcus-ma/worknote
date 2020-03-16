@@ -167,13 +167,17 @@ https://cloud.tencent.com/developer/article/1420239]
 </br></br>
 5:调节音频的音量大小,混音【增加/减少3dB:+/-3dB】：`ffmpeg -i input.mp3 -af volume=+3dB output.mp3`
 </br></br>
-6:合并视频【将要合并的视频名字写在同级的filelist.txt文件中，格式为 file '1.mp4'】：`ffmpeg -f concat -i filelist.txt -c copy output.mp4`
+6:合并视频1【将要合并的视频名字写在同级的filelist.txt文件中，格式为 file '1.mp4'】：`ffmpeg -f concat -i filelist.txt -c copy output.mp4`
 </br></br>
-7:截取制定位置的视频【将视频2.mp4，从5秒开始剪辑时长为4分41秒的视频output.mp4】：`ffmpeg -ss 00:00:05 -t 00:04:41 -i 2.mp4 -vcodec copy -acodec copy output.mp4`
+7:合并视频2【如合并的视频出现画音轨不统一，则使用该方法:先将文件转成ts格式，再把ts合并】：`ffmpeg -i output1.mp4 -vcodec copy -acodec copy -vbsf h264_mp4toannexb output1.ts`
+</br>
+`ffmpeg -f concat -i filelist.txt -acodec copy -vcodec copy -absf aac_adtstoasc output.mp4`
 </br></br>
-8:裁剪视频宽高画面【将视频1.mp4的画面高度减去原来高度的1.2成视频output.mp4】：`ffmpeg -i 1.mp4 -strict -2 -vf crop=iw:ih/1.2:0:ih out1.mp4`
+8:截取制定位置的视频【将视频2.mp4，从5秒开始剪辑时长为4分41秒的视频output.mp4】：`ffmpeg -ss 00:00:05 -t 00:04:41 -i 2.mp4 -vcodec copy -acodec copy output.mp4`
 </br></br>
-9:将视频的音频抽出:`ffmpeg -i we.mp4 -vn r.mp3`
+9:裁剪视频宽高画面【将视频1.mp4的画面高度减去原来高度的1.2成视频output.mp4】：`ffmpeg -i 1.mp4 -strict -2 -vf crop=iw:ih/1.2:0:ih out1.mp4`
+</br></br>
+10:将视频的音频抽出:`ffmpeg -i we.mp4 -vn r.mp3`
 </br></br>
 
 ## SQL优化
