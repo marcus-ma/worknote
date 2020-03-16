@@ -329,6 +329,7 @@ echo "宽度为：" . $width;
 echo "高度为：" . $height;
 echo "类型为：" . $attr;
 
+
 ```
 
 ## PHP封裝的常用函数
@@ -413,6 +414,29 @@ public function base64ImageContent($base64){
             return false;
         }
     }
+    
+//3-使用Client上传文件
+$client = new Client();
+        $options = [
+            'timeout' => 120,
+            'verify' => false,
+            'headers' => [
+                'Access-Token' =>'',
+            ],
+            'query' => [],
+            'multipart' => [
+                [
+                    'name' => 'file',
+                    'contents' => fopen($params['file'], 'r'),
+                ],
+                [
+                    'name' => 'signature',
+                    'contents' => md5_file($params['file']),
+                ],
+            ],
+        ];
+        $res = $client->request('POST', 'url', $options);
+        return json_decode($res->getBody(), true);
 
 ```
 
