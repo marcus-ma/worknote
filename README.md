@@ -195,6 +195,15 @@ HAVING COUNT(*) = 3
 `
 </br></br>
 
+
+## 二进制求集合
+1：【交集】`∩交集:$ c = $value1 & $value2`
+</br></br>
+2：【差集】`差集:$ c= ( ~$value1 & ~$value2 )`
+</br></br>
+3：【并集】`∪并集:$c = ~( ~$value1 & ~$value2 )`
+</br></br>
+
 ## MYSQLDump-tips
 1:【导出不影响：mysqldump --single-transaction】--single-transaction参数的作用，设置事务的隔离级别为可重复读，即REPEATABLE READ，这样能保证在一个事务中所有相同的查询读取到同样的数据，也就大概保证了在dump期间，如果其他innodb引擎的线程修改了表的数据并提交，对该dump线程的数据并无影响，在这期间不会锁表。
 
