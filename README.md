@@ -199,9 +199,9 @@ HAVING COUNT(*) = 3
 ## 二进制求集合
 1：【交集】`∩交集:$ c = $value1 & $value2`
 </br></br>
-2：【差集】`差集:$ c= ( ~$value1 & ~$value2 )`
+2：【差集】`差集:$ c= ~( $value1 | $value2 )`
 </br></br>
-3：【并集】`∪并集:$c = ~( ~$value1 & ~$value2 )`
+3：【并集】`∪并集:$c = ( $value1 | $value2 )`
 </br></br>
 
 ## MYSQLDump-tips
