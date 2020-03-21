@@ -442,6 +442,58 @@ $client = new Client();
         ];
         $res = $client->request('POST', 'url', $options);
         return json_decode($res->getBody(), true);
+	
+	
+//递归思想实现中间件
+class Middlewares {
+    public $middlewares=[];
+    public $index=-1;
+    public $request;
+
+    public function __construct($mid)
+    {
+        $this->middlewares=$mid;
+    }
+
+    public function next()
+    {
+        $this->index++;
+        $s=count($this->middlewares);
+        for (;$this->index<$s;$this->index++){
+            $this->middlewares[$this->index]($this);
+        }
+    }
+}
+
+   $c=new Middlewares([
+       function(Middlewares $class){
+           LogLib::write([
+               1
+           ], 'time');
+           $class->next();
+           LogLib::write([
+               4
+           ], 'time');
+       },
+       function(Middlewares $class){
+           LogLib::write([
+               2
+           ], 'time');
+           $class->next();
+           LogLib::write([
+               3
+           ], 'time');
+       },
+       function()use($application){
+           LogLib::write([
+               'hello'
+           ], 'time');
+           echo $application->handle()->getContent();
+       }
+   ]);
+
+   $c->next();
+   //1，2，hello，3，4
 
 ```
 
