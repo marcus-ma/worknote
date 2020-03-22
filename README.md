@@ -991,7 +991,6 @@ console.log(qs['user_name']);
  </script>
 
 
-
 //5：上拉刷新
 <script>
 $(window).scroll(function(){
@@ -1000,6 +999,13 @@ $(window).scroll(function(){
    }
 });
 </script>
+
+
+//6：base64编码解码
+  //编码
+btoa('hello')
+  //解码
+atob('aGVsbG8=')
 ```
 
 
