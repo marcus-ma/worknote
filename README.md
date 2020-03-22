@@ -52,6 +52,14 @@ apcu_delete('name')
 [http://idea.medeming.com/jets/]</br>
 
 ## TODO-source-code
+`协同推荐SlopeOne 算法`
+</br>
+1:[
+https://www.cnblogs.com/huangxincheng/archive/2012/11/22/2782647.html]
+</br>
+2:[
+https://blog.csdn.net/xidianliutingting/article/details/51916578]
+</br></br>
 `workflow`
 </br>
 1:`flow`介绍[https://www.helplib.com/GitHub/article_145952]
