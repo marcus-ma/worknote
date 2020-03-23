@@ -153,6 +153,7 @@ https://cloud.tencent.com/developer/article/1420239]
 3: 短视频去水印 [https://dy.kukutool.com/] </br> [http://douyin.haiya360.com/] </br>
 4: 电子书搜索 [https://www.jiumodiary.com/] </br>
 5: 图片压缩 [https://works.yangerxiao.com/icfe/] </br>
+6: 百度文库在线解析 [http://www.html22.com/doc/] </br>
 
 ### 在网页中插入网易云播放器
 ```html
