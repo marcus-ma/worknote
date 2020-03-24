@@ -66,6 +66,10 @@ https://blog.csdn.net/xidianliutingting/article/details/51916578]
 1:[https://my.oschina.net/u/1186749/blog/795102]
 </br></br>
 
+`每日生产万亿消息数据入库，腾讯如何突破大数据分析架构瓶颈(Bitmap应用) `
+</br>
+1:[https://www.infoq.cn/article/BDizxoQ766UKblld-E1u]
+</br></br>
 
 `workflow`
 </br>
