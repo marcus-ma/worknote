@@ -54,8 +54,7 @@ apcu_delete('name')
 ## TODO-source-code
 `协同推荐SlopeOne 算法`
 </br>
-1:[
-https://www.cnblogs.com/huangxincheng/archive/2012/11/22/2782647.html]
+1:[https://www.cnblogs.com/huangxincheng/archive/2012/11/22/2782647.html]
 </br>
 2:[
 https://blog.csdn.net/xidianliutingting/article/details/51916578]
@@ -65,6 +64,20 @@ https://blog.csdn.net/xidianliutingting/article/details/51916578]
 </br>
 1:[https://www.sohu.com/a/241080725_661013]
 </br></br>
+
+`用户行为分析系列`
+</br>
+1:`需求场景`[https://blog.csdn.net/qq_28773159/article/details/79752718#10006-weixin-1-52626-6b3bffd01fdde4900130bc5a2751b6d1]
+</br>
+2:`数据的源头`[https://blog.csdn.net/qq_28773159/article/details/79778061]
+</br>
+3:`A/B 测试`[https://blog.csdn.net/qq_28773159/article/details/79923749]
+</br>
+4:`热力图`[https://blog.csdn.net/qq_28773159/article/details/79933652]
+</br>
+5:`渠道推广`[https://blog.csdn.net/qq_28773159/article/details/79939164]
+</br></br>
+
 
 `crc32在做一致性哈希以及哈希环中遇到的坑(对标PHP和golang) `
 </br>
