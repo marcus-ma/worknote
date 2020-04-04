@@ -491,7 +491,7 @@ $client = new Client();
         return json_decode($res->getBody(), true);
 	
 	
-//递归思想实现中间件
+//4-递归思想实现中间件
 class Middlewares {
     public $middlewares=[];
     public $index=-1;
@@ -2124,6 +2124,67 @@ func main() {
 
 	wf.run()
 }
+```
+
+## 获取数据流中的中位数
+```php
+class M{
+    private $minHeap;
+    private $maxHeap;
+    private $count=0;
+
+    public function __construct()
+    {
+        $this->minHeap = new SplMinHeap();
+        $this->maxHeap = new SplMaxHeap();
+    }
+
+    public function Insert($num)
+    {
+        //【偶数小顶堆】
+        if ($this->count%2==0){
+            //如果插入的数字比大堆顶元素小
+            if (!$this->maxHeap->isEmpty()&&$this->maxHeap->top()>$num){
+                $oldMax = $this->maxHeap->extract();
+                $this->maxHeap->insert($num);
+                $num=$oldMax;
+            }
+            $this->minHeap->insert($num);
+        }
+        //【奇数大顶堆】
+        else{
+            //如果插入的数字比小堆顶元素大
+            if (!$this->minHeap->isEmpty()&&$this->minHeap->top()<$num){
+                $oldMin = $this->minHeap->extract();
+                $this->minHeap->insert($num);
+                $num=$oldMin;
+            }
+            $this->maxHeap->insert($num);
+        }
+        $this->count++;
+    }
+
+    public function getMedian()
+    {
+        //统计数据大小
+        $size = $this->minHeap->count() + $this->maxHeap->count();
+        if($size==0)return 0.0;
+
+        //如果数据为偶数
+        if(($size & 1) == 0)return ($this->minHeap->top() + $this->maxHeap->top()) / 2.0;
+
+        //如果为奇数
+        return doubleval($this->minHeap->top());
+
+    }
+}
+
+$m = new M();
+$m->Insert(7);
+$m->Insert(5);
+$m->Insert(4);
+$m->Insert(9);
+var_dump($m->getMedian());//6
 ```
 
 
