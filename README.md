@@ -2127,6 +2127,103 @@ func main() {
 }
 ```
 
+## 图在树形层级应用
+```php
+class categoryParse{
+    //存储子类目与父类目映射
+    public $graph=[];
+    //存储id和name的映射
+    public $map=[];
+    public function __construct($json)
+    {
+        $data = json_decode($json,true);
+        //建图
+        $this->traverse($data,0);
+    }
+
+    private function traverse($data,$pre)
+    {
+        foreach ($data as $value){
+            $pre?
+                $this->graph[$value['id']][]=$pre:
+                $this->graph[$value['id']]=[];
+
+            $this->map[$value['id']]=$value['name'];
+            if (array_key_exists('children',$value)){
+                $this->traverse($value['children'],$value['id']);
+            }
+
+        }
+    }
+
+    /**
+     *  遍历子类目到总父类目的关系链
+     * @param $id integer 类目id
+     * @return array 关系链
+     */
+    private function DFS($id){
+        if (!isset($this->graph[$id])){
+            return [];
+        }
+        $stack=new SplStack();
+        $stack->push($this->map[$id]);
+        $ele=$id;
+        while (!empty($this->graph[$ele])){
+            $ele=$this->graph[$ele][0];
+            $stack->push($this->map[$ele]);
+        }
+        $array=[];
+        foreach ($stack as $item){
+            $array[]=$item;
+        }
+
+        return $array;
+    }
+
+    //传入指定类目id，打印出从根类目到指定类目的关系链
+    public function printCategory($id){
+        $resArr = $this->DFS($id);
+        echo empty($resArr)?
+            "类目不存在".PHP_EOL:
+            implode(" > ",$resArr).PHP_EOL;
+    }
+
+    //生成无限层级json结构
+    public function treeData()
+    {
+        $tree =[];
+        $tmpData = []; //临时数据,保存节点结构
+        $point = array_keys($this->map);
+
+        foreach ($point as $item){
+            $tmpData[$item]=[
+                'id'=>$item,
+                'name'=>$this->map[$item]
+            ];
+        }
+        foreach ($this->graph as $item=>$pre){
+            if (!empty($pre)&&isset( $tmpData[$pre[0]])){
+                $tmpData[$pre[0]]['children'][] = &$tmpData[$item];
+            }else{
+                //一级分类
+                $tree[] = &$tmpData[$item];
+            }
+        }
+
+        unset($tmpData);
+        return json_encode($tree,JSON_UNESCAPED_UNICODE);
+
+    }
+
+}
+
+$json = file_get_contents("https://job.xiyanghui.com/api/q1/json");
+$categoryParse = new categoryParse($json);
+$categoryParse->printCategory(2221);
+echo $categoryParse->treeData();
+```
+
+
 ## 获取数据流中的中位数
 ```php
 //原理：维护2个堆，一个大顶堆一个小顶堆
