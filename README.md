@@ -2224,6 +2224,108 @@ echo $categoryParse->treeData();
 ```
 
 
+## 最短路径
+```php
+class Graph{
+    public $nodes=[];
+    public $graph = [];
+
+    public function addNode($node)
+    {
+        $this->nodes[]=$node;
+    }
+    
+    public function addWeightEdge($node,$to,$weight)
+    {
+        $edge = new stdClass();
+        $edge->to=$to;
+        $edge->weight=$weight;
+        $this->graph[$node][]=$edge;
+    }
+    
+    private function dag($start)
+    {
+        $visited = [];//遍历过
+        $prev=[];//存储最短路径过程
+        $dist = [$start=>0];
+        array_map(function ($v)use(&$visited){
+            $visited[$v]=false;
+        },$this->nodes);
+        $pg = new SplQueue();
+        $pg->enqueue([$start,0]);
+
+        while (!$pg->isEmpty()){
+            list($index,$minValue) = $pg->dequeue();
+            $visited[$index]=true;
+
+            //如果之前加入队列的点最小值被后来的点路径更改，权重图已经是最小则跳过
+            if ($dist[$index]<$minValue)continue;
+
+            //遍历邻接边
+            if (isset($this->graph[$index])){
+                $edge = $this->graph[$index];
+                foreach ($edge as $item){
+                    //访问过就跳过
+                    if ($visited[$item->to])continue;
+                    //当前点到邻接点的权重为当前权重+到邻接点的权重
+                    $newDist = $dist[$index]+$item->weight;
+
+                    //到邻接点要取最小的值路径保留
+                    if (!isset($dist[$item->to])){
+                        $dist[$item->to]=$newDist;
+                        $prev[$item->to]=$index;
+                    }
+                    else {
+                        if ($dist[$item->to]>$newDist){
+                            $dist[$item->to]=$newDist;
+                            $prev[$item->to]=$index;
+                        }
+                    }
+
+                    $pg->enqueue([$item->to,$dist[$item->to]]);
+                }
+            }
+        }
+        return [$dist,$prev];
+
+    }
+
+    public function findShortestPath($s,$e)
+    {
+        list($dist,$prev)=$this->dag($s);
+        $path = new SplStack();
+        if (!isset($dist[$e]))return $path;
+        for($at=$e;isset($prev[$at]);$at=$prev[$at]){
+            $path->push($at);
+        }
+        $path->push($s);
+        return $path;
+    }
+}
+
+$g = new Graph();
+for ($i = 0; $i < 7; $i++) {
+    $g->addNode($i);
+}
+
+$g->addWeightEdge(0,1,3);
+$g->addWeightEdge(0, 2, 2);
+$g->addWeightEdge(0, 5, 3);
+$g->addWeightEdge(1, 3, 1);
+$g->addWeightEdge(1, 2, 6);
+$g->addWeightEdge(2,3,1);
+$g->addWeightEdge(2,4,10);
+$g->addWeightEdge(3,4,5);
+$g->addWeightEdge(5,4,7);
+
+$a = $g->findShortestPath(0,4);
+foreach ($a as $item){
+    echo $item.PHP_EOL;//0->2->3->4
+}
+
+```
+
+
 ## 获取数据流中的中位数
 ```php
 //原理：维护2个堆，一个大顶堆一个小顶堆
