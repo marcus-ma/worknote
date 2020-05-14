@@ -545,7 +545,7 @@ class Middlewares {
 
 
 
-//5-pipeline管道处理流水逻辑
+//5-pipeline管道处理流水逻辑，可以参考:https://learnku.com/articles/38189
 //逻辑处理接口
 interface  TestUnit
 {
