@@ -543,6 +543,91 @@ class Middlewares {
    $c->next();
    //1，2，hello，3，4
 
+
+
+//5-pipeline管道处理流水逻辑
+//逻辑处理接口
+interface  TestUnit
+{
+    public function handle($passable, callable $next = null);
+}
+//逻辑1
+class  Unit1 implements TestUnit
+{
+    public function handle($passable, callable $next = null)
+    {
+        echo __CLASS__ . '->' . __METHOD__ . " called\n";
+        $next($passable);
+    }
+}
+//逻辑2
+class  Unit2 implements TestUnit
+{
+    public function handle($passable, callable $next = null)
+    {
+        echo __CLASS__ . '->' . __METHOD__ . " called\n";
+        $next($passable);
+    }
+}
+//逻辑3
+class  Unit3 implements TestUnit
+{
+    public function handle($passable, callable $next = null)
+    {
+        echo __CLASS__ . '->' . __METHOD__ . " called\n";
+        $next($passable);
+    }
+}
+//逻辑4
+class  InitialValue implements TestUnit
+{
+    public function handle($passable, callable $next = null)
+    {
+        echo __CLASS__ . '->' . __METHOD__ . " called\n";
+        //$next($passable);
+    }
+}
+//使用类的逻辑处理顺序
+$processObj = [new Unit1(), new Unit2(), new Unit3()];
+//使用闭包的逻辑处理循序
+$processCallback = [
+    function($passable, callable $next = null){echo 'I am One:'.$passable.PHP_EOL;$passable++;$next($passable);},
+    function($passable, callable $next = null){echo 'I am Two:'.$passable.PHP_EOL;$passable++;$next($passable);},
+    function($passable, callable $next = null){echo 'I am Three:'.$passable.PHP_EOL;$passable++;$next($passable);},
+];
+//此处是管道处理的主体函数
+function Pipeline($stack, $pipe)
+{
+    //此处的$passable是由外部传入的数据
+    return function ($passable) use ($stack, $pipe) {
+    	//$pipe是逻辑的实体，$stack紧跟着的下一个逻辑的处理体
+
+        if (is_callable($pipe)) {
+            $pipe($passable, $stack);
+        } elseif (is_object($pipe)) {
+            $method = "handle";
+            if (!method_exists($pipe, $method)) {
+                throw new InvalidArgumentException('object that own handle method');
+            } else {
+                $pipe->$method($passable, $stack);
+            }
+        } else {
+            throw new InvalidArgumentException('$pipe must be callback or object');
+        }
+    };
+}
+$pipeline = array_reduce(array_reverse($processCallback), "Pipeline", function ($passable) {
+    (new InitialValue())->handle($passable);
+});
+//设置要传入处理的数据
+$data = 90;
+$pipeline($data);
+//结果是依次执行
+//I am One:90
+//I am Two:91
+//I am Three:92
+//InitialValue->InitialValue::handle called
+
 ```
 
 
