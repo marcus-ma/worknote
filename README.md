@@ -628,6 +628,58 @@ $pipeline($data);
 //I am Three:92
 //InitialValue->InitialValue::handle called
 
+
+//6-使用生成器yield优化内存性能(只配合foreach来遍历)
+function createRange($number){
+    for($i=0;$i<$number;$i++){
+        yield time();
+    }
+}
+//无论开始传入的 $number 有多大，由于并不会立即生成所有结果集，所以内存始终是一条循环的值。
+foreach(createRange(10000000000) as $value){
+    echo $value.'<br />';
+}
+
+//通常方法，如果是百万级别的访问量，会占用极大内存  ,改用yield就不会全加载，只会逐个使用
+function rand_weight($numbers)
+{
+    $w = function($numbersArr){
+        $total = 0;
+        foreach ($numbersArr as $number => $weight) {
+            $total += $weight;
+            yield $number=>$total;
+            //$distribution[$number] = $total;
+        }
+    };
+    $total = array_sum($numbers);
+    $rand = mt_rand(0, $total-1);
+    var_dump($rand);
+
+    foreach ($w($numbers) as $num => $weight) {
+        if ($rand < $weight) return $num;
+    }
+}  
+$numbers = array('nike' => 200, 'jordan' => 500, 'adiads' => 800);  
+var_dump(rand_weight($numbers));
+
+//PHP开发很多时候都要读取大文件，比如csv文件、text文件，或者一些日志文件。这些文件如果很大，比如5个G。这时，直接一次性把所有的内容读取到内存中计算不太现实。这里生成器就可以派上用场啦。
+function readTxt()
+{
+    # code...
+    $handle = fopen("./test.txt", 'rb');
+
+    while (feof($handle)===false) {
+        # code...
+        yield fgets($handle);
+    }
+
+    fclose($handle);
+}
+
+foreach (readTxt() as $key => $value) {
+    # code...
+    echo $value.'<br />';
+}
 ```
 
 
