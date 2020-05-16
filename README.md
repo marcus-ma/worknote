@@ -180,7 +180,7 @@ https://cloud.tencent.com/developer/article/1420239]
 ### 常用功能网址
 1：B站视频在线解析[http://www.xbeibeix.com/bilibili/] </br> [https://pv.vlogdownloader.com/] </br>
 2: 网盘搜索 [https://dalipan.com/search?keyword=] </br>
-3: 短视频去水印 [https://dy.kukutool.com/] </br> [http://douyin.haiya360.com/] </br> [https://douyin.video996.com/] </br>
+3: 短视频去水印 [https://imyshare.com/parsevideo/] </br> [https://dy.kukutool.com/] </br> [http://douyin.haiya360.com/] </br> [https://douyin.video996.com/] </br>
 4: 电子书搜索 [https://www.jiumodiary.com/] </br>
 5: 图片压缩 [https://works.yangerxiao.com/icfe/] </br>
 6: 百度文库在线解析 [http://www.html22.com/doc/] </br>  [https://www.docin365.com/] </br>
