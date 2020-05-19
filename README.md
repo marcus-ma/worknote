@@ -629,7 +629,18 @@ $pipeline($data);
 //InitialValue->InitialValue::handle called
 
 
-//6-使用生成器yield优化内存性能(只配合foreach来遍历)
+
+//6-使用闭包替代递归函数
+$fib = function ($n) use (&$fib) {
+    if ($n == 0 || $n == 1) {
+        return 1;
+    }
+
+    return $fib($n - 1) + $fib($n - 2);
+};
+$fib(3)//非波拉契数列
+
+//7-使用生成器yield优化内存性能(只配合foreach来遍历)
 function createRange($number){
     for($i=0;$i<$number;$i++){
         yield time();
