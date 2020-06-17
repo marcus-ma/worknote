@@ -2544,6 +2544,12 @@ var_dump($m->getMedian());//6
 ```
 
 
+## 逆波兰式使用场景
+```php
+var_dump('test');
+```
+
+
 ## GeoHash算法在LBS的应用
 案例1：当打开外卖APP,搜索附近美食,数据总可以按照由近到远展示在面前。
 </br></br>
