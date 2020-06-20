@@ -14,6 +14,7 @@
 - [ffmpeg常用命令](#ffmpeg常用命令)
 - [SQL优化](#SQL优化)
 - [MYSQLDump-tips](#MYSQLDump-tips)
+- [xmSelect常用法](#xmSelect常用法)
 - [Phalcon\Model](#Phalcon\Model)
 - [PHP技巧](#PHP技巧)
 - [PHP封裝的常用函数](#PHP封裝的常用函数)
@@ -246,7 +247,7 @@ HAVING COUNT(*) = 3
 ## MYSQLDump-tips
 1:【导出不影响：mysqldump --single-transaction】--single-transaction参数的作用，设置事务的隔离级别为可重复读，即REPEATABLE READ，这样能保证在一个事务中所有相同的查询读取到同样的数据，也就大概保证了在dump期间，如果其他innodb引擎的线程修改了表的数据并提交，对该dump线程的数据并无影响，在这期间不会锁表。
 
-##  xmSelect常用法
+## xmSelect常用法
 ```js
    <div class="layui-inline">
          <div class="layui-input-inline" id="selectSonChannel"></div>
