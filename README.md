@@ -246,6 +246,81 @@ HAVING COUNT(*) = 3
 ## MYSQLDump-tips
 1:【导出不影响：mysqldump --single-transaction】--single-transaction参数的作用，设置事务的隔离级别为可重复读，即REPEATABLE READ，这样能保证在一个事务中所有相同的查询读取到同样的数据，也就大概保证了在dump期间，如果其他innodb引擎的线程修改了表的数据并提交，对该dump线程的数据并无影响，在这期间不会锁表。
 
+##  xmSelect常用法
+```js
+   <div class="layui-inline">
+         <div class="layui-input-inline" id="selectSonChannel"></div>
+    </div>
+   //直接渲染
+   xmSelect.render({
+            el: '#selectSonChannel',
+            radio: true,
+            empty: '呀, 没有数据呢',//没数据的提示
+            name:'channel_id',//发送到后端的字段
+            tips:'请选择二级渠道',
+            clickClose:true,
+            filterable: true,
+            prop: {value: 'value', name: 'name'},//此处的属性跟下面的data属性对应
+            data:[{'name':'test','value':123}]
+        });
+   //延迟渲染
+   let dom = xmSelect.render({
+            el: '#selectSonChannel',
+            radio: true,
+            empty: '呀, 没有数据呢',//没数据的提示
+            name:'channel_id',//发送到后端的字段
+            tips:'请选择二级渠道',
+            clickClose:true,
+            filterable: true,
+            prop: {value: 'value', name: 'name'},//此处的属性跟下面的data属性对应
+            data:[]
+        });
+	
+   res = getPostFromServerData()
+   
+   dom.update({
+            data:res.data.map(function(value,index,array){
+                 return {'name':value.sub_channel_name,'value':value.channel_id}
+            })
+    })
+    
+    //选择后监听
+    xmSelect.render({
+            el: '#selectSonChannel',
+            radio: true,
+            empty: '呀, 没有数据呢',//没数据的提示
+            name:'channel_id',//发送到后端的字段
+            tips:'请选择二级渠道',
+            clickClose:true,
+            filterable: true,
+            prop: {value: 'value', name: 'name'},//此处的属性跟下面的data属性对应
+            data:[{'name':'test','value':123}],
+	    on:function(data){
+	    	 //arr:  当前多选已选中的数据
+                 var arr = data.arr;
+		 if(arr[0]){//TODO::}
+	    },
+        });
+	
+   //从服务器获取数据
+   xmSelect.render({
+            el: '#selectSonChannel',
+            radio: true,
+            paging: true,
+            pageRemote: true,
+            clickClose:true,
+            filterable: true,
+            prop: {value: 'value', name: 'name'},
+            remoteMethod: function(val, cb, show, pageIndex){
+	    	 res = getPostFromServerData()
+		 cb(res.data.map(function(value,index,array){
+                       return {'name':value.name,'val':value.id}
+                  }), res.total_page);
+	    }
+        });
+   
+```
+
 ## Phalcon\Model
 `initialize` 
 ```php
