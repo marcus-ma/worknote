@@ -15,13 +15,8 @@
 - [SQL优化](#SQL优化)
 - [MYSQLDump-tips](#MYSQLDump-tips)
 - [xmSelect常用法](#xmSelect常用法)
-- [Phalcon\Model](#Phalcon\Model)
 - [PHP技巧](#PHP技巧)
 - [PHP封裝的常用函数](#PHP封裝的常用函数)
-- [flashSession](#flashSession)
-- [volt](#volt)
-- [Phalcon\Image\Adapter\GD](#Phalcon\Image\Adapter\GD)
-- [searchAction](#searchAction)
 - [Bootstrap-table](#Bootstrap-table)
 - [MongoDB](#MongoDB)
 - [IM常用函数](#IM常用函数)
@@ -322,103 +317,6 @@ HAVING COUNT(*) = 3
    
 ```
 
-## Phalcon\Model
-`initialize` 
-```php
-public function initialize()
-{
-       //选择连接的DB
-       $this->setConnectionService("DB1");
-        //指定数据库，跟上面的一样
-        $this->setSchema("DB1");
-        //制定连接的表
-        $this->setSource("table1");
-        //必填，具体机制有待探究
-        $this->addBehavior(
-            new BlameableLib()
-        );
-}
-
-```
-
-`validation[校验机制的详细属性参考文章【https://blog.csdn.net/u014691098/article/details/80295304】]`
-```php
-new Validation\Validator
-public function validation()
-{
-       $validator = new Validation();
-       //检验唯一性	
-       $validator->add('字段属性', new Uniqueness([
-           'message' => '名称已经被使用',
-       ]));
-       //检验是否存在
-       $validator->add('字段属性', new PresenceOf([
-           'message' => '名称必需填写',
-       ]));
-       //自定义检验
-       $validator->add('age', new Callback([
-          'callback' => function(){
-		           return $this->age >= $this->min_age;
-          }
-             'message' => '年龄一定大于法定最小年龄',
-        ]));
-       //校验是否存在于集合中
-       $validator->add('字段属性', new InclusionIn([
-           "domain" => [1,2],
-       ]));
------------------------------------------------------------------------
-       //校验是否为URL 【除了提供Url外，还提供Email】
-       $validator->add('字段属性url', new Url([
-           'message' => '页面地址必需是有效的url',
-       ]));
------------------------------------------------------------------------
-        //校验长度
-        $validator->add('字段属性phone', new StringLength([
-            'min' => '11',
-           'max' => '11',
-           'messageMaximum' => '手机号不正确：'.$this->phone,
-           'messageMinimum' => '手机号不正确：'.$this->phone,
-        ]));
-        //利用正则校验
-        $validator->add('字段属性phone', new Regex([
-            'pattern' => '/^1\d{10}$/',
-           'message' => '错误的手机号码'.$this->phone,
-        ]));
-        return $this->validate($validator);
-}
-
-```
-
-`静态方法map的用法` 
-```php
-  //map方法是本系统封装好的一个方法，其作用是查出制定的数据组成关联数组
-  //第一个参数传递作为数组key的模型字段，第二个参数传递最为数组value的墨子那个字段
-  //第三个参数是sql的where条件
-  $kvArray = model::map('id','created_at',['order'=>'created_at asc']);
-  //[1=>'2019/2/10',2=>'2019/3/1']
-```
-
-
-`in的用法` 
-```php
-   $bind['_user'] = $ids;//[1,2,3,4,5,6]
-   $records = self::find([
-    	'conditions' => 'user_id in ({_user:array})'.$queryWhere,
-    	 'bind' => $bind,
-   ]);
-```
-
-`数据保存失败的提示获取(在控制器层)` 
-```php
-if (!$model->save()) {
-   foreach ($model->getMessages() as $message) {
-       $this->flashSession->error($message);
-    }
-    //准备将之前保存失败的内容显示回在之前的页面上
-    $this->tag::setDefaults(get_object_vars($model));
-    return $this->dispatcher->forward(['controller' => 'xxx', 'action' => 'xxx',]);
-}
-```
 
 ## PHP技巧
 ```php
@@ -770,226 +668,7 @@ foreach (readTxt() as $key => $value) {
 ```
 
 
-## flashSession
-```php
-//返回上一页后显示红色提示信息
-$this->flashSession->error("primary key was not found");
-$this->response->back();
-```
-![](https://raw.githubusercontent.com/marcus-ma/worknote/master/flashSession-error.png)
 
-```php
-//返回上一页后显示绿色提示信息
-$this->flashSession->success("ts was created successfully");
-$this->response->back();
-```
-![](https://raw.githubusercontent.com/marcus-ma/worknote/master/flashSession-success.png)
-
-```php
-//返回上一页后显示蓝色提示信息
-$this->flashSession->notice("ts was created successfully");
-//返回上一页后显示黄色提示信息
-$this->flashSession->warning("ts was created successfully");
-$this->response->back();
-```
-如果在某action下的volt模板中存在
-{{ flashSession.output() }}，
-同时该action函数中若又存在$this->flashSession的提示函数，
-则每次加载模板都会第一时间把提示框显示出来
-
-
-## volt
-```php
-//值输出
-$this->view->variable = 123;
-{{ variable }}  == echo 123;
-//对象形式的值
-{{ variable.col }}
-//数组形式的值
-{{ variable['col']}}
-//数组长度
-{{ variableArr |length }}
-
-//判断
-{% if variable == 'password' %}
-{% elseif variable =='phone' %}
-{% endif %}
-//判断变量是否被定义
-{% if profile is defined %}
-//结合在action中的$this->tag->setDefault('phone',111),判断是否设置
-{% if tag.getValue('phone') %}
-
- 
-//遍历
-{% for item in set %}
-   //对象
-   {{ item.name }}
-   //数组
-   {{ item['name'] }}
-{% endfor %}
-
-//kv遍历
-{% set numbers = ['one': 1, 'two': 2, 'three': 3], user = 'marcus' %}
-{% for name, value in numbers %}
-    Name: {{ name }} Value: {{ value }}
-{% endfor %}
-
-//遍历时判断
-{% for value in numbers if value < 2 %}
-    Value: {{ value }}
-{% endfor %}
-
-
-//过滤器【http://docs.iphalcon.cn/reference/volt.html】
-{# e or escape filter #}
-{{ "<h1>Hello<h1>"|e }}
-{# trim filter #}
-{{ "   hello   "|trim }}
-{# striptags filter #}
-{{ "<h1>Hello<h1>"|striptags }}
-……………………………………
-
-
-//注释
-{# note: this is a comment
-    {% set price = 100; %}
-#}
-
-
-//标签助手
-//form表单
-{{ form('products/save', 'method': 'post') }}
-{{ end_form() }}
-
-//input-text组件(name属性,k:v,…………)
-{{ text_field("email", 'id':'email', "class" : "form-control", "placeholder" : "Email", "required":"required") }}
-//textarea组件
-{{ text_area("content",'id':'content', "class" : "form-control", "placeholder" : "Content",) }}
-//提交按钮组件(value按钮值,k:v属性,…………)
-{{ submit_button("Sign In", "class":"btn btn-primary btn-block btn-flat") }}
-//select组件,id与name都为type，optionValue为[1,2,3,4],k为ov的value，v为ov的页面显示
-{{ select("type", [1,2,3,4], 'using': ['id', 'name']) }}
-//数字输入框，相当于<input type="number">
-{{ numeric_field("id", 'placeholder':'ID', "size" : 5, "class" : "form-control", "id" : "fieldId") }}
-//相当于a标签,<a href="ts-campaign/search" class="btn btn-default" >back</a>
-{{ link_to("ts-campaign/search", "back", 'class': 'btn btn-default') }}
-//隐藏文本框，相当于<input type="hidden" id="id" name="id" value="marcus">
-{{ hidden_field("id","value":"marcus") }}
-//file文件上传组件,相当于<input type="file" data-name="code_url" id="fieldCode">
-{{ file_field('data-name':"code_url", "size" : 30, "class" : "form-control upload-file", "id" : "fieldCode")  }}
-
-
-//模板继承
-//在base.volt中
-{# templates/base.volt #}
-<!DOCTYPE html>
-<html>
-    <head>
-        {% block head %}
-            <link rel="stylesheet" href="style.css" />
-        {% endblock %}
-
-        <title>{% block title %}{% endblock %} - My Webpage</title>
-    </head>
-    <body>
-        <div id="content">{% block content %}{% endblock %}</div>
-        <div id="footer">
-            {% block footer %}&copy; Copyright 2015, All rights reserved.{% endblock %}
-        </div>
-    </body>
-</html>
-
-//在其他组件中
-{% extends "templates/base.volt" %}
-{% block title %}Index{% endblock %}
-{% block head %}<style type="text/css">.important { color: #336699; }</style>{% endblock %}
-{% block content %}
-    <h1>Index</h1>
-    <p class="important">Welcome on my awesome homepage.</p>
-{% endblock %}
-```
-
-
-
-## Phalcon\Image\Adapter\GD
-```php
-//图像处理【http://docs.iphalcon.cn/reference/volt.html】
-//读取图像句柄
-$image = new Phalcon\Image\Adapter\GD('C:/Users/53505/Desktop/test.jpg');
-
-//设置生成图片的尺寸
-//第一个参数是指定宽度，第二个参数指定高度，第三个参数指定了缩放方式，默认为 PhalconImage::AUTO
-$image->resize(200, 200);
-
-//可以添加水印到指定位置
-//先获取水印的图片
-$mask = new Phalcon\Image\Adapter\GD('watermark.jpg');
-//添加到图片的制定位置上
-$image->watermark($watermark, -10, -10, 90);
-
-//可以添加文本到指定位置，下面的示例将会添加文本到图像正中间位置：
-$image->text('Hello world');
-
-//图像另存`save` 的第一个参数是指定保存路径，如果为空，将覆盖原始文件，第二个参数指定图像质量 [1-100] 之间。
-$image->save('unit-tests/assets/production/gd-resize.jpg');
-
-//直接渲染，获取二进制字符串
-$bytes = $image->render();
-$this->response->setContentType('image/png');
-$this->response->setContent($bytes);
-$this->response->send();
-```
-
-### searchAction
-```php
-对于所有search行为的控制器，生成表单数据的方法为
-if ($this->request->isPost()) {
-    $model = new {MODEL}();
-    $builder = $model->dataTableBuilder();
-    //此处的数组，是用于将的当前的一些模型字段进行自定义的转换
-    $transform = [];
-    //打个例子：现在在模板的字段有status，department，ip(对应datatable的table中的data-field="xxx")。
-    //其中department字段是要与部门model相互关联的
-    $transform = [
-            'status' => function($data){
-	       return model::status[$data->status]??'-';
-             },
-            'department' => function($data){
-	       return $data->departmodel->name;
-             },
-            'ip' => function($data){
-	       //UtiLib::geo方法是本系统封装好的工具函数，会把ip转化成数组,解析为国家、城市、运行商、ip
-	       return UtiLib::geo($data->ip)
-	       //此时返回的是数组，在模板数据渲染的时候记得要调用{{ partial('widget/extra', ['formatter':['ip']]) }}
-             },
-
-    ];
-   
-    return $this->response->paginate($builder, $transform);
------------------------------------------------------------------------
-//如果想要直接用返回一个对象直接在模板填充，做法是
-$transform = [
-     'user'' => function($data){
-            return isset($data->id) && $data->id ? Users::findFirst($data->id) : null;
-      },
-];
-```
-```html
-在模板上则为
-<th data-field="name" data-formatter="nameFormatter" data-align="center">姓名</th>
-<th data-field="sex" data-formatter="sexFormatter" data-align="center">性别</th>
- <th data-field="status" data-formatter="statusFormatter" data-align="center">状态</th>
-
-function nameFormatter(value, row, index){
-        return '<span>'+row.user.name+'</span>';
-}
-function sexFormatter(value, row, index){
-        return '<span>'+row.user.sex+'</span>';
-}
-function statusFormatter(value, row, index){
-        return '<span>'+row.user.status+'</span>';
-}
-```
 
 
 ## Bootstrap-table
@@ -1261,6 +940,31 @@ $(window).scroll(function(){
 btoa('hello')
   //解码
 atob('aGVsbG8=')
+
+
+//7：笛卡尔积实现数组元素全排列
+function cartesianProduct (arr) {
+  if (arr.length == 1) {
+    return arr;
+  } else {
+    return arr.reduce(function (a, b) {
+      return a.map(function (x) {
+        return b.map(function (y) {
+          return x.concat(y);
+        })
+      }).reduce(function (a, b) { return a.concat(b) }, [])
+    }, [[]])
+  }
+}
+
+console.log(cartesianProduct([[1,2,3],['a','b']]));
+//0: (2) [1, "a"]
+//1: (2) [1, "b"]
+//2: (2) [2, "a"]
+//3: (2) [2, "b"]
+//4: (2) [3, "a"]
+//5: (2) [3, "b"]
+
 ```
 
 
