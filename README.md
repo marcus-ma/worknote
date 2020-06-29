@@ -1,7 +1,6 @@
 # worknote
 
 -------------------------
-- [Apcu](#apcu)
 - [JB-IDE激活码](#JB-IDE激活码)
 - [TODO-source-code](#TODO-source-code)
 - [数据分析思维](#数据分析思维)
@@ -19,6 +18,7 @@
 - [PHP封裝的常用函数](#PHP封裝的常用函数)
 - [Bootstrap-table](#Bootstrap-table)
 - [MongoDB](#MongoDB)
+- [js小功能](#js小功能)
 - [IM常用函数](#IM常用函数)
 - [视频流播放](#视频流播放)
 - [window-API函数](#window-API函数)
@@ -32,15 +32,6 @@
 - [Go的二三事](#Go的二三事)
 -------------------------
 
-## apcu [注意！在php-cli下运行缓存无效的]
-```php
-//存储K-v-TTL(s)
-apcu_store('name', 'marcus', 60);
-//读取v,不存在就返回false
-var_dump(apcu_fetch('name'));
-//删除k
-apcu_delete('name')
-```
 ## 常用git命令
 1.取消本次修改，状态回到上一次提交的状态：git reset --hard 
 
