@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="main"></div>
+<div id="show"></div>
+
+<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+<script>
+  var config=[
+    {"code":'001766',"money":321.22},
+    {"code":'161903',"money":476},
+    {"code":'519181',"money":243},
+    {"code":'162703',"money":426},
+    {"code":'008086',"money":805},
+    {"code":'001052',"money":3329},
+    {}
+  ]
+  var res = []
+
+  function jsonpgz(data) {
+    return(data);
+  }
+
+  config.map(function(item){
+    if(JSON.stringify(item) == "{}"){$('#main').append('<button onclick="sum(this)">计算总收益</button>');return;}
+    $('#main').append('<button onclick="load(this)" data-code="'+item.code+'" data-money="'+item.money+'">计算</button>')
+  })
+
+
+  function load(obj) {
+      $.ajax({
+        type: "get",
+        url: "http://fundgz.1234567.com.cn/js/"+$(obj).data('code')+".js",
+        dataType: "jsonp",		//这个设置可以允许跨域调用js
+        jsonpCallback: "jsonpgz",	//这个很重要,是根据跨域目标服务器上返回的json数据中的函数起名
+        success: function (data) {
+          let name = data.name,
+            money = ((data.gsz - data.dwjz)*$(obj).data('money')).toFixed(2);
+          res.push(money)
+          $('#show').append('<h3>'+JSON.stringify({"name":name,"momney":money})+'</h3>');
+          //alert(data.name);	//这里就可以将data当作是JSON对象来直接调用属性来使用了
+        }})
+
+    $(obj).attr('disabled',"disabled")
+
+  }
+
+  function sum(obj) {
+    let sum_money = (eval(res.join("+"))).toFixed(2);
+    console.log(sum_money)
+    $('#show').append('<h3 style="color: red">总收益：'+sum_money+'</h3>');
+    res=[];
+    $(obj).attr('disabled',"disabled")
+  }
+
+
+
+
+</script>
+</body>
+</html>
