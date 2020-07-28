@@ -118,6 +118,11 @@ https://cloud.tencent.com/developer/article/1420239]
 </br>
 1:使用[https://www.zhangxinxu.com/wordpress/2020/07/js-audio-clip-copy-upload/]
 </br></br>
+`TradingView + WebSocket 实时推送 K 线脱坑指南`
+</br>
+1:使用[https://juejin.im/post/5bb1f22151882557305835f8]
+</br></br>
+
 
 ## 数据分析思维
 ### 七技巧
