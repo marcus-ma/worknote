@@ -114,6 +114,10 @@ https://cloud.tencent.com/developer/article/1420239]
 </br>
 2:使用[https://blog.csdn.net/chaoren499/article/details/90232332]
 </br></br>
+`JS纯前端实现audio音频剪裁剪切复制播放与上传`
+</br>
+1:使用[https://www.zhangxinxu.com/wordpress/2020/07/js-audio-clip-copy-upload/]
+</br></br>
 
 ## 数据分析思维
 ### 七技巧
