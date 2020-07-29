@@ -122,7 +122,10 @@ https://cloud.tencent.com/developer/article/1420239]
 </br>
 1:使用[https://juejin.im/post/5bb1f22151882557305835f8]
 </br></br>
-
+`Redis中BitMap是如何储存的，以及PHP如何处理`
+</br>
+1:使用[https://www.cnblogs.com/sunlong88/articles/9251645.html]
+</br></br>
 
 ## 数据分析思维
 ### 七技巧
