@@ -2980,6 +2980,138 @@ func main(){
 ```
 
 
+### 事件分发组件模式，实现了常规的广播，队列等事件分发模型
+```go
+import (
+	"errors"
+	"sync"
+)
+
+type Event interface {}
+
+var ErrSinkClosed = errors.New("ErrSinkClosed")
+
+//Sink是一个用来分发事件（Event）的结构。可以当作事件的处理者，使用接口的方式声明。
+//只要对象实现了这两个方法，就可以被当作一个Sink。
+type Sink interface {
+	Write(event Event) error
+	Close() error
+}
+
+
+type configureRequest struct {
+	sink Sink
+	response chan error
+}
+
+
+//Boardcaster由多个Sink组成
+type Broadcaster struct {
+	sinks   []Sink //所包含的Sink
+	events  chan Event// 同步Event的channel
+	adds    chan configureRequest //adds和remove必须保证thread-safe，所以采用channel同步
+	removes chan configureRequest
+
+	shutdown chan struct{}
+	closed   chan struct{}
+	once     sync.Once
+}
+
+//在Broadcaster中所有的临界资源(sinks,event)都通过自身的run()函数统一管理，外界则通过相应的channel 同步给Broadcaster
+//例如Write()
+func (b *Broadcaster) Write(event Event) error {
+	select {
+	case b.events <- event:
+	case <-b.closed:
+		return ErrSinkClosed
+	}
+	return nil
+}
+
+
+//可以看到增减sink都是通过向对应的channel写入数据进行的。
+func (b *Broadcaster) Add(sink Sink) error {
+	return b.configure(b.adds, sink) //  will be block until ch can be writen
+}
+
+func (b *Broadcaster) configure(ch chan configureRequest, sink Sink) error {
+	response := make(chan error, 1)
+
+	for {
+		select {
+		case ch <- configureRequest{
+			sink:     sink,
+			response: response}:
+			ch = nil // ？
+		case err := <-response:
+			return err
+		case <-b.closed:
+			return ErrSinkClosed
+		}
+	}
+}
+//核心run函数的实现,监听Boardcast管道上的相应事件，并作出处理。
+func (b *Broadcaster) run() {
+	defer close(b.closed)
+	//将remove封装了一下，因为下面两处都会用到
+	remove := func(target Sink) {
+		for i, sink := range b.sinks {
+			if sink == target {
+				b.sinks = append(b.sinks[:i], b.sinks[i+1:]...)
+				break
+			}
+		}
+	}
+	// 轮训处理channel上的事件
+	for {
+		select {
+		case event := <-b.events: //有事件到来，进行广播
+			for _, sink := range b.sinks {
+				if err := sink.Write(event); err != nil {
+					if err == ErrSinkClosed {
+						// remove closed sinks
+						remove(sink)
+						continue
+					}
+					//logrus.WithField("event", event).WithField("events.sink", sink).WithError(err). Errorf("broadcaster: dropping event")
+				}
+			}
+		case request := <-b.adds: //增加sink事件
+			// while we have to iterate for add/remove, common iteration for
+			// send is faster against slice.
+
+			var found bool
+			for _, sink := range b.sinks {
+				if request.sink == sink {
+					found = true
+					break
+				}
+			}
+
+			if !found {
+				b.sinks = append(b.sinks, request.sink)
+			}
+			// b.sinks[request.sink] = struct{}{}
+			request.response <- nil // 唤醒阻塞的configure（）函数
+
+		case request := <-b.removes://删除sink事件
+			remove(request.sink)
+			request.response <- nil
+		case <-b.shutdown:
+			// close all the underlying sinks
+			for _, sink := range b.sinks {
+				if err := sink.Close(); err != nil && err != ErrSinkClosed {
+					//logrus.WithField("events.sink", sink).WithError(err).
+					//	Errorf("broadcaster: closing sink failed")
+				}
+			}
+			return
+		}
+	}
+}
+```
+
+
 ### 反射
 ```go
 //reflect.TypeOf() 返回类型(reflect.Type)
