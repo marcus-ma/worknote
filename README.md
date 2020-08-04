@@ -137,7 +137,7 @@ https://cloud.tencent.com/developer/article/1420239]
 
 `PACING算法 广告预算 浅谈广告系统预算控制`
 </br>
-1:使用[https://www.cnblogs.com/zhangbojiangfeng/p/12575522.html]
+1:使用[https://www.lizenghai.com/archives/42609.html]
 </br></br>
 
 
