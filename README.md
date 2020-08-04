@@ -135,6 +135,10 @@ https://cloud.tencent.com/developer/article/1420239]
 1:使用[https://www.jianshu.com/p/2dce206b6d79]
 </br></br>
 
+`PACING算法 广告预算 浅谈广告系统预算控制`
+</br>
+1:使用[https://www.cnblogs.com/zhangbojiangfeng/p/12575522.html]
+</br></br>
 
 
 ## 数据分析思维
