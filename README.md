@@ -247,6 +247,16 @@ HAVING COUNT(*) = 3
 `
 </br></br>
 
+4:【一次性更新多值】更新id为13,12,11其所对应的age：</br>
+`sql
+UPDATE table SET age = CASE id 
+   WHEN 13 THEN 45 
+   WHEN 12 THEN 34 
+   WHEN 11 THEN 87 
+END WHERE id IN (13,12,11)
+`
+</br></br>
+
 
 ## 二进制求集合
 1：【交集】`∩交集:$ c = $value1 & $value2`
@@ -371,6 +381,9 @@ list($width, $height, $type, $attr) = getimagesize("runoob-logo.png");
 echo "宽度为：" . $width;
 echo "高度为：" . $height;
 echo "类型为：" . $attr;
+
+//汉子拆分成数组
+var_dump(preg_split('//u',$str,null,PREG_SPLIT_NO_EMPTY))
 
 
 ```
