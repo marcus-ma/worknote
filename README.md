@@ -197,6 +197,7 @@ https://cloud.tencent.com/developer/article/1420239]
 4: 电子书搜索 [https://www.jiumodiary.com/] </br>  [http://www.lingocn.com/category/ebook] </br> 
 5: 图片压缩 [https://works.yangerxiao.com/icfe/] </br>
 6: 百度文库在线解析 [http://www.html22.com/doc/] </br>  [https://www.docin365.com/] </br>
+7: 视频解析 [http://weibodang.cn/] </br>
 
 ### 在网页中插入网易云播放器
 ```html
