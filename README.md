@@ -232,6 +232,13 @@ https://cloud.tencent.com/developer/article/1420239]
 </br></br>
 10:将视频的音频抽出:`ffmpeg -i we.mp4 -vn r.mp3`
 </br></br>
+11:将视频宽高改变:`ffmpeg -i we.mp4 -s 720*1280 testp.mp4`
+</br></br>
+12:将视频添加文字水印:`ffmpeg -i we.mp4 -vf "drawtext=fontcolor=black:fontfile=simsun.ttc:text='喜欢就关注一下':x=20:y=20:fontsize=40:shadowy=2" outpu.mp4`
+</br></br>
+13:将视频水印模糊:`ffmpeg -i we.mp4 -vf "delogo=x=490:y=0:w=136:h=64" -c:a copy newp.mp4`
+</br></br>
+
 
 ## SQL优化
 1:【分页查询优化】在分页查询大量数据时候，采用主键索引来定位快,一般的查询采用limit是会逐一统计数据条数。如SELECT * FROM table WHERE id>500000 AND id<=500000+100 的查询速度会比一般分页查询SELECT * FROM table LIMIT 500000,100。
