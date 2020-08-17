@@ -12,6 +12,7 @@
 - [win10快速打开powershell](#win10快速打开powershell)
 - [ffmpeg常用命令](#ffmpeg常用命令)
 - [SQL优化](#SQL优化)
+- [计算请求平均耗时百分比](#计算请求平均耗时百分比)
 - [MYSQLDump-tips](#MYSQLDump-tips)
 - [xmSelect常用法](#xmSelect常用法)
 - [PHP技巧](#PHP技巧)
@@ -276,7 +277,7 @@ func ordinal(length int, percentile float64) int64 {
 
 func Percentile(p float64)  {
 	//一段时间内的请求耗时
-	sortedDurations := []time.Duration{1,2,3,4,5}
+	sortedDurations := []time.Duration{3000000,2000000,30000000,4000000,5000000}
 	//length := len(sortedDurations)
 	pos := ordinal(len(sortedDurations), p) - 1
 	//单位转成ms
