@@ -265,6 +265,30 @@ END WHERE id IN (13,12,11)
 `
 </br></br>
 
+## 计算请求平均耗时百分比
+```go
+func ordinal(length int, percentile float64) int64 {
+   if percentile == 0 && length > 0 {
+	return 1
+   }
+   return int64(math.Ceil((percentile / float64(100)) * float64(length)))
+}
+
+func Percentile(p float64)  {
+	//一段时间内的请求耗时
+	sortedDurations := []time.Duration{1,2,3,4,5}
+	//length := len(sortedDurations)
+	pos := ordinal(len(sortedDurations), p) - 1
+	//单位转成ms
+	return uint32(sortedDurations[pos].Nanoseconds() / 1000000)
+}
+
+func main(){
+   //计算99.5%的请求耗时
+   fmt.Println(Percentile(99.5))
+}
+```
+
 
 ## 二进制求集合
 1：【交集】`∩交集:$ c = $value1 & $value2`
