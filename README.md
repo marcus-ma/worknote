@@ -266,6 +266,10 @@ END WHERE id IN (13,12,11)
 `
 </br></br>
 
+## Golang环境安装下载
+1:下载源码包【此处我下载的是最新的版本】：`sudo curl -OL https://studygolang.com/dl/golang/go1.15.src.tar.gz`
+</br></br>
+
 ## 计算请求平均耗时百分比
 ```go
 func ordinal(length int, percentile float64) int64 {
