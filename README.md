@@ -270,6 +270,19 @@ END WHERE id IN (13,12,11)
 1:下载源码包【此处我下载的是最新的版本】：`sudo curl -OL https://studygolang.com/dl/golang/go1.15.src.tar.gz`
 </br></br>
 
+## Golang调用系统默认浏览器打开指定链接
+来源：[https://www.jianshu.com/p/29adf056e72b]
+</br></br>
+1.windows
+```go
+cmd := exec.Command(`cmd`, `/c`, `start`, `http://baidu.com`)
+cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+err :=cmd.Start()
+if err!=nil{
+   fmt.Println(err)
+}
+```
+
 ## 计算请求平均耗时百分比
 ```go
 func ordinal(length int, percentile float64) int64 {
