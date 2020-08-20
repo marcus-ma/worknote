@@ -282,6 +282,8 @@ if err!=nil{
    fmt.Println(err)
 }
 ```
+## Golang设置程序图标
+来源：[https://studygolang.com/articles/29850?fr=sidebar] </br> [https://blog.csdn.net/u014633966/article/details/82984037] </br>
 
 ## 计算请求平均耗时百分比
 ```go
