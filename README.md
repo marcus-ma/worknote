@@ -285,6 +285,19 @@ if err!=nil{
 ## Golang设置程序图标
 来源：[https://studygolang.com/articles/29850?fr=sidebar] </br> [https://blog.csdn.net/u014633966/article/details/82984037] </br>
 
+
+## go.mod的使用，告别GOPATH
+来源：[https://www.jianshu.com/p/bbed916d16ea]
+1：在当前目录下新建一个go文件，里面直接调用从未下载过得github包，保存退出
+</br></br>
+2：在当前目录使用命令`go mod init wserver`（go mod init 后面需要跟一个名字，我这里叫wserver）,看到提示 “go: creating new go.mod: module wserver”  说明 go mod 初始化成功了，会在当前目录下生成一个 go.mod 文件。
+</br></br>
+3:然后直接run一下新建的go文件：`go run main.go`，即可发现自动下载里面的包，并且正常运行了程序。同时项目目录下多出了一个文件 go.sum（go.sum 是记录所依赖的项目的版本的锁定）
+</br></br>
+4:如果出现【connect: connection refused】代表自动下载包失败，需要设置一下go的环境变量配置(被墙了)：使用命令`go env -w GOSUMDB=off`关闭到墙的下载设置，然后再使用命令`go env -w GOPROXY=https://goproxy.cn`设置国内的包下载代理，再重新`go run main.go`一下，应该可以正常运行了
+
+
+
 ## 计算请求平均耗时百分比
 ```go
 func ordinal(length int, percentile float64) int64 {
