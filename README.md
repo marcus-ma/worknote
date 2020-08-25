@@ -144,6 +144,11 @@ https://cloud.tencent.com/developer/article/1420239]
 1:使用[https://www.lizenghai.com/archives/42609.html]
 </br></br>
 
+`singleflight  golang缓存防击穿庫`
+</br>
+1:使用[https://github.com/golang/groupcache/singleflight/]
+</br></br>
+
 
 ## 数据分析思维
 ### 七技巧
