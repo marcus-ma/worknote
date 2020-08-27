@@ -245,7 +245,9 @@ https://cloud.tencent.com/developer/article/1420239]
 </br></br>
 12:将视频添加文字水印:`ffmpeg -i we.mp4 -vf "drawtext=fontcolor=black:fontfile=simsun.ttc:text='喜欢就关注一下':x=20:y=20:fontsize=40:shadowy=2" outpu.mp4`
 </br></br>
-13:将视频水印模糊:`ffmpeg -i we.mp4 -vf "delogo=x=490:y=0:w=136:h=64" -c:a copy newp.mp4`
+13:预览消除水印位置:`ffplay -i i.mp4 -vf delogo=x=1:y=1:w=168:h=30:show=1`
+</br></br>
+14将视频水印模糊:`ffmpeg -i we.mp4 -vf "delogo=x=490:y=0:w=136:h=64" -c:a copy newp.mp4`
 </br></br>
 
 
