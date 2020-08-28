@@ -331,6 +331,51 @@ func main(){
    fmt.Println(Percentile(99.5))
 }
 ```
+## GO的MySign加密
+```golang
+func getMySign(){
+	url := "https://ad.oceanengine.com/track/activate/"
+	privateKey := "17b201c78f7b27a1e2ff404b8a2feda19ffe84c8" //示例密钥
+	payloadMap := map[string]interface{}{ // 未签名数据
+		"callback":   "EJiw267wvfQCGKf2g74ZIPD89-vIATAMOAFCIjIwMTkxMTI3MTQxMTEzMDEwMDI2MDc3MjE1MTUwNTczNTBIAQ%3D%3D",
+		"conv_time":  1574835097,
+		"event_type": 3,
+		"os":         1,
+		"idfa":       "FCD369C3-F622-44B8-AFDE-12065659F34B",
+		"muid":       "FCD369C3-F622-44B8-AFDE-12065659F34B",
+		"source":     "mybestcustom",
+	}
+
+	payloadMap["signcode"] = privateKey
+	var keys []string
+	for k := range payloadMap {
+		keys = append(keys, k)
+	}
+	// 将key按照字段序排序
+	sort.Strings(keys)
+	// 生成待签名数据
+	buf := new(bytes.Buffer)
+	for _, k := range keys {
+		buf.WriteString(fmt.Sprintf("%s=%v", k, payloadMap[k]))
+	}
+	// 生成MD5签名值
+	hash := fmt.Sprintf("%x", md5.Sum(buf.Bytes()))
+	// 用签名值替换密钥
+	payloadMap["signcode"] = hash
+
+	payload, _ := json.Marshal(payloadMap)
+	req, _ := http.NewRequest(http.MethodPost, url, bytes.NewReader(payload))
+	req.Header.Add("content-type", "application/json")
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		// handle error
+	}
+	defer res.Body.Close()
+	body, _ := ioutil.ReadAll(res.Body)
+	fmt.Println(res)
+	fmt.Println(string(body))
+}
+```
 
 
 ## 二进制求集合
