@@ -332,8 +332,8 @@ func main(){
 }
 ```
 ## GO的常用代码段
-1：头条SDK的key加密类型
-</br></br>
+1：头条SDK的key加密类型和发送post请求
+</br>
 ```golang
 const (
    AppKey = ""
@@ -394,7 +394,34 @@ func main(){
 	fmt.Println(string(body))
 }
 ```
-
+</br></br>
+2：头条接口的发送GET请求
+</br>
+```golang
+func main(){
+	apiUrl := "https://ad.oceanengine.com/track/activate/"
+	payloadMap := map[string]interface{}{ // 未签名数据
+		"callback":   "EJiw267wvfQCGKf2g74ZIPD89-vIATAMOAFCIjIwMTkxMTI3MTQxMTEzMDEwMDI2MDc3MjE1MTUwNTczNTBIAQ%3D%3D",
+		"conv_time":  "1574835097",
+		"event_type": "3",
+		"imei":       "0c2bd03c39f19845bf54ea0abafae70e",
+	}
+	//发送GET请求
+	req, _ := http.NewRequest(http.MethodGet, apiUrl, nil)
+	q := req.URL.Query()
+	for k,v := range payloadMap{
+	    q.Add(k,v.(string))
+	}
+	req.URL.RawQuery = q.Encode()
+	client := &http.Client{}
+	res, err := client.Do(req)
+	if err != nil {// handle error}
+	defer res.Body.Close()
+	body, _ := ioutil.ReadAll(res.Body)
+	fmt.Println(string(body))
+}
+```
+</br></br>
 
 
 ## 二进制求集合
