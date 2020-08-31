@@ -331,51 +331,70 @@ func main(){
    fmt.Println(Percentile(99.5))
 }
 ```
-## GO的MySign加密
+## GO的常用代码段
+1：头条SDK的key加密类型
+</br></br>
 ```golang
-func getMySign(){
-	url := "https://ad.oceanengine.com/track/activate/"
-	privateKey := "17b201c78f7b27a1e2ff404b8a2feda19ffe84c8" //示例密钥
-	payloadMap := map[string]interface{}{ // 未签名数据
-		"callback":   "EJiw267wvfQCGKf2g74ZIPD89-vIATAMOAFCIjIwMTkxMTI3MTQxMTEzMDEwMDI2MDc3MjE1MTUwNTczNTBIAQ%3D%3D",
-		"conv_time":  1574835097,
-		"event_type": 3,
-		"os":         1,
-		"idfa":       "FCD369C3-F622-44B8-AFDE-12065659F34B",
-		"muid":       "FCD369C3-F622-44B8-AFDE-12065659F34B",
-		"source":     "mybestcustom",
-	}
-
-	payloadMap["signcode"] = privateKey
+const (
+   AppKey = ""
+   APP_API_KEY = ""
+)
+func getDataSignWithKey(paramsMap map[string]interface{},secretKey string) string{
+	appkey := AppKey
+	//先获取所有键名
 	var keys []string
-	for k := range payloadMap {
-		keys = append(keys, k)
+	for k := range paramsMap{
+	    keys = append(keys, k)
 	}
-	// 将key按照字段序排序
+	//将key按照字段序排序
 	sort.Strings(keys)
 	// 生成待签名数据
 	buf := new(bytes.Buffer)
 	for _, k := range keys {
-		buf.WriteString(fmt.Sprintf("%s=%v", k, payloadMap[k]))
+	    buf.WriteString(fmt.Sprintf("%s=%v", k, paramsMap[k]))
 	}
+	buf.WriteString(fmt.Sprintf("%v%v",appkey,secretKey))
 	// 生成MD5签名值
-	hash := fmt.Sprintf("%x", md5.Sum(buf.Bytes()))
-	// 用签名值替换密钥
-	payloadMap["signcode"] = hash
+	return fmt.Sprintf("%x", md5.Sum(buf.Bytes()))
+}
 
-	payload, _ := json.Marshal(payloadMap)
-	req, _ := http.NewRequest(http.MethodPost, url, bytes.NewReader(payload))
-	req.Header.Add("content-type", "application/json")
+func main(){
+	apiUrl := "http://https://ad.oceanengine.com//api/login.php"
+	fieldMap := map[string]interface{}{ // 未签名数据
+		"req_time":   time.Now().Unix() ,
+		"account_name":     fmt.Sprintf("testAccount%v",time.Now().Unix()),
+	}
+	
+	postMaps := make(map[string]interface{})
+	data,_:=json.Marshal(fieldMap)
+	//urldecode解码
+	//enEscapeUrl, _ := url.QueryUnescape(escapeUrl)
+	//urlencode编码
+	postMaps["data"] = url.QueryEscape(string(data))
+	postMaps["signcode"] = getDataSignWithKey(fieldMap,APP_API_KEY)
+	
+	
+	//组装发送post表单请求
+	buf := new(bytes.Buffer)
+	for k, v := range postMaps {
+	    buf.WriteString(fmt.Sprintf("%s=%v&", k, v))
+	}
+
+	req, _ := http.NewRequest(http.MethodPost, apiUrl, bytes.NewReader(buf.Bytes()))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	//如果是发送json的话
+	//req.Header.Set("content-type", "application/json")
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		// handle error
+	    // handle error
+	    fmt.Println(err)
 	}
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)
-	fmt.Println(res)
 	fmt.Println(string(body))
 }
 ```
+
 
 
 ## 二进制求集合
