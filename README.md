@@ -249,6 +249,8 @@ https://cloud.tencent.com/developer/article/1420239]
 </br></br>
 14将视频水印模糊:`ffmpeg -i we.mp4 -vf "delogo=x=490:y=0:w=136:h=64" -c:a copy newp.mp4`
 </br></br>
+15视频截取指定大小的图片:`ffmpeg -i i.mp4 -y -f image2 -ss 00:00:26 -t 0.001 -s 1366x768 a.jpg`
+</br></br>
 
 
 ## SQL优化
