@@ -259,29 +259,29 @@ https://cloud.tencent.com/developer/article/1420239]
 2：https://developer.aliyun.com/article/727673?utm_content=g_1000089764
 </br></br>
 3:【查询同时包含多个指定标签的文章】查询 tag_id 同时包含 1、2、3 的 article_id：</br>
-`sql
+```sql
 SELECT article_id
 FROM articles_tags
 WHERE tag_id in (1, 2, 3)
 GROUP BY article_id
 HAVING COUNT(*) = 3
-`
+```
 </br></br>
 4:【一次性更新多值】更新id为13,12,11其所对应的age：</br>
-`sql
+```sql
 UPDATE table SET age = CASE id 
    WHEN 13 THEN 45 
    WHEN 12 THEN 34 
    WHEN 11 THEN 87 
 END WHERE id IN (13,12,11)
-`
+```
 </br></br>
 5:【一个月按7天作为周维度查询】查询2020年8月(15962112000-1598889599)每周支付人数和支付金额：</br>
-`sql
+```sql
 SELECT
     FLOOR((day(FROM_UNIXTIME(stat_time,'%Y-%m-%d'))-1)/7)+1 weekapn,sum(money) money,sum(pay_num) paynum
 FROM t_data where stat_time BETWEEN 1596211200 and 1598889599 group by weekapn order by weekapn
-`
+```
 </br></br>
 
 ## Golang环境安装下载
