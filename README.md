@@ -430,6 +430,86 @@ func main(){
 }
 ```
 </br></br>
+3：Go类型递归构建字典树
+</br>
+```golang
+package main
+
+import (
+	"fmt"
+	"unsafe"
+)
+
+//字典树
+type (
+	Char  = rune
+	Trie map[Char]Trie
+)
+
+//添加字符串
+func (t Trie) AddString(s string)  {
+	for _,ch := range []Char(s){
+		if t[ch]!=nil {
+			t=t[ch]
+		}else {
+			prev := t
+			t = make(Trie)
+			prev[ch]=t
+		}
+	}
+}
+
+//判断字符串
+func (t Trie) ExistPrefix(prefix string)bool{
+	for _,ch:=range []Char(prefix){
+		if t[ch] == nil{
+			return false
+		}
+		t = t[ch]
+	}
+	return true
+}
+
+//查询关联推荐
+func (t Trie) Suggest(prefix string)[]string{
+	 prefixBytes := []Char(prefix)
+	 for _,ch := range prefixBytes{
+	 	t=t[ch]
+	 }
+	 return dfs(t,prefixBytes,nil)
+}
+
+//辅助函数
+func dfs(t Trie,prefix []Char,suggestions []string)[]string{
+	for ch,newT:=range t{
+		prefix:=append(prefix,ch)
+		if len(newT)==0 {
+			suggestions = append(suggestions,string(prefix))
+		}else {
+			suggestions = dfs(newT,prefix,suggestions)
+		}
+	}
+	return suggestions
+}
+
+
+func main() {
+	str :="我在"
+	str2:="我在这"
+	str3:="我在哪"
+
+	t := make(Trie)
+	t.AddString(str)
+	t.AddString(str2)
+	t.AddString(str3)
+
+	fmt.Println(
+		t.ExistPrefix("我在这"),//判断该字符串是否存在
+		t.Suggest("我在"),//print [我在这，我在哪]
+		unsafe.Sizeof(t))//8个字节的占用大小
+}
+```
+</br></br>
 
 
 ## 二进制求集合
