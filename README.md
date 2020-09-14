@@ -16,6 +16,7 @@
 - [Golang环境安装下载](#Golang环境安装下载)
 - [Golang调用系统默认浏览器打开指定链接](#Golang调用系统默认浏览器打开指定链接)
 - [go.mod的使用，告别GOPATH](#go.mod的使用，告别GOPATH)
+- [GO的常用代码段](#GO的常用代码段)
 - [MYSQLDump-tips](#MYSQLDump-tips)
 - [xmSelect常用法](#xmSelect常用法)
 - [PHP技巧](#PHP技巧)
