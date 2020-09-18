@@ -316,7 +316,8 @@ if err!=nil{
 </br></br>
 4:如果出现【connect: connection refused】代表自动下载包失败，需要设置一下go的环境变量配置(被墙了)：使用命令`go env -w GOSUMDB=off`关闭到墙的下载设置，然后再使用命令`go env -w GOPROXY=https://goproxy.cn`设置国内的包下载代理，再重新`go run main.go`一下，应该可以正常运行了
 
-
+## 熔断判断公式
+dropRatio=max(0,[(request-protetion)-K*accepts]/request+1)
 
 ## 计算请求平均耗时百分比
 ```go
