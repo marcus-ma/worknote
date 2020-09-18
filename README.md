@@ -208,6 +208,7 @@ https://cloud.tencent.com/developer/article/1420239]
 5: 图片压缩 [https://works.yangerxiao.com/icfe/] </br>
 6: 百度文库在线解析 [http://www.html22.com/doc/] </br>  [https://www.docin365.com/] </br>
 7: 视频解析 [http://weibodang.cn/] </br>
+8: 多功能在线工具(文件格式转换等) [https://zh.pickfrom.net/] </br>
 
 ### 在网页中插入网易云播放器
 ```html
