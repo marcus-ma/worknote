@@ -2,6 +2,7 @@
 
 -------------------------
 - [JB-IDE激活码](#JB-IDE激活码)
+- [Github的CDN](#Github的CDN)
 - [TODO-source-code](#TODO-source-code)
 - [数据分析思维](#数据分析思维)
 - [手机端调试工具插件](#手机端调试工具插件)
@@ -43,6 +44,10 @@
 ## JB-IDE激活码
 激活码地址[http://pblog.rzepx.cn/activationcode] </br>
 [http://idea.medeming.com/jets/]</br>
+
+## Github的CDN
+例子(获取marcus-ma/SSE-Event的SSE.js)：[https://cdn.jsdelivr.net/gh/marcus-ma/SSE-Event@master/SSE.js]
+
 
 ## TODO-source-code
 `协同推荐SlopeOne 算法`
