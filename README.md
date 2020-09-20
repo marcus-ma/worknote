@@ -528,6 +528,9 @@ func main() {
 3：【并集】`∪并集:$c = ( $value1 | $value2 )`
 </br></br>
 
+## 利用差分数组和前缀和来统计每个位置的出现次数
+
+
 ## MYSQLDump-tips
 1:【导出不影响：mysqldump --single-transaction】--single-transaction参数的作用，设置事务的隔离级别为可重复读，即REPEATABLE READ，这样能保证在一个事务中所有相同的查询读取到同样的数据，也就大概保证了在dump期间，如果其他innodb引擎的线程修改了表的数据并提交，对该dump线程的数据并无影响，在这期间不会锁表。
 
