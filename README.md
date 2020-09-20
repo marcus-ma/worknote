@@ -19,6 +19,7 @@
 - [go.mod的使用，告别GOPATH](#go.mod的使用，告别GOPATH)
 - [GO的常用代码段](#GO的常用代码段)
 - [MYSQLDump-tips](#MYSQLDump-tips)
+- [利用差分数组和前缀和来统计每个位置的出现次数](#利用差分数组和前缀和来统计每个位置的出现次数)
 - [xmSelect常用法](#xmSelect常用法)
 - [PHP技巧](#PHP技巧)
 - [PHP封裝的常用函数](#PHP封裝的常用函数)
@@ -529,6 +530,29 @@ func main() {
 </br></br>
 
 ## 利用差分数组和前缀和来统计每个位置的出现次数
+```golang
+func demo(){
+	//统计每个位置的出现次数
+	cnt := make([]int,5)
+	fmt.Println(cnt)
+	//{i,j}表示数组的第i位到第j位的都出现过一次
+	request:=[][]int{{1,3},{0,1}}
+	for _,v:=range request{
+		//差分数组
+		//开始位
+		cnt[v[0]]+=1
+		//结束位
+		cnt[v[1]+1]-=1
+	}
+	fmt.Println(cnt)
+
+	//前缀和
+	for i:=1;i<n;i++{
+		cnt[i]+=cnt[i-1]
+	}
+	fmt.Println(cnt)
+}
+```
 
 
 ## MYSQLDump-tips
