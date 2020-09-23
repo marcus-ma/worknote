@@ -291,6 +291,28 @@ SELECT
 FROM t_data where stat_time BETWEEN 1596211200 and 1598889599 group by weekapn order by weekapn
 ```
 </br></br>
+6:【查询组内Top N:】查询求出各部门薪水排名前2的员工，如果有多个员工薪水相同，需要全部显示：</br>
+```sql
+select * from salaries s1 where (select count(distinct(s2.salary)) from salaries s2 where s1.dept_no = s2.dept_no and s1.salary < s2.salary) < 2;
++----+--------+---------+--------+
+| id | emp_no | dept_no | salary |
++----+--------+---------+--------+
+|  1 |      1 |       1 |  10000 |
+|  2 |      2 |       1 |  10000 |
+|  3 |      3 |       1 |   8000 |
+|  4 |      4 |       1 |   8000 |
+|  6 |      6 |       2 |  10000 |
+|  7 |      7 |       2 |   9000 |
+|  9 |      9 |       3 |  10000 |
+| 10 |     10 |       3 |   9000 |
+| 11 |     11 |       3 |   9000 |
++----+--------+---------+--------+
+9 rows in set (0.00 sec)
+```
+```
+这语句要怎么理解呢？首先，如何定义薪水排名第1，换个说法就是薪水比我高的一个都没有，有0个。如何定义薪水排名第2，就是在薪水在我之上的，薪水去重后值只是1个，依此类推。上边语句把最末的”< 2″换成”in(0, 1)”估计就更好理解了。Top N就是要把排名第1，第2，…第N的取回来，in (0, 1, … , N – 1)，换个简洁的写法”< N”。因此，如果把问题改为排名第N的，很显然，结果就是”in(N – 1)”。
+```
+</br></br>
 
 ## Golang环境安装下载
 1:下载源码包【此处我下载的是最新的版本】：`sudo curl -OL https://studygolang.com/dl/golang/go1.15.src.tar.gz`
