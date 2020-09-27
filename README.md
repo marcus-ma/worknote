@@ -40,7 +40,8 @@
 -------------------------
 
 ## 常用git命令
-1.取消本次修改，状态回到上一次提交的状态：git reset --hard 
+1.取消本次修改，状态回到上一次提交的状态：git reset --hard </br>
+2.提交时忽略指定文件：git checkout 文件路径 `首先先git status 查询出所有需要提交的文件然后将需要忽略的文件路径复制下来，执行git checkout 文件路径，然后git status 发现被忽略的文件已经不再其中，然后进行提交`
 
 ## JB-IDE激活码
 激活码地址[http://pblog.rzepx.cn/activationcode] </br>
