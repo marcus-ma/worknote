@@ -41,7 +41,11 @@
 
 ## 常用git命令
 1.取消本次修改，状态回到上一次提交的状态：git reset --hard </br>
-2.提交时忽略指定文件：git checkout 文件路径 `首先先git status 查询出所有需要提交的文件然后将需要忽略的文件路径复制下来，执行git checkout 文件路径，然后git status 发现被忽略的文件已经不再其中，然后进行提交`
+2.提交时忽略指定文件：git checkout 文件路径 `首先先git status 查询出所有需要提交的文件然后将需要忽略的文件路径复制下来，执行git checkout 文件路径，然后git status 发现被忽略的文件已经不再其中，然后进行提交` </br>
+3.克隆远程指定分支：git clone -b dev http://xxxxx.git </br>
+4.拉取别人的分支到本地 ：git fetch origin dev </br>
+5.查看拉取代码的方式：git config --local -e </br>
+6.遇到http拉取禁止解决办法(window)：[https://blog.csdn.net/qq_34817440/article/details/106432747] </br>
 
 ## JB-IDE激活码
 激活码地址[http://pblog.rzepx.cn/activationcode] </br>
