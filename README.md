@@ -321,6 +321,12 @@ select * from salaries s1 where (select count(distinct(s2.salary)) from salaries
 这语句要怎么理解呢？首先，如何定义薪水排名第1，换个说法就是薪水比我高的一个都没有，有0个。如何定义薪水排名第2，就是在薪水在我之上的，薪水去重后值只是1个，依此类推。上边语句把最末的”< 2″换成”in(0, 1)”估计就更好理解了。Top N就是要把排名第1，第2，…第N的取回来，in (0, 1, … , N – 1)，换个简洁的写法”< N”。因此，如果把问题改为排名第N的，很显然，结果就是”in(N – 1)”。
 ```
 </br></br>
+7:【MySQL或MariaDB，不要用“utf8”编码，改用“utf8mb4”】避免特殊字符缺失或者查询特殊字符报错导致链接超时问题：[https://mathiasbynens.be/notes/mysql-utf8mb4#utf8-to-utf8mb4]
+</br></br>
+
+
+## Golang环境安装下载
+
 
 ## Golang环境安装下载
 1:下载源码包【此处我下载的是最新的版本】：`sudo curl -OL https://studygolang.com/dl/golang/go1.15.src.tar.gz`
