@@ -711,6 +711,35 @@ echo "类型为：" . $attr;
 var_dump(preg_split('//u',$str,null,PREG_SPLIT_NO_EMPTY))
 
 
+//使用关联数组来取代if-else/switch
+$res = ['over_45'=>0,'over_30'=>0,'over_15'=>0];
+$data=[
+    46,39,29,17,
+];
+
+function judge($condition,&$da){
+    $map = [
+        ($condition > 15) =>function()use(&$da){
+            return $da['loss_15']++;
+        },
+        ($condition > 30) =>function()use(&$da){
+            return $da['loss_30']++;
+        },
+        ($condition > 45) =>function()use(&$da){
+            return $da['loss_45']++;
+        },
+    ];
+    //因为在声明的时候就自动判断并且保留下条件为真的状态
+    $map[1]();
+}
+
+foreach ($data as $v){
+    test($v,$res);
+}
+
+var_dump($res);//['over_45'=>1,'over_30'=>1,'over_15'=>2];
+
+
 ```
 
 ## PHP封裝的常用函数
