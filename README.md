@@ -2805,6 +2805,10 @@ cmd控制台到要编译的go文件的目录下
 不存在++a或者--a，只有a++和a--
 
 
+### 时间戳格式化
+time.Unix(timestamp, 0).Format("2006-01-02 15:04:05")
+
+
 ### struct tag
 只要在相关tag中写上`omitempty`，只要在struct初始化时没有赋值的字段，就会省略掉，如：
 ```golang
