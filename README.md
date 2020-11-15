@@ -556,6 +556,21 @@ func main() {
 ```
 </br></br>
 
+4：byte转字符串性能方法
+</br>
+```golang
+func BytesToStrings(b *[]bytes)*string{
+    s := bytes.NewBuffer(*b)
+    r := s.String()
+    return &r
+}
+
+func main(){
+	fmt.Println(*BytesToStrings(&([]bytes("hello"))))
+}
+```
+</br></br>
+
 
 ## 二进制求集合
 1：【交集】`∩交集:$ c = $value1 & $value2`
