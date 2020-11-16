@@ -46,6 +46,19 @@
 4.拉取别人的分支到本地 ：git fetch origin dev </br>
 5.查看拉取代码的方式：git config --local -e </br>
 6.遇到http拉取禁止解决办法(window)：[https://blog.csdn.net/qq_34817440/article/details/106432747] </br>
+7.代码回滚到指定版本的步骤
+```git
+//查看提交的commit记录
+git logs
+
+//记下要回滚那步的commit id，然后重置版本
+git reset --hard commitid
+
+//远程代码库也要回滚(强制提交)
+git push origin HEAD --force
+```
+ </br>
+
 
 ## JB-IDE激活码
 激活码地址[http://pblog.rzepx.cn/activationcode] </br>
