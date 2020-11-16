@@ -338,6 +338,15 @@ select * from salaries s1 where (select count(distinct(s2.salary)) from salaries
 </br></br>
 7:【MySQL或MariaDB，不要用“utf8”编码，改用“utf8mb4”】避免特殊字符缺失或者查询特殊字符报错导致链接超时问题：[https://mathiasbynens.be/notes/mysql-utf8mb4#utf8-to-utf8mb4]
 </br></br>
+8:【通过以下SQL来捞取最近5分钟的慢查询】更新id为13,12,11其所对应的age：</br>
+```sql
+select CONCAT( '# Time: ', DATE_FORMAT(start_time, '%y%m%d %H%i%s'), '\n', '# User@Host: ', user_host, '\n', '# Query_time: ', TIME_TO_SEC(query_time), ' Lock_time: ', TIME_TO_SEC(lock_time), ' Rows_sent: ', rows_sent, ' Rows_examined: ', rows_examined, '\n', sql_text, ';' ) FROM mysql.slow_log where start_time between current_timestamp and date_add(CURRENT_TIMESTAMP,INTERVAL -5 MINUTE);
+```
+慢查询SQL
+```sql
+| 2020-10-02 19:17:23 | w_mini_user[w_mini_user] @ [10.200.20.11] | 00:00:02 | 00:00:00 | 9 | 443117 | mini_user | 0 | 0 | 168387936 | select id,club_id,reason,status,type,created_time,invite_id,falg_admin,file_id from t_user_msg where 1 and (team_id in (3212) and app_id is not null) or (invite_id=12395 or applicant_id=12395) order by created_time desc limit 0,10; | 1219921665 |
+```
+</br></br>
 
 
 ## Golang环境安装下载
