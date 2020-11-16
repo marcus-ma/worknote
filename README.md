@@ -267,6 +267,8 @@ https://cloud.tencent.com/developer/article/1420239]
 </br></br>
 16给视频加上字幕:`ffmpeg -i i.mp4 -vf subtitles=word.srt -y output.mp4`
 </br></br>
+17给不同格式视频转成mp4:`ffmpeg -i i.f4v -y -qscale 0 -vcodec libx264 ts.mp4`
+</br></br>
 
 
 ## SQL优化
