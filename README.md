@@ -595,6 +595,106 @@ func main(){
 ```
 </br></br>
 
+## GO的关于Goroutine的2种类型
+第一种适合数据量惊人的处理，第二种适合数据量少点
+```golang
+import (
+	"fmt"
+	"time"
+)
+
+//数据生成器
+func generateData(total int) []int {
+	var data []int
+	for i:=0;i<total;i++{
+		data = append(data,i)
+	}
+
+	return data
+}
+
+
+//只开指定数量的Goroutine，像消息队列那样逐批消费
+func demo1(ids []int)  {
+	sendCh := make(chan int,10)
+	recCh := make(chan int,10)
+	closeCh := make(chan bool)
+
+
+	start := time.Now()
+	go func() {
+		for _,v:=range ids{
+			sendCh<-v
+		}
+		close(sendCh)
+	}()
+
+	for i:=0;i<5;i++ {
+		//do task
+		go func(s chan int,r chan int,c chan bool) {
+			for v:= range s{
+				time.Sleep(1*time.Second)
+				r<-v
+			}
+			c<-true
+		}(sendCh,recCh,closeCh)
+	}
+
+	go func() {
+		for i:=0;i<5;i++ {
+			<-closeCh
+		}
+		close(recCh)
+		close(closeCh)
+	}()
+
+	for v:= range recCh{
+		fmt.Println(v)
+	}
+	fmt.Println("demo1:time spent:",time.Since(start).Seconds())
+}
+
+//直接开够和数据条数一样的Goroutine，来100条就开100个
+func demo2(items []int)  {
+	fundCount := len(items)
+	channel:= make(chan int,fundCount)
+
+	var a []int
+
+
+	//记下开始时间
+	start := time.Now()
+	for  _,item := range items{
+
+		go func(channel chan int,item int) {
+			time.Sleep(1*time.Second)
+			channel<-item
+
+		}(channel,item)
+
+
+	}
+
+	for value := range channel{
+		a = append(a,value)
+		if len(a) == fundCount {close(channel)}
+	}
+	fmt.Println("demo2:total",len(a))
+	fmt.Println("demo2:time spent:",time.Since(start).Seconds())
+}
+
+func main() {
+
+
+	ids := generateData(100)
+
+	go demo1(ids)//1s
+
+	go demo2(ids)//20s
+
+	select {}
+}
+```
 
 ## 二进制求集合
 1：【交集】`∩交集:$ c = $value1 & $value2`
