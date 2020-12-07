@@ -227,7 +227,7 @@ https://cloud.tencent.com/developer/article/1420239]
 ### 常用功能网址
 1：B站视频在线解析[http://www.xbeibeix.com/bilibili/] </br> [https://pv.vlogdownloader.com/] </br>
 2: 网盘搜索 [https://dalipan.com/search?keyword=] </br> [https://www.iwanw.com/] </br>
-3: 短视频去水印 [https://imyshare.com/parsevideo/] </br> [https://dy.kukutool.com/] </br> [http://douyin.haiya360.com/] </br> [https://douyin.video996.com/] </br> [https://www.videoparse.cn/] </br> 
+3: 短视频去水印 [https://imyshare.com/parsevideo/] </br> [https://dy.kukutool.com/] </br> [http://douyin.haiya360.com/] </br> [https://douyin.video996.com/] </br> [https://www.videoparse.cn/] </br> [http://www.17dot.cn/] </br> 
 4: 电子书搜索 [https://www.jiumodiary.com/] </br>  [http://www.lingocn.com/category/ebook] </br> 
 5: 图片压缩 [https://works.yangerxiao.com/icfe/] </br>
 6: 百度文库在线解析 [http://www.html22.com/doc/] </br>  [https://www.docin365.com/] </br>
