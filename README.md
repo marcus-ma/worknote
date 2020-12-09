@@ -67,6 +67,9 @@ git push origin HEAD --force
 ## Github的CDN
 例子(获取marcus-ma/SSE-Event的SSE.js)：[https://cdn.jsdelivr.net/gh/marcus-ma/SSE-Event@master/SSE.js]
 
+## go开发者大会 历年ppt
+地址：[https://https://github.com/gopherchina/conference]
+
 
 ## TODO-source-code
 `协同推荐SlopeOne 算法`
