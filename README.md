@@ -285,6 +285,8 @@ https://cloud.tencent.com/developer/article/1420239]
 </br></br>
 17给不同格式视频转成mp4:`ffmpeg -i i.f4v -y -qscale 0 -vcodec libx264 ts.mp4`
 </br></br>
+18将视频添加跑马灯文字水印:`ffmpeg.exe -i i.mp4 -vf "drawtext=fontcolor=white:fontfile=msyhbd.ttc:text='喜欢就点赞加关注,跪求':y=30:x=(mod(2*n\,w+tw)-tw):fontsize=40:shadowy=2" t2.mp4`
+</br></br>
 
 
 ## SQL优化
