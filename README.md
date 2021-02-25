@@ -287,6 +287,8 @@ https://cloud.tencent.com/developer/article/1420239]
 </br></br>
 18将视频添加跑马灯文字水印:`ffmpeg.exe -i i.mp4 -vf "drawtext=fontcolor=white:fontfile=msyhbd.ttc:text='喜欢就点赞加关注,跪求':y=30:x=(mod(2*n\,w+tw)-tw):fontsize=40:shadowy=2" t2.mp4`
 </br></br>
+19将16:9的横版视频等比例转9:16的竖版视频(上下部分替换成高斯模糊):`ffmpeg -i i.mp4 -lavfi "[0:v]scale=256/81*iw:256/81*ih,boxblur=luma_radius=min(h\,w)/40:luma_power=3:chroma_radius=min(cw\,ch)/40:chroma_power=1[bg];[bg][0:v]overlay=(W-w)/2:(H-h)/2,setsar=1,crop=w=iw*81/256" t.mp4`
+</br></br>
 
 
 ## SQL优化
