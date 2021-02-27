@@ -67,6 +67,9 @@ git push origin HEAD --force
 ## Github的CDN
 例子(获取marcus-ma/SSE-Event的SSE.js)：[https://cdn.jsdelivr.net/gh/marcus-ma/SSE-Event@master/SSE.js]
 
+## Mac配置ssh免密登录
+[https://www.itpony.com/show/49.html]
+
 ## go开发者大会 历年ppt
 地址：[https://https://github.com/gopherchina/conference]
 
