@@ -248,6 +248,8 @@ https://cloud.tencent.com/developer/article/1420239]
 上面的id使用的是你想要播放的歌单的id，歌单id就是网易云网页版歌单播放的地址：`https://music.163.com/#/my/m/music/playlist?id=`
 
 ### ffmpeg常用命令
+别人总结使用：[https://www.zhangwenbing.com/blog/ffmpeg/page/1]
+</br></br>
 1:音视频文件播放倍数改变[将bgm.mp3播放速度改为原来的2倍]：`ffmpeg -i bgm.mp3 -filter_complex "[0:v]setpts=0.5*PTS[v];[0:a]atempo=2.0[a]" -map "[v]" -map "[a]" bgm2.0.mp3`
 </br></br>
 2:视频文件生成截图[将output.mp4截图第4秒的画面当截图]：`ffmpeg -ss 00:00:03 -y -i output.mp4 -s 500x334 -vframes 1 new.jpg`
