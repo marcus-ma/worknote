@@ -237,7 +237,7 @@ https://cloud.tencent.com/developer/article/1420239]
 4: 电子书搜索 [https://www.jiumodiary.com/] </br>  [http://www.lingocn.com/category/ebook] </br> 
 5: 图片压缩 [https://works.yangerxiao.com/icfe/] </br>
 6: 百度文库在线解析 [http://www.html22.com/doc/] </br>  [https://www.docin365.com/] </br>
-7: 视频解析 [http://weibodang.cn/] </br> [https://tool.lu/videoparser/] </br> [http://v.ranks.xin/] </br>
+7: 视频解析 [http://weibodang.cn/] </br> [https://tool.lu/videoparser/] </br> [http://v.ranks.xin/] </br> [https://tool.louqun.com/Tools/vip/] </br>
 8: 多功能在线工具(文件格式转换等) [https://zh.pickfrom.net/] </br>
 9: 下载youtube字幕文件 [https://downsub.com/] </br>
 
