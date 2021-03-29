@@ -18,6 +18,7 @@
 - [Golang调用系统默认浏览器打开指定链接](#Golang调用系统默认浏览器打开指定链接)
 - [go.mod的使用，告别GOPATH](#go.mod的使用，告别GOPATH)
 - [GO的常用代码段](#GO的常用代码段)
+- [识别一个IP是不是代理IP](#识别一个IP是不是代理IP)
 - [MYSQLDump-tips](#MYSQLDump-tips)
 - [利用差分数组和前缀和来统计每个位置的出现次数](#利用差分数组和前缀和来统计每个位置的出现次数)
 - [xmSelect常用法](#xmSelect常用法)
@@ -741,6 +742,12 @@ func demo(){
 	fmt.Println(cnt)
 }
 ```
+
+## 识别一个IP是不是代理IP
+1:【反向探测技术】：扫描IP是不是开通了80,8080等代理服务器经常开通的端口，显然一个普通的用户IP不太可能开通如上的端口。</br></br>
+2:【HTTP头部的X_Forwarded_For】：开通了HTTP代理的IP可以通过此法来识别是不是代理IP；如果带有XFF信息，该IP是代理IP无疑。</br></br>
+3:【Keep-alive报文】：如果带有Proxy-Connection的Keep-alive报文，该IP毫无疑问是代理IP。</br></br>
+4:【查看IP上端口】：如果一个IP有的端口大于10000，那么该IP大多也存在问题，普通的家庭IP开这么大的端口几乎是不可能的。</br></br>
 
 
 ## MYSQLDump-tips
