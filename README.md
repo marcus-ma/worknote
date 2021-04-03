@@ -609,6 +609,32 @@ func main(){
 ```
 </br></br>
 
+5：生成指定长度的随机字符串
+</br>
+```golang
+
+import (
+	"fmt"
+	"math/rand"
+	"time"
+)
+
+func getRandomString(length uint8) string {
+	rand.Seed(time.Now().UnixNano())
+	var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
+	b := make([]rune,length)
+	for i:= range b{
+		b[i] = letters[rand.Intn(len(letters))]
+	}
+	return string(b)
+}
+
+func main(){
+	fmt.Println(getRandomString(8))
+}
+```
+</br></br>
+
 ## GO的关于Goroutine的2种类型
 第一种适合数据量惊人的处理，第二种适合数据量少点
 ```golang
