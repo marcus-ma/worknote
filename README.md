@@ -807,6 +807,14 @@ foreach ($query->cursor() as $item) {
 fclose($fileHander);
 ```
 打印日志只占用了5M</br>
+如果不想在代码层面上关闭，可以再编缉`【config/database.php】`文件在mysql配置中增加 options
+```php
+'options'   => [
+    PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => false
+]
+```
+</br>
+
 
 
 ## MYSQLDump-tips
