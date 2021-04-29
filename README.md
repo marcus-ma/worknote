@@ -19,6 +19,7 @@
 - [go.mod的使用，告别GOPATH](#go.mod的使用，告别GOPATH)
 - [GO的常用代码段](#GO的常用代码段)
 - [识别一个IP是不是代理IP](#识别一个IP是不是代理IP)
+- [laravel使用cursor分批获取巨量数据不生效的问题](#laravel使用cursor分批获取巨量数据不生效的问题)
 - [MYSQLDump-tips](#MYSQLDump-tips)
 - [利用差分数组和前缀和来统计每个位置的出现次数](#利用差分数组和前缀和来统计每个位置的出现次数)
 - [xmSelect常用法](#xmSelect常用法)
@@ -774,6 +775,37 @@ func demo(){
 2:【HTTP头部的X_Forwarded_For】：开通了HTTP代理的IP可以通过此法来识别是不是代理IP；如果带有XFF信息，该IP是代理IP无疑。</br></br>
 3:【Keep-alive报文】：如果带有Proxy-Connection的Keep-alive报文，该IP毫无疑问是代理IP。</br></br>
 4:【查看IP上端口】：如果一个IP有的端口大于10000，那么该IP大多也存在问题，普通的家庭IP开这么大的端口几乎是不可能的。</br></br>
+
+## laravel使用cursor分批获取巨量数据不生效的问题
+```php
+$query = DB::table('table')
+    ->where('company_id', 1)
+    ->where('updated_at', '>', $last);
+debugLog('开始的内存：'.memory_get_usage());
+foreach ($query->cursor() as $item) {
+   debugLog('运行中内存：'.memory_get_usage());
+   fwrite($fileHander, json_encode($item) . "\r\n");
+   unset($item);
+}
+fclose($fileHander);
+```
+打印日志发现占用了800多M，根本没有达到游标的作用</br>
+查了下资料，原来还需要给pdo关闭一个缓存属性【\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY：false】</br>
+最后优化后的代码如下</br>
+```php
+$query = DB::table('table')
+    ->where('company_id', 1)
+    ->where('updated_at', '>', $last);
+$query->getConnection()->getPdo()->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
+debugLog('开始的内存：'.memory_get_usage());
+foreach ($query->cursor() as $item) {
+   debugLog('运行中内存：'.memory_get_usage());
+   fwrite($fileHander, json_encode($item) . "\r\n");
+   unset($item);
+}
+fclose($fileHander);
+```
+打印日志只占用了5M</br>
 
 
 ## MYSQLDump-tips
