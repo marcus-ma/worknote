@@ -791,6 +791,7 @@ fclose($fileHander);
 ```
 打印日志发现占用了800多M，根本没有达到游标的作用</br>
 查了下资料，原来还需要给pdo关闭一个缓存属性【\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY：false】</br>
+用php更新大量数据，pdo默认会缓存数据，也就是说把数据全部读入内存后再fetch。当数据量很大的时候，会导致内存溢出。</br>
 最后优化后的代码如下</br>
 ```php
 $query = DB::table('table')
