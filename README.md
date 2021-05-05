@@ -20,6 +20,7 @@
 - [GO的常用代码段](#GO的常用代码段)
 - [识别一个IP是不是代理IP](#识别一个IP是不是代理IP)
 - [laravel使用cursor分批获取巨量数据不生效的问题](#laravel使用cursor分批获取巨量数据不生效的问题)
+- [监听页面打开/关闭/切换tab事件并发送请求](#监听页面打开/关闭/切换tab事件并发送请求)
 - [MYSQLDump-tips](#MYSQLDump-tips)
 - [利用差分数组和前缀和来统计每个位置的出现次数](#利用差分数组和前缀和来统计每个位置的出现次数)
 - [xmSelect常用法](#xmSelect常用法)
@@ -815,6 +816,46 @@ fclose($fileHander);
 ```
 </br>
 
+## 监听页面打开/关闭/切换tab事件并发送请求
+```js
+// 利用sendBeacon来发送请求(好处是就算页面关闭都能发送完请求)
+ const reportData = function (url,data){
+        const formData = new FormData();
+        Object.keys(data).forEach(function (key){
+            let value =data[key];
+            if (typeof value!=='string'){
+                value = JSON.stringify(value)
+            }
+
+            formData.append(key,value)
+        })
+        navigator.sendBeacon(url,formData)
+    };
+    
+//监听页面刚加载
+window.addEventListener('load',function (){
+        var url = '/actionlog';
+        reportData(url,{action:"load"})
+},false)
+
+//监听页面关闭/刷新
+window.addEventListener('beforeunload',function (){
+        var url = '/actionlog';
+        reportData(url,{action:"unload"})
+},false)
+
+//监听页面tab切换
+window.document.addEventListener("visibilitychange",function (){
+        var url = '/actionlog';
+        if (document.visibilityState=== "visible"){
+            reportData(url,{name:"visible"})
+        }
+        if (document.visibilityState=== "hidden"){
+            reportData(url,{action:"hidden"})
+        }
+  },false)
+    
+```
 
 
 ## MYSQLDump-tips
