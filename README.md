@@ -858,7 +858,7 @@ window.document.addEventListener("visibilitychange",function (){
     
 ```
 
-## LINUX I/O 多路复用
+## LINUX的I/O多路复用
 * select
     * 仅仅知道有I/O事件发生，却并不知道是哪那几个流，需要无差别轮询所有流，找出能读出数据，或者写入数据的流，对他们进行操作。
     * select具有O(n)的无差别轮询复杂度，同时处理的流越多，无差别轮询时间就越长
