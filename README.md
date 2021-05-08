@@ -21,7 +21,7 @@
 - [识别一个IP是不是代理IP](#识别一个IP是不是代理IP)
 - [laravel使用cursor分批获取巨量数据不生效的问题](#laravel使用cursor分批获取巨量数据不生效的问题)
 - [监听页面打开/关闭/切换tab事件并发送请求](#监听页面打开/关闭/切换tab事件并发送请求)
-- [LINUX I/O 多路复用](#LINUX I/O 多路复用)
+- [LINUX的I/O多路复用](#LINUX I/O 多路复用)
 - [MYSQLDump-tips](#MYSQLDump-tips)
 - [利用差分数组和前缀和来统计每个位置的出现次数](#利用差分数组和前缀和来统计每个位置的出现次数)
 - [xmSelect常用法](#xmSelect常用法)
