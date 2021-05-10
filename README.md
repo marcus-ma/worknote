@@ -211,6 +211,20 @@ https://cloud.tencent.com/developer/article/1420239]
 ## 手机端调试工具插件
 使用方法教程[https://blog.yurunsoft.com/a/eruda.html] ，感觉比腾讯的vconsole好用</br>
 
+## web监听DOM元素的可见性
+很多业务中会统计元素的曝光,点击上报等,用以更好的统计用户的习惯,从而推送用户感兴趣的消息</br>
+vissense[https://www.bootcdn.cn/vissense/]</br>
+很方便的一个插件,可以正确的统计目标元素是否在可视区,以及在可视区范围内的比例,很精确</br>
+```js
+$(window).scroll(function(){
+   var domBox = $('#app')
+   if(VisSense(domBox[0]).percentage()>0.5 && !domBox.hasClass('report')){
+   	//TODO::在滚动的时候监听某个元素,当目标元素暴露在可视区大于50%的时候,可以进行一些操作
+   }
+})
+```
+
+
 
 ### CMD命令
 1:[快速打开网页]start http://xxxx.com
