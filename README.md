@@ -19,6 +19,7 @@
 - [go.mod的使用，告别GOPATH](#go.mod的使用，告别GOPATH)
 - [GO的常用代码段](#GO的常用代码段)
 - [识别一个IP是不是代理IP](#识别一个IP是不是代理IP)
+- [key的hash算法](#Key的hash算法)
 - [laravel使用cursor分批获取巨量数据不生效的问题](#laravel使用cursor分批获取巨量数据不生效的问题)
 - [监听页面打开/关闭/切换tab事件并发送请求](#监听页面打开/关闭/切换tab事件并发送请求)
 - [LINUX的I/O多路复用](#LINUX的I/O多路复用)
@@ -791,6 +792,32 @@ func demo(){
 2:【HTTP头部的X_Forwarded_For】：开通了HTTP代理的IP可以通过此法来识别是不是代理IP；如果带有XFF信息，该IP是代理IP无疑。</br></br>
 3:【Keep-alive报文】：如果带有Proxy-Connection的Keep-alive报文，该IP毫无疑问是代理IP。</br></br>
 4:【查看IP上端口】：如果一个IP有的端口大于10000，那么该IP大多也存在问题，普通的家庭IP开这么大的端口几乎是不可能的。</br></br>
+
+## kEY的hash算法
+```php
+function mcHash($key){
+    //通过md5把key处理成32位字符串，取其前8位字符
+    $md5 = substr(md5($key),0,8);
+    //来源于著名的hash算法times33，不断乘以33，hash值分布比较均匀而且速度快
+    $seed = 33;
+    $hash = 0;
+    for($i=0;$i<8;$i++){
+        //ord函数计算字符的ASCII码
+        //$md5{$i}代表字符串的第i个字符
+        $hash = $hash*$seed + ord($md5{$i});
+        //$i++;
+    }
+    //把hash值和0x7FFFFFFF做一次按位与操作
+    //主要是为了保证得到的index的第一位为0，也就是为了得到一个正数
+    //因为有符号数第一位0代表正数，1代表负数
+    return $hash & 0x7FFFFFFF;
+}
+$key1 = mcHash("key1");
+$key2 = mcHash("key2");
+$key3 = mcHash("key3");
+$key4 = mcHash("key4");
+var_dump($key1,$key2,$key3,$key4);
+```
 
 ## laravel使用cursor分批获取巨量数据不生效的问题
 ```php
