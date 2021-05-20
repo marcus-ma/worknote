@@ -444,6 +444,7 @@ func main(){
 ```
 
 ## 统计实时流中5秒内出现3次的元素
+文章介绍[https://www.jianshu.com/p/3209edd28187] </br>
 ```golang
 package main
 
