@@ -14,6 +14,7 @@
 - [ffmpeg常用命令](#ffmpeg常用命令)
 - [SQL优化](#SQL优化)
 - [计算请求平均耗时百分比](#计算请求平均耗时百分比)
+- [统计实时流中5秒内出现3次的元素](#统计实时流中5秒内出现3次的元素)
 - [Golang环境安装下载](#Golang环境安装下载)
 - [Golang调用系统默认浏览器打开指定链接](#Golang调用系统默认浏览器打开指定链接)
 - [go.mod的使用，告别GOPATH](#go.mod的使用，告别GOPATH)
@@ -441,6 +442,90 @@ func main(){
    fmt.Println(Percentile(99.5))
 }
 ```
+
+## 统计实时流中5秒内出现3次的元素
+```golang
+package main
+
+import (
+	"fmt"
+	"github.com/reugn/go-streams/extension"
+	"github.com/reugn/go-streams/flow"
+	"math/rand"
+	"time"
+)
+
+//设置一个每0.5秒产生一个5以内整数元素的channel
+func tickerChan(repeat time.Duration) chan interface{}{
+	ticker := time.NewTicker(repeat)
+	no := ticker.C
+	nc := make(chan interface{})
+	rand.Seed(time.Now().UnixNano())
+
+	go func() {
+		for range no{
+			i := rand.Intn(5)
+			n c<- i
+			i++
+		}
+	}()
+	return nc
+}
+
+
+func main() {
+
+	//设置数据的来源地(根据文档，该库还支持kafka、redis等组件作为数据的来源)
+	source := extension.NewChanSource(tickerChan(time.Millisecond * 500))
+	
+	//设置滑动窗口定义:窗口内时间，滑动时间
+	flowWindow := flow.NewSlidingWindow(time.Second*5,time.Second*1)
+	
+	//设置统计函数
+	flowCount := flow.NewFlatMap(func(in interface{}) []interface{} {
+		//由5秒内的管道的元素组合
+		arr := in.([]interface{})
+		//统计管道元素的出现次数
+		dict := make(map[int]int)
+		//返回到输出端的数据
+		rt := []interface{}{}
+
+		//统计元素频次
+		for _, item:=  range arr{
+			dict[item.(int)]+=1
+		}
+
+		//打印下5秒内元素的出现次数
+		fmt.Println(dict)
+
+		//将出现3次及以上的元素返回
+		for item, ct:=  range dict{
+			if ct>2 {
+				rt = append(rt,item)
+			}
+		}
+
+		return rt
+
+	},1)
+
+
+	//设置输出端(此处为输出到终端)
+	sink := extension.NewStdoutSink()
+
+
+	source.
+	Via(flowWindow).
+	Via(flowCount).
+	To(sink)
+
+	select {
+
+	}
+}
+```
+
+
 ## GO的常用代码段
 1：头条SDK的key加密类型和发送post请求
 </br>
