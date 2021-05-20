@@ -478,6 +478,16 @@ func main() {
 	//设置数据的来源地(根据文档，该库还支持kafka、redis等组件作为数据的来源)
 	source := extension.NewChanSource(tickerChan(time.Millisecond * 500))
 	
+	
+	//过滤白名单
+	flowFilter := flow.NewFilter(func(in interface{}) bool {
+		item := in.(int)
+		if item>2 {
+			return true
+		}
+		return false
+	},1)
+	
 	//设置滑动窗口定义:窗口内时间，滑动时间
 	flowWindow := flow.NewSlidingWindow(time.Second*5,time.Second*1)
 	
@@ -514,7 +524,7 @@ func main() {
 	sink := extension.NewStdoutSink()
 
 
-	source.
+	source.Via(flowFilter).
 	Via(flowWindow).
 	Via(flowCount).
 	To(sink)
