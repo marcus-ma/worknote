@@ -539,6 +539,107 @@ func main() {
 }
 ```
 
+数据来源改成读取redis的发布订阅
+```golang
+package main
+
+import (
+	"context"
+
+	"fmt"
+	"github.com/go-redis/redis"
+	"github.com/reugn/go-streams/flow"
+	extRedis "github.com/reugn/go-streams/redis"
+	"math/rand"
+	"strconv"
+	"time"
+)
+func main() {
+
+	ctx,_ := context.WithCancel(context.Background())
+	//redis的链接配置
+	config := &redis.Options{
+		Addr:     "127.0.0.1:6379", // use default Addr
+		//Password: "foobared",               // no password set
+	}
+	//发布订阅的channel-name
+	channel := "test"
+	//设置数据源为redis
+	source, err := extRedis.NewRedisSource(ctx, config, channel)
+	fmt.Println(err)
+
+	//每0.5秒想redis-channel发布信息
+	ticker := time.NewTicker(time.Millisecond*500)
+	rand.Seed(time.Now().UnixNano())
+	redisdb := redis.NewClient(config)
+	go func() {
+		for range ticker.C{
+			i := rand.Intn(5)
+			res := redisdb.Publish(channel,i)
+			fmt.Println(res)
+		}
+	}()
+	
+	
+	
+	//统计元素出现次数并进行筛选过滤
+	flowCount := flow.NewFlatMap(func(in interface{}) []interface{} {
+		//由5秒内的管道的元素组合
+		arr := in.([]interface{})
+		dict := make(map[interface{}]int)
+		rt := []interface{}{}
+
+		for _, item:=  range arr{
+			dict[item.(*redis.Message).Payload]+=1
+		}
+
+		//打印下5秒内
+		fmt.Println(dict)
+
+		for item, ct:=  range dict{
+			if ct>2 {
+				rt = append(rt,item)
+			}
+		}
+
+		return rt
+
+	},1)
+
+
+	//过滤白名单
+	flowFilter := flow.NewFilter(func(in interface{}) bool {
+		msg := in.(*redis.Message)
+		//字符串转数字
+		item ,_:= strconv.Atoi(msg.Payload)
+		if item>2 {
+			return true
+		}
+		return false
+	},1)
+
+
+	//窗口内时间，滑动时间
+	flowWindow := flow.NewSlidingWindow(time.Second*5,time.Second*1)
+
+	//设置数据输出源头
+	sink := extension.NewStdoutSink()
+
+	source.
+		Via(flowFilter).
+		Via(flowWindow).
+		Via(flowCount).
+		To(sink)
+
+	select {
+
+	}
+	
+	
+
+}
+```
+
 
 ## GO的常用代码段
 1：头条SDK的key加密类型和发送post请求
