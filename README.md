@@ -549,6 +549,7 @@ import (
 	"fmt"
 	"github.com/go-redis/redis"
 	"github.com/reugn/go-streams/flow"
+	"github.com/reugn/go-streams/extension"
 	extRedis "github.com/reugn/go-streams/redis"
 	"math/rand"
 	"strconv"
