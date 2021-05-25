@@ -73,5 +73,35 @@ func (hc *httpClient) Request(method string,uri string,options HttpRequestOption
 	data, err = ioutil.ReadAll(resp.Body)
 	resp.Body.Close()
 	return data, err
+}
 
+
+func testDemo(){
+	Client,_ := NewHttpClient(HttpClientOption{
+		BaseUri:"https://api.baidu.com",
+		TimeOut: time.Second*60,
+	})
+	postMaps := make(map[string]interface{})
+	postMaps["body"]=map[string]interface{}{
+			"realTimeRequestType":map[string]interface{}{
+				"producttype":0,
+				"startDate":revcData["date"].(string),
+				"endDate":revcData["date"].(string),
+				"levelOfDetails":2,
+				"number":2000,
+				"order":true,
+				"performanceData":[]string{"cost"},
+				"reportType":700,
+				"statRange":2,//统计账户粒度
+				"unitOfTime":5,//5按日
+				"bstype":0,
+			},
+	}
+	
+	body,_:=Client.Request(http.MethodGet,apiUrl,HttpRequestOption{
+		Payload: postMaps,
+		Header: map[string]string{
+				"Content-Type":"application/json;charset=UTF-8",
+		},
+	})
 }
