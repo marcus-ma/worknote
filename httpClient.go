@@ -18,6 +18,7 @@ type HttpClientOption struct {
 type HttpRequestOption struct {
 	Payload map[string]interface{}
 	Header map[string]string
+	Query map[string]string
 }
 
 
@@ -53,6 +54,7 @@ func (hc *httpClient) Request(method string,uri string,options HttpRequestOption
 		body io.Reader
 		resp *http.Response
 	)
+	//判断是否有body的数据
 	if len(options.Payload)>0 {
 		payload,_:=json.Marshal(options.Payload)
 		body = bytes.NewReader(payload)
@@ -61,11 +63,19 @@ func (hc *httpClient) Request(method string,uri string,options HttpRequestOption
 	}
 
 	req, _ := http.NewRequest(method, hc.baseUri+uri,body)
+	
+	//header请求头
 	for key,value :=  range options.Header{
 		req.Header.Set(key, value)
 	}
+	//query参数
+	q := req.URL.Query()
+	for key,value :=  range options.Query{
+		q.Add(key, value)
+	}
+	req.URL.RawQuery = q.Encode()
 
-
+	//请求发送
 	resp, err = http.DefaultClient.Do(req)
 	if err != nil {
 		return nil,err
@@ -103,5 +113,11 @@ func testDemo(){
 		Header: map[string]string{
 			"Content-Type":"application/json;charset=UTF-8",
 		},
+	 	Query: map[string]string{
+			"id":"1123",
+		},
 	})
+	data := make(map[string]interface{})
+	_ = json.Unmarshal(body, &data)
+	fmt.Println(data)
 }
