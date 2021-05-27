@@ -977,6 +977,48 @@ var users []User{}
 fields := []string{"name","age"}
 err = tx.Select(fields).Find(&users).Error
 ```
+### 存在就更新否则就插入
+```golang
+//表结构
+type User struct{}
+func (user * User) TableName() string {
+	return "user"
+}
+
+
+//where条件
+attr ：= map[string]interface{}{
+   "name":"marcus"
+}
+//日期字符串转时间戳（"2006-01-02"是原输入的字符串格式）
+stamp, _ := time.ParseInLocation("2006-01-02", "2021-03-13", time.Local)
+//要更新的字段
+values := map[string]interface{}{
+   "age":16,
+   "update_time":stamp.Unix(),
+}
+
+//设置要查询的表
+tx = db.model(&User{})
+var item User
+//查询条件
+for field,value:= range attr{
+    tx = tx.Where(field+" = ?",value)
+}
+//先看是否查询出来，能就更新，否则就插入数据
+if err := tx.First(&item).Error; err != nil {
+   // error handling...
+   if gorm.IsRecordNotFoundError(err){
+	item.name = attr["name"].(string)
+	item.age =  values["cost"]
+	item.UpdateTime = values["update_time"].(int64)
+	tx.Create(&item)  // newUser not user
+  }
+  
+}else{
+  tx.Updates(values)
+}
+```
 
 ## 二进制求集合
 1：【交集】`∩交集:$ c = $value1 & $value2`
