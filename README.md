@@ -19,6 +19,7 @@
 - [Golang调用系统默认浏览器打开指定链接](#Golang调用系统默认浏览器打开指定链接)
 - [go.mod的使用，告别GOPATH](#go.mod的使用，告别GOPATH)
 - [GO的常用代码段](#GO的常用代码段)
+- [gorm的常用代码段](#gorm的常用代码段)
 - [识别一个IP是不是代理IP](#识别一个IP是不是代理IP)
 - [key的hash算法](#Key的hash算法)
 - [laravel使用cursor分批获取巨量数据不生效的问题](#laravel使用cursor分批获取巨量数据不生效的问题)
@@ -954,6 +955,27 @@ func main() {
 
 	select {}
 }
+```
+
+## gorm的常用代码段
+### 获取指定字段
+```golang
+//表结构
+type User struct{}
+func (user * User) TableName() string {
+	return "user"
+}
+
+//设置要查询的表
+tx = db.model(&User{})
+var name []string
+//获取单个指定的字段数据
+err = tx.Pluck("username",&name).Error
+
+//获取多个指定的字段数据
+var users []User{}
+fields := []string{"name","age"}
+err = tx.Select(fields).Find(&users).Error
 ```
 
 ## 二进制求集合
