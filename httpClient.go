@@ -19,6 +19,13 @@ type HttpRequestOption struct {
 	Payload map[string]interface{}
 	Header map[string]string
 	Query map[string]string
+	Multipart HttpMultipartOption
+}
+
+type HttpMultipartOption struct {
+	FileReader io.Reader //文件的open句柄
+	FileOldName string
+	FileNewName string
 }
 
 
@@ -58,6 +65,15 @@ func (hc *httpClient) Request(method string,uri string,options HttpRequestOption
 	if len(options.Payload)>0 {
 		payload,_:=json.Marshal(options.Payload)
 		body = bytes.NewReader(payload)
+	} else if options.Multipart!= (HttpMultipartOption{}) {//判断是否为文件上传
+		body := &bytes.Buffer{}
+		writer := multipart.NewWriter(body)
+		//创建文件名、原文件名
+		part, _ := writer.CreateFormFile(options.Multipart.FileNewName,filepath.Base(options.Multipart.FileOldName))
+		io.Copy(part, options.Multipart.FileReader)
+		writer.Close()
+		options.Header["Content-Type"] = writer.FormDataContentType()
+
 	}else {
 		body = nil
 	}
