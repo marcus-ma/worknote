@@ -320,14 +320,14 @@ $(window).scroll(function(){
 </br></br>
 21:将视频进行加密:`ffmpeg -i i.mp4 -vcodec copy -acodec copy -encryption_scheme cenc-aes-ctr -encryption_key 76a6c65c5ea762046bd749a2e632ccbb -encryption_kid a7e61c373e219033c21091fa607bf3b8 p.mp4`
 </br>
-`
-encryption_key仅为128位= 16字节编码为十六进制(遵循使用 AES-128-CTR).因此， random.org 的配置为16个字节，并且hex.encoding是有效的密钥(但我通常不建议您信任外部资源).我使用python的秘密模块归结为:secrets.token_hex(16) . encryption_key将需要用于解码.
+参数介绍【encryption_key】：`encryption_key仅为128位= 16字节编码为十六进制(遵循使用 AES-128-CTR).因此， random.org 的配置为16个字节，并且hex.encoding是有效的密钥(但我通常不建议您信任外部资源).我使用python的秘密模块归结为:secrets.token_hex(16) . encryption_key将需要用于解码.
 `
 </br>
-`
+【encryption_kid】`
 encryption_kid 密钥ID 只是该键的标识符，可能是更复杂的使用模式所需要的(我！是在猜测！您可以执行以下操作:嘿视频...我需要我的1000个键中的哪一个? ).我想必须通过它，但是解码不是必需的(如果您知道对哪个视频使用哪个密钥).
 `
-
+</br>
+播放：`ffplay p.mp4 -decryption_key 76a6c65c5ea762046bd749a2e632ccbb `
 </br></br>
 
 ## SQL优化
