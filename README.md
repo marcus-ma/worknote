@@ -78,7 +78,10 @@ git push origin HEAD --force
 [https://www.itpony.com/show/49.html]
 
 ## go开发者大会 历年ppt
-地址：[https://https://github.com/gopherchina/conference]
+地址：[https://github.com/gopherchina/conference]
+
+## GO语言调试利器——dlv
+地址：[https://www.jianshu.com/p/7373042bba83]
 
 
 ## TODO-source-code
