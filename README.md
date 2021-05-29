@@ -304,19 +304,30 @@ $(window).scroll(function(){
 </br></br>
 13:预览消除水印位置:`ffplay -i i.mp4 -vf delogo=x=1:y=1:w=168:h=30:show=1`
 </br></br>
-14将视频水印模糊:`ffmpeg -i i.mp4 -vf "delogo=x=490:y=0:w=136:h=64" -c:a copy newp.mp4`
+14:将视频水印模糊:`ffmpeg -i i.mp4 -vf "delogo=x=490:y=0:w=136:h=64" -c:a copy newp.mp4`
 </br></br>
-15视频截取指定大小的图片:`ffmpeg -i i.mp4 -y -f image2 -ss 00:00:26 -t 0.001 -s 1366x768 a.jpg`
+15:视频截取指定大小的图片:`ffmpeg -i i.mp4 -y -f image2 -ss 00:00:26 -t 0.001 -s 1366x768 a.jpg`
 </br></br>
-16给视频加上字幕:`ffmpeg -i i.mp4 -vf subtitles=word.srt -y output.mp4`
+16:给视频加上字幕:`ffmpeg -i i.mp4 -vf subtitles=word.srt -y output.mp4`
 </br></br>
-17给不同格式视频转成mp4:`ffmpeg -i i.f4v -y -qscale 0 -vcodec libx264 ts.mp4`
+17:给不同格式视频转成mp4:`ffmpeg -i i.f4v -y -qscale 0 -vcodec libx264 ts.mp4`
 </br></br>
-18将视频添加跑马灯文字水印:`ffmpeg.exe -i i.mp4 -vf "drawtext=fontcolor=white:fontfile=msyhbd.ttc:text='喜欢就点赞加关注,跪求':y=30:x=(mod(2*n\,w+tw)-tw):fontsize=40:shadowy=2" t2.mp4`
+18:将视频添加跑马灯文字水印:`ffmpeg.exe -i i.mp4 -vf "drawtext=fontcolor=white:fontfile=msyhbd.ttc:text='喜欢就点赞加关注,跪求':y=30:x=(mod(2*n\,w+tw)-tw):fontsize=40:shadowy=2" t2.mp4`
 </br></br>
-19将16:9的横版视频等比例转9:16的竖版视频(上下部分替换成高斯模糊):`ffmpeg -i i.mp4 -lavfi "[0:v]scale=256/81*iw:256/81*ih,boxblur=luma_radius=min(h\,w)/40:luma_power=3:chroma_radius=min(cw\,ch)/40:chroma_power=1[bg];[bg][0:v]overlay=(W-w)/2:(H-h)/2,setsar=1,crop=w=iw*81/256" t.mp4`
+19:将16:9的横版视频等比例转9:16的竖版视频(上下部分替换成高斯模糊):`ffmpeg -i i.mp4 -lavfi "[0:v]scale=256/81*iw:256/81*ih,boxblur=luma_radius=min(h\,w)/40:luma_power=3:chroma_radius=min(cw\,ch)/40:chroma_power=1[bg];[bg][0:v]overlay=(W-w)/2:(H-h)/2,setsar=1,crop=w=iw*81/256" t.mp4`
 </br></br>
-20将9:16的竖版视频等比例转16:9的横版视频(左右部分替换成高斯模糊):`ffmpeg -i i.mp4 -lavfi '[0:v]scale=ih*16/9:-1,boxblur=luma_radius=min(h\,w)/20:luma_power=1:chroma_radius=min(cw\,ch)/20:chroma_power=1[bg];[bg][0:v]overlay=(W-w)/2:(H-h)/2,crop=h=iw*9/16' t.mp4`
+20:将9:16的竖版视频等比例转16:9的横版视频(左右部分替换成高斯模糊):`ffmpeg -i i.mp4 -lavfi '[0:v]scale=ih*16/9:-1,boxblur=luma_radius=min(h\,w)/20:luma_power=1:chroma_radius=min(cw\,ch)/20:chroma_power=1[bg];[bg][0:v]overlay=(W-w)/2:(H-h)/2,crop=h=iw*9/16' t.mp4`
+</br></br>
+21:将视频进行加密:`ffmpeg -i i.mp4 -vcodec copy -acodec copy -encryption_scheme cenc-aes-ctr -encryption_key 76a6c65c5ea762046bd749a2e632ccbb -encryption_kid a7e61c373e219033c21091fa607bf3b8 p.mp4`
+</br>
+`
+encryption_key仅为128位= 16字节编码为十六进制(遵循使用 AES-128-CTR).因此， random.org 的配置为16个字节，并且hex.encoding是有效的密钥(但我通常不建议您信任外部资源).我使用python的秘密模块归结为:secrets.token_hex(16) . encryption_key将需要用于解码.
+`
+</br>
+`
+encryption_kid 密钥ID 只是该键的标识符，可能是更复杂的使用模式所需要的(我！是在猜测！您可以执行以下操作:嘿视频...我需要我的1000个键中的哪一个? ).我想必须通过它，但是解码不是必需的(如果您知道对哪个视频使用哪个密钥).
+`
+
 </br></br>
 
 ## SQL优化
