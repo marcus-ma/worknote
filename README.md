@@ -69,7 +69,7 @@ git push origin HEAD --force
 
 ## JB-IDE激活码
 激活码地址[http://pblog.rzepx.cn/activationcode] </br>
-[http://idea.medeming.com/jets/]</br>
+[http://idea.medeming.com/tongyong/]</br>
 
 ## Github的CDN
 例子(获取marcus-ma/SSE-Event的SSE.js)：[https://cdn.jsdelivr.net/gh/marcus-ma/SSE-Event@master/SSE.js]
