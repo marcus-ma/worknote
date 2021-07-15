@@ -760,6 +760,7 @@ package main
 import (
 	"fmt"
 	"unsafe"
+	"unicode"
 )
 
 //字典树
@@ -790,6 +791,22 @@ func (t Trie) ExistPrefix(prefix string)bool{
 		t = t[ch]
 	}
 	return true
+}
+
+//敏感字符替换
+func (t Trie) ReplacePrefix(prefix string)string{
+	var urune []Char
+	for _,ch:=range []Char(prefix){
+	
+	    if (unicode.IsSpace(ch) || unicode.IsPunct(ch) || t[ch] == nil) {
+		urune = append(urune,ch)
+		continue
+	    }
+	    t = t[ch]
+	    urune = append(urune,'\u002A')//*号的rune
+	}
+
+	return string(urune)
 }
 
 //查询关联推荐
@@ -827,6 +844,7 @@ func main() {
 
 	fmt.Println(
 		t.ExistPrefix("我在这"),//判断该字符串是否存在
+		t.ReplacePrefix("我 在 这"),//* * 这。字符替换
 		t.Suggest("我在"),//print [我在这，我在哪]
 		unsafe.Sizeof(t))//8个字节的占用大小
 }
