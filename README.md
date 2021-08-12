@@ -407,6 +407,20 @@ select CONCAT( '# Time: ', DATE_FORMAT(start_time, '%y%m%d %H%i%s'), '\n', '# Us
 | 2020-10-02 19:17:23 | w_mini_user[w_mini_user] @ [10.200.20.11] | 00:00:02 | 00:00:00 | 9 | 443117 | mini_user | 0 | 0 | 168387936 | select id,club_id,reason,status,type,created_time,invite_id,falg_admin,file_id from t_user_msg where 1 and (team_id in (3212) and app_id is not null) or (invite_id=12395 or applicant_id=12395) order by created_time desc limit 0,10; | 1219921665 |
 ```
 </br></br>
+9:【FIND_IN_SET()函数寻找字符串是否包含指定数字】查询belong字段有3的数据
+```sql
+select * from table where FIND_IN_SET(3,belong);
++----+--------+
+| id | belong |
++----+--------+
+|  1 |    2,3 |
+|  2 |    3,4 |
++----+--------+---------+--------+
+2 rows in set (0.00 sec)
+```
+</br></br>
+
+
 
 
 ## Golang环境安装下载
