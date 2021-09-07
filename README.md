@@ -445,6 +445,85 @@ if err!=nil{
 ## Golang设置程序图标
 来源：[https://studygolang.com/articles/29850?fr=sidebar] </br> [https://blog.csdn.net/u014633966/article/details/82984037] </br>
 
+## Golang简单实现AC自动机
+```golang
+package main
+
+import (
+	"container/list"
+	"fmt"
+)
+
+type AcTrie struct {
+	failNode *AcTrie
+	end bool
+	childNode map[rune]*AcTrie
+}
+
+func NewAcTrie() *AcTrie {
+	return &AcTrie{
+		failNode: nil,
+		end: false,
+		childNode: make(map[rune]*AcTrie),
+	}
+}
+
+func (ac *AcTrie)BuildTrie(stringSlice []string)  {
+	node := ac
+	for _,s:=range stringSlice{
+		for _,runCh := range s{
+			if _,ok:=node.childNode[runCh];!ok {
+				node.childNode[runCh] = NewAcTrie()
+			}
+			node = node.childNode[runCh]
+		}
+		node.end=true
+		node = ac
+	}
+}
+
+func (ac *AcTrie)SetFail()  {
+	nodeList:=list.New()
+	nodeList.PushBack(ac)
+	for nodeList.Len()>0 {
+		node := nodeList.Remove(nodeList.Front()).(*AcTrie)
+		var p *AcTrie
+		for i,v:= range node.childNode{
+			if node == ac {
+				v.failNode=ac
+			}else {
+				p = node.failNode
+				for p!=nil {
+					if _,ok:=p.childNode[i];ok{
+						v.failNode=p.childNode[i]
+						break
+					}
+					p = p.failNode
+				}
+				if p==nil{
+					v.failNode = ac
+				}
+			}
+			nodeList.PushBack(v)
+		}
+	}
+}
+
+func main() {
+	ac:=NewAcTrie()
+	//.BuildTrie([]string{"我在","我哪这","我在哪"})
+	ac.BuildTrie([]string{"哪我","在这","在哪","在哪我"})
+	ac.SetFail()
+	fmt.Println(
+		ac,
+		ac.childNode[21738],//哪
+		 ac.childNode[22312],//在
+		ac.childNode[22312].childNode[21738],
+		ac.childNode[22312].childNode[21738].childNode[25105],
+	)
+)
+```
+
 
 ## go.mod的使用，告别GOPATH
 来源：[https://www.jianshu.com/p/bbed916d16ea]
