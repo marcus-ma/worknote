@@ -484,7 +484,7 @@ func (ac *AcTrie)BuildTrie(stringSlice []string)  {
 func (ac *AcTrie)SetFail()  {
 	nodeList := []*AcTrie{}
 	nodeList = append(nodeList,ac)
-	for len(nodeList)>0 {
+	for len(nodeList)!=0 {
 		node := nodeList[0]
 		nodeList=nodeList[1:]
 	
@@ -505,7 +505,7 @@ func (ac *AcTrie)SetFail()  {
 					v.failNode = ac
 				}
 			}
-			nodeList = append(nodeList,ac)
+			nodeList = append(nodeList,v)
 		}
 	}
 }
