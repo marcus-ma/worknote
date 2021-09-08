@@ -450,7 +450,6 @@ if err!=nil{
 package main
 
 import (
-	"container/list"
 	"fmt"
 )
 
@@ -483,10 +482,12 @@ func (ac *AcTrie)BuildTrie(stringSlice []string)  {
 }
 
 func (ac *AcTrie)SetFail()  {
-	nodeList:=list.New()
-	nodeList.PushBack(ac)
-	for nodeList.Len()>0 {
-		node := nodeList.Remove(nodeList.Front()).(*AcTrie)
+	nodeList := []*AcTrie{}
+	nodeList = append(nodeList,ac)
+	for len(nodeList)>0 {
+		node := nodeList[0]
+		nodeList=nodeList[1:]
+	
 		var p *AcTrie
 		for i,v:= range node.childNode{
 			if node == ac {
@@ -504,7 +505,7 @@ func (ac *AcTrie)SetFail()  {
 					v.failNode = ac
 				}
 			}
-			nodeList.PushBack(v)
+			nodeList = append(nodeList,ac)
 		}
 	}
 }
