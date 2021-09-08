@@ -471,7 +471,7 @@ func (ac *AcTrie)BuildTrie(stringSlice []string)  {
 	node := ac
 	for _,s:=range stringSlice{
 		for _,runCh := range s{
-			if _,ok:=node.childNode[runCh];!ok {
+			if node.childNode[runCh]==nil {
 				node.childNode[runCh] = NewAcTrie()
 			}
 			node = node.childNode[runCh]
@@ -500,7 +500,7 @@ func (ac *AcTrie)SetFail()  {
 			  // 2）否则，沿father->failNode->failNode继续查询下，如果一直没有，fail指针就取根节点
 				p = node.failNode
 				for p!=nil {
-					if _,ok:=p.childNode[i];ok{
+					if p.childNode[i]!=nil{
 						v.failNode=p.childNode[i]
 						break
 					}
