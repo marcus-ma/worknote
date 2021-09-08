@@ -515,18 +515,39 @@ func (ac *AcTrie)SetFail()  {
 	}
 }
 
+func (ac *AcTrie)Search(text string) string {
+	result := []rune(text)
+	curNode := ac
+	for i,runCh :=range result{
+		//当前字符若是空格则跳过检测
+		if (runCh==32) {
+		        continue
+		}
+		//如果当前字符在当前节点不存在(当前节点非根节点)，则去下个节点看下，即查看fail指针
+		for curNode.childNode[runCh]==nil && curNode!=ac {
+			curNode = curNode.failNode
+		}
+
+		//找到匹配节点，并把字符替换成敏感字符
+		if curNode.childNode[runCh]!=nil {
+			result[i] = '\u002A'
+			curNode = curNode.childNode[runCh]
+		}else {
+			// 当前字符一直查不到，则换下个字符，故重置node，取值根节点
+			curNode = ac
+		}
+
+	}
+
+	return string(result)
+}
+
 func main() {
 	ac:=NewAcTrie()
-	//.BuildTrie([]string{"我在","我哪这","我在哪"})
-	ac.BuildTrie([]string{"哪我","在这","在哪","在哪我"})
+	ac.BuildTrie([]string{"哪我","在这","在哪","在哪加"})
 	ac.SetFail()
-	fmt.Println(
-		ac,
-		ac.childNode[21738],//哪
-		 ac.childNode[22312],//在
-		ac.childNode[22312].childNode[21738],
-		ac.childNode[22312].childNode[21738].childNode[25105],
-	)
+	text:= "加 在 哪 我"
+	fmt.Println(ac.Search(text))
 )
 ```
 
