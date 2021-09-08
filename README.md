@@ -484,15 +484,20 @@ func (ac *AcTrie)BuildTrie(stringSlice []string)  {
 func (ac *AcTrie)SetFail()  {
 	nodeList := []*AcTrie{}
 	nodeList = append(nodeList,ac)
-	for len(nodeList)!=0 {
+	for len(nodeList)>0 {
 		node := nodeList[0]
 		nodeList=nodeList[1:]
 	
 		var p *AcTrie
 		for i,v:= range node.childNode{
 			if node == ac {
-				v.failNode=ac
+			   // 根节点的子节点的fail指针都指向根节点
+			   v.failNode=ac
 			}else {
+			  // 其他节点的子节点的fail指针就看它父节点fail指针指向的节点的子节点情况
+			  // fail指针设置原则是：
+			  // 1）查看father->failNode下有没有和自己一样的子节点，有则fail指针取该子节点
+			  // 2）否则，沿father->failNode->failNode继续查询下，如果一直没有，fail指针就取根节点
 				p = node.failNode
 				for p!=nil {
 					if _,ok:=p.childNode[i];ok{
