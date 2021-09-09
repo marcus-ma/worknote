@@ -523,6 +523,14 @@ func (ac *AcTrie)Search(text string) string {
 		if (runCh==32) {
 		        continue
 		}
+		//如果屏蔽词含有*号则要进行【无视文本长度的字符比对】
+		if (curNode.childNode[42]!=nil) {
+			if curNode.childNode[42].childNode[runCh] != nil {
+				result[i] = '\u002A'
+				curNode = curNode.childNode[42].childNode[runCh]
+			}
+			continue
+		}
 		//如果当前字符在当前节点不存在(当前节点非根节点)，则去下个节点看下，即查看fail指针
 		for curNode.childNode[runCh]==nil && curNode!=ac {
 			curNode = curNode.failNode
@@ -545,9 +553,11 @@ func (ac *AcTrie)Search(text string) string {
 func main() {
 	ac:=NewAcTrie()
 	ac.BuildTrie([]string{"哪我","在这","在哪","在哪加"})
+	ac.BuildTrie([]string{"公*众*号"})
 	ac.SetFail()
-	text:= "加 在 哪 我"
-	fmt.Println(ac.Search(text))
+	text1:= "加 在 哪 我"
+	text2:= "唯有公共环境卫生,众人都叫号"
+	fmt.Println(ac.Search(text1),ac.Search(text2))
 )
 ```
 
