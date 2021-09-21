@@ -445,6 +445,284 @@ if err!=nil{
 ## Golang设置程序图标
 来源：[https://studygolang.com/articles/29850?fr=sidebar] </br> [https://blog.csdn.net/u014633966/article/details/82984037] </br>
 
+## Golang实现DoubleArrayTrie+AC自动机
+```golang
+
+
+type Node struct {
+	code rune
+	left,right,depth,base,state int
+	term bool
+}
+
+type DoubleArrayTrie struct {
+	base,check,fail []int
+	keys [][]rune
+	keySize int
+	nextCheckPos int
+}
+//func max(m, n int) int {
+//	if m > n {
+//		return m
+//	}
+//	return n
+//}
+
+func (dat *DoubleArrayTrie)resize(newSize int)  {
+	dat.base = append(dat.base,make([]int,newSize-len(dat.base))...)
+	dat.check = append(dat.check,make([]int,newSize-len(dat.check))...)
+	dat.fail = append(dat.fail,make([]int,newSize-len(dat.fail))...)
+}
+
+func (dat *DoubleArrayTrie)fetchChild(parent *Node) (childSlice []Node) {
+	var (
+		i,childSliceLen int
+		pre,cur rune
+		child Node
+	)
+	childSlice = make([]Node,0,2)
+	for i=parent.left;i<parent.right;i++{
+
+		if len(dat.keys[i])<=parent.depth{
+			parent.term =true
+			continue
+		}
+
+		cur = dat.keys[i][parent.depth]
+		childSliceLen = len(childSlice)
+
+
+		if cur==pre && childSliceLen>0{
+			continue
+		}
+
+		child = Node{
+			code: cur,
+			left: i,
+			term: false,
+			base: parent.base,
+			right: parent.right,
+			depth: parent.depth+1,
+		}
+		if childSliceLen!=0{
+			//扫描到和上一个字符不重复，更新上一个字符的右边界
+			childSlice[childSliceLen-1].right=i
+		}
+
+		childSlice=append(childSlice,child)
+
+		pre = cur
+	}
+	return
+}
+func (dat *DoubleArrayTrie)setFail(node Node){
+	//ac自动机中，根节点与其子节点的fail状态都为根节点的状态
+	if node.depth==0|| node.depth==1{
+		dat.fail[node.state] = 0
+		return
+	}
+
+	//其他节点的fail状态指向需要查看
+	//其父节点的fail状态指向的节点下是否有同字符，有则指向这个同字符的状态
+	fState := dat.fail[dat.check[node.state]]
+set_state:
+	pos:=getAbs(dat.base[fState])+int(node.code)
+	if pos >= len(dat.base) {
+		//如果为根节点，则
+		if fState==0{
+			dat.fail[node.state] = 0
+			return
+		}
+		fState = dat.fail[fState]
+		goto set_state
+		//否则继续找这个节点的fail节点
+	}
+	if dat.check[pos]==fState && dat.base[pos]!=0{
+		dat.fail[node.state] = pos
+		return
+	}
+	if fState==0{
+		dat.fail[node.state] = 0
+		return
+	}
+	//否则继续找这个节点的fail节点
+	fState = dat.fail[fState]
+	goto set_state
+
+}
+func (dat *DoubleArrayTrie)insertArrayTrie(parent Node,childSlice []Node)[]Node{
+	var(
+		childLen,begin,pos,i int
+		first bool = true
+	)
+	childLen = len(childSlice)
+
+	if childLen==0{
+		dat.base[parent.state] = -parent.base
+		dat.setFail(parent)
+		return childSlice
+	}
+
+
+	pos  = max(int(childSlice[0].code),dat.nextCheckPos)
+	for{
+	next:
+		pos++
+		if len(dat.base)<pos{
+			dat.resize(pos+64)
+		}
+
+		if 0!=dat.check[pos] {
+			continue
+		}else if first{
+			dat.nextCheckPos = pos
+			first=!first
+		}
+
+		begin = pos - int(childSlice[0].code)
+		if len(dat.check)<=(begin+int(childSlice[childLen-1].code)){
+			dat.resize(begin+int(childSlice[childLen-1].code)+64)
+		}
+		for i=1;i<childLen;i++ {
+			if 0!=dat.check[begin+int(childSlice[i].code)] {
+				goto next
+			}
+		}
+		break
+	}
+	if parent.term{
+		dat.base[parent.state]=-begin
+	}else {
+		dat.base[parent.state]=begin
+	}
+
+	for i=0;i<childLen;i++ {
+		pos = begin+int(childSlice[i].code)
+		dat.base[pos] = begin
+		dat.check[pos] = parent.state
+		childSlice[i].state = pos
+	}
+
+	dat.setFail(parent)
+
+
+	return childSlice
+}
+
+func (dat *DoubleArrayTrie)search(text string) string {
+	content := []rune(text)
+	begin:=dat.base[0]
+	parentState := 0
+	pos:=0
+	indexs:= make([]int,0,2)
+	words:= make([]rune,0,2)
+
+	for i:=0;i<len(content);i++ {
+		runeCh := content[i]
+		//遇到空格跳过
+		if runeCh==32{
+			continue
+		}
+
+
+		pos = getAbs(begin)+int(runeCh)
+		if pos>=len(dat.base) {
+			continue
+		}
+
+		if   begin!=1 && dat.base[pos]==0 &&
+			pos<len(dat.fail) &&
+			dat.fail[pos]!=0{
+			pos = getAbs(dat.base[dat.fail[pos]])+int(runeCh)
+		}
+
+		if dat.base[pos]!=0 && dat.check[pos]==parentState {
+			//panic(i)
+			indexs=append(indexs,i)
+			words=append(words,runeCh)
+			//如果dat.base[POS] 为负数，则需要把begin指向其fail状态
+			if dat.base[pos]<0 {
+				
+			}
+			begin = getAbs(dat.base[pos])
+			parentState = pos
+		}else {
+			begin = dat.base[0]
+			parentState = 0
+		}
+
+
+
+	}
+
+
+	for _,v:=range indexs{
+		content[v]=42
+	}
+
+	return string(content)
+
+}
+
+
+func BuildV2(keywords []string)*DoubleArrayTrie{
+	var(
+		dat *DoubleArrayTrie
+		i int
+		node Node
+		queue,childSlice []Node
+	)
+
+	dat = &DoubleArrayTrie{
+		keys: make([][]rune,len(keywords)),
+		keySize: len(keywords),
+	}
+	for i=0;i<dat.keySize;i++{
+		dat.keys[i]=[]rune(keywords[i])
+	}
+
+	//初始化容量
+	dat.resize(64)
+
+	queue = make([]Node,0,2)
+	//放入root节点
+	queue = append(queue,Node{
+		left: 0,
+		right: dat.keySize,
+		term: false,
+		depth: 0,
+		base: 1,
+		state:0,
+	})
+	//root节点在容器状态为0，值为1
+	dat.base[0]=1
+
+
+	for len(queue)!=0 {
+		node,queue = queue[0], queue[1:]
+		childSlice = dat.insertArrayTrie(node,dat.fetchChild(&node))
+
+		if len(childSlice)!=0{
+			queue = append(queue,childSlice...)
+		}
+	}
+
+	return dat
+
+}
+
+func main(){
+	keywords := []string{
+		"she","his", "hers",  "he",
+	}
+	d:= BuildV2(keywords)
+	tet := "ushers"
+	res:= d.search(tet)
+	fmt.Println(res)
+
+}
+```
+
 ## Golang简单实现AC自动机
 ```golang
 package main
