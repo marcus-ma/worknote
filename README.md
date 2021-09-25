@@ -448,6 +448,7 @@ if err!=nil{
 ## Golang实现DoubleArrayTrie+AC自动机
 ```golang
 
+
 const (
 	_ROOT_STATE = 0
 	_ROOT_BASE = 1
@@ -468,6 +469,53 @@ func getAbs(n int) int {
 	return -n
 }
 
+// readLine read file line by line and drop one line's length >4096
+func readLine(r *bufio.Reader) (string, error) {
+	line, isprefix, err := r.ReadLine()
+	// drop
+	for isprefix && err == nil {
+		_, isprefix, err = r.ReadLine()
+	}
+	return string(line), err
+}
+
+type dartsKeySlice [][]rune
+
+func (k dartsKeySlice) Len() int {
+	return len(k)
+}
+
+func (k dartsKeySlice) Less(i, j int) bool {
+	var l int
+	if len(k[i]) < len(k[j]) {
+		l = len(k[i])
+	} else {
+		l = len(k[j])
+	}
+
+	for m := 0; m < l; m++ {
+		if k[i][m] < k[j][m] {
+			return true
+		} else if k[i][m] == k[j][m] {
+			continue
+		} else {
+			return false
+		}
+	}
+	if len(k[i]) < len(k[j]) {
+		return true
+	}
+	return false
+}
+
+func (k dartsKeySlice) Swap(i, j int) {
+	k[i], k[j] = k[j], k[i]
+}
+
+
+
+
+
 type Node struct {
 	code rune
 	left,right,depth,base,state int
@@ -476,17 +524,35 @@ type Node struct {
 
 type DoubleArrayTrie struct {
 	base,check,fail []int
-	keys [][]rune
+	keys dartsKeySlice
 	keySize int
 	nextCheckPos int
 }
 
-
+/**
+	对base、check、fail扩容
+ */
 func (dat *DoubleArrayTrie)resize(newSize int)  {
+	//var(
+	//	base,check,fail []int
+	//)
+	//base,check,fail = make([]int,newSize,newSize),make([]int,newSize,newSize),make([]int,newSize,newSize)
+	//
+	//copy(base,dat.base)
+	//copy(check,dat.check)
+	//copy(fail,dat.fail)
+	//
+	//dat.base=base
+	//dat.check=check
+	//dat.fail=fail
+
 	dat.base = append(dat.base,make([]int,newSize-len(dat.base))...)
 	dat.check = append(dat.check,make([]int,newSize-len(dat.check))...)
 	dat.fail = append(dat.fail,make([]int,newSize-len(dat.fail))...)
 }
+/**
+	获取节点的子节点
+ */
 func (dat *DoubleArrayTrie)fetchChild(parent *Node) (childSlice []Node) {
 	var (
 		i,childSliceLen int
@@ -528,6 +594,9 @@ func (dat *DoubleArrayTrie)fetchChild(parent *Node) (childSlice []Node) {
 	}
 	return
 }
+/**
+	设置节点的fail状态转移
+ */
 func (dat *DoubleArrayTrie)setFail(node Node){
 	var(
 		fState,pos int
@@ -556,6 +625,9 @@ func (dat *DoubleArrayTrie)setFail(node Node){
 		fState = pos
 	}
 }
+/**
+	检验当前传入状态下是否有满足传入字符的转移状态
+ */
 func (dat *DoubleArrayTrie)checkState(parentState int,code rune)(nextState int){
 	var pos int
 
@@ -579,6 +651,9 @@ func (dat *DoubleArrayTrie)checkState(parentState int,code rune)(nextState int){
 	}
 	return dat.fail[parentState]
 }
+/**
+	把传入节点信息存储到数组base与check上
+ */
 func (dat *DoubleArrayTrie)insertArrayTrie(parent Node,childSlice []Node)[]Node{
 	var(
 		childLen,begin,pos,i int
@@ -637,16 +712,20 @@ func (dat *DoubleArrayTrie)insertArrayTrie(parent Node,childSlice []Node)[]Node{
 
 	return childSlice
 }
+
+/**
+	检验监测字符串敏感词并将其替换成*符号
+ */
 func (dat *DoubleArrayTrie)SearchAndReplace(text string) string {
 	var(
-		content,words []rune
+		content []rune
 		parentState,pos int
 		indexs []int
 		runeCh rune
 	)
 	content = []rune(text)
 	parentState,pos = _ROOT_STATE,_ROOT_BASE
-	indexs,words= make([]int,0,2),make([]rune,0,2)
+	indexs= make([]int,0,2)
 
 	for i:=0;i<len(content);i++ {
 		runeCh = content[i]
@@ -660,7 +739,7 @@ func (dat *DoubleArrayTrie)SearchAndReplace(text string) string {
 				//当前字符存在
 				if pos!=-1{
 					indexs=append(indexs,i)
-					words=append(words,runeCh)
+					//words=append(words,runeCh)
 					//重制下一个开始节点
 					parentState=getAbs(pos)
 				}else {
@@ -681,6 +760,9 @@ func (dat *DoubleArrayTrie)SearchAndReplace(text string) string {
 	return string(content)
 
 }
+/**
+	建立Dats
+ */
 func BuildDats(keywords []string)*DoubleArrayTrie{
 	var(
 		dat *DoubleArrayTrie
@@ -696,6 +778,8 @@ func BuildDats(keywords []string)*DoubleArrayTrie{
 	for i=0;i<dat.keySize;i++{
 		dat.keys[i]=[]rune(keywords[i])
 	}
+
+	sort.Sort(dat.keys)
 
 	//初始化容量
 	dat.resize(_ALLOC_SIZE)
@@ -723,6 +807,33 @@ func BuildDats(keywords []string)*DoubleArrayTrie{
 		}
 	}
 	return dat
+}
+
+// BuildFromFile build ac from file
+func BuildFromFile(inputfile string) (*DoubleArrayTrie, error) {
+	file, err := os.Open(inputfile)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+	bufReader := bufio.NewReader(file)
+	keywords := make([]string,0,2)
+	for {
+		line, err := readLine(bufReader)
+		if err != nil {
+			break
+		}
+		keyword := strings.TrimSpace(line)
+		if keyword == "" {
+			continue
+		}
+		keywords = append(keywords, keyword)
+	}
+	if len(keywords) == 0 {
+		return nil, errors.New("Empty keywords to build")
+	}
+
+	return BuildDats(keywords), nil
 }
 
 func main(){
