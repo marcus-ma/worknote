@@ -448,6 +448,25 @@ if err!=nil{
 ## Golang实现DoubleArrayTrie+AC自动机
 ```golang
 
+const (
+	_ROOT_STATE = 0
+	_ROOT_BASE = 1
+	_ALLOC_SIZE = 64
+)
+
+func max(m, n int) int {
+	if m > n {
+		return m
+	}
+	return n
+}
+
+func getAbs(n int) int {
+	if n >= 0 {
+		return n
+	}
+	return -n
+}
 
 type Node struct {
 	code rune
@@ -461,19 +480,13 @@ type DoubleArrayTrie struct {
 	keySize int
 	nextCheckPos int
 }
-//func max(m, n int) int {
-//	if m > n {
-//		return m
-//	}
-//	return n
-//}
+
 
 func (dat *DoubleArrayTrie)resize(newSize int)  {
 	dat.base = append(dat.base,make([]int,newSize-len(dat.base))...)
 	dat.check = append(dat.check,make([]int,newSize-len(dat.check))...)
 	dat.fail = append(dat.fail,make([]int,newSize-len(dat.fail))...)
 }
-
 func (dat *DoubleArrayTrie)fetchChild(parent *Node) (childSlice []Node) {
 	var (
 		i,childSliceLen int
@@ -516,39 +529,55 @@ func (dat *DoubleArrayTrie)fetchChild(parent *Node) (childSlice []Node) {
 	return
 }
 func (dat *DoubleArrayTrie)setFail(node Node){
+	var(
+		fState,pos int
+	)
 	//ac自动机中，根节点与其子节点的fail状态都为根节点的状态
 	if node.depth==0|| node.depth==1{
-		dat.fail[node.state] = 0
+		dat.fail[node.state] = _ROOT_STATE
 		return
 	}
 
 	//其他节点的fail状态指向需要查看
 	//其父节点的fail状态指向的节点下是否有同字符，有则指向这个同字符的状态
-	fState := dat.fail[dat.check[node.state]]
-set_state:
-	pos:=getAbs(dat.base[fState])+int(node.code)
-	if pos >= len(dat.base) {
-		//如果为根节点，则
-		if fState==0{
-			dat.fail[node.state] = 0
-			return
+	fState = dat.fail[dat.check[node.state]]
+	pos=1
+	for pos>0{
+		pos =dat.checkState(fState,node.code)
+		if pos<0{
+			if pos==-1 {
+				dat.fail[node.state]=_ROOT_STATE
+			}else{
+				dat.fail[node.state]=getAbs(pos)
+			}
+			break
 		}
-		fState = dat.fail[fState]
-		goto set_state
 		//否则继续找这个节点的fail节点
+		fState = pos
 	}
-	if dat.check[pos]==fState && dat.base[pos]!=0{
-		dat.fail[node.state] = pos
-		return
-	}
-	if fState==0{
-		dat.fail[node.state] = 0
-		return
-	}
-	//否则继续找这个节点的fail节点
-	fState = dat.fail[fState]
-	goto set_state
+}
+func (dat *DoubleArrayTrie)checkState(parentState int,code rune)(nextState int){
+	var pos int
 
+	pos =getAbs(dat.base[parentState])+int(code)
+	if pos>=len(dat.base){
+		//如果当前节点是跟节点，则返回-1（看下一个字符）
+		if parentState==0{
+			return -1
+		}
+		//返回当前节点的fail指向节点的状态下标（上层函数继续循环）
+		return dat.fail[parentState]
+	}
+
+	//下一个字符状态存在则返回下个字符状态的负数（为了跟fail节点的状态作区分，不用继续循环）
+	if dat.base[pos]!=0 && dat.check[pos]==parentState{
+		return -pos
+	}
+
+	if parentState==0{
+		return -1
+	}
+	return dat.fail[parentState]
 }
 func (dat *DoubleArrayTrie)insertArrayTrie(parent Node,childSlice []Node)[]Node{
 	var(
@@ -569,10 +598,10 @@ func (dat *DoubleArrayTrie)insertArrayTrie(parent Node,childSlice []Node)[]Node{
 	next:
 		pos++
 		if len(dat.base)<pos{
-			dat.resize(pos+64)
+			dat.resize(pos+_ALLOC_SIZE)
 		}
 
-		if 0!=dat.check[pos] {
+		if 0!=dat.base[pos] {
 			continue
 		}else if first{
 			dat.nextCheckPos = pos
@@ -581,10 +610,10 @@ func (dat *DoubleArrayTrie)insertArrayTrie(parent Node,childSlice []Node)[]Node{
 
 		begin = pos - int(childSlice[0].code)
 		if len(dat.check)<=(begin+int(childSlice[childLen-1].code)){
-			dat.resize(begin+int(childSlice[childLen-1].code)+64)
+			dat.resize(begin+int(childSlice[childLen-1].code)+_ALLOC_SIZE)
 		}
 		for i=1;i<childLen;i++ {
-			if 0!=dat.check[begin+int(childSlice[i].code)] {
+			if 0!=dat.base[begin+int(childSlice[i].code)] {
 				goto next
 			}
 		}
@@ -601,61 +630,50 @@ func (dat *DoubleArrayTrie)insertArrayTrie(parent Node,childSlice []Node)[]Node{
 		dat.base[pos] = begin
 		dat.check[pos] = parent.state
 		childSlice[i].state = pos
+		childSlice[i].base = begin
 	}
 
 	dat.setFail(parent)
 
-
 	return childSlice
 }
-
-func (dat *DoubleArrayTrie)search(text string) string {
-	content := []rune(text)
-	begin:=dat.base[0]
-	parentState := 0
-	pos:=0
-	indexs:= make([]int,0,2)
-	words:= make([]rune,0,2)
+func (dat *DoubleArrayTrie)SearchAndReplace(text string) string {
+	var(
+		content,words []rune
+		parentState,pos int
+		indexs []int
+		runeCh rune
+	)
+	content = []rune(text)
+	parentState,pos = _ROOT_STATE,_ROOT_BASE
+	indexs,words= make([]int,0,2),make([]rune,0,2)
 
 	for i:=0;i<len(content);i++ {
-		runeCh := content[i]
+		runeCh = content[i]
 		//遇到空格跳过
 		if runeCh==32{
 			continue
 		}
+		for pos>0{
+			pos:=dat.checkState(parentState,runeCh)
+			if pos<0{
+				//当前字符存在
+				if pos!=-1{
+					indexs=append(indexs,i)
+					words=append(words,runeCh)
+					//重制下一个开始节点
+					parentState=getAbs(pos)
+				}else {
+					//重制下一个开始节点
+					parentState=_ROOT_STATE
+				}
+				pos=_ROOT_BASE
 
-
-		pos = getAbs(begin)+int(runeCh)
-		if pos>=len(dat.base) {
-			continue
-		}
-
-		if   begin!=1 && dat.base[pos]==0 &&
-			pos<len(dat.fail) &&
-			dat.fail[pos]!=0{
-			pos = getAbs(dat.base[dat.fail[pos]])+int(runeCh)
-		}
-
-		if dat.base[pos]!=0 && dat.check[pos]==parentState {
-			//panic(i)
-			indexs=append(indexs,i)
-			words=append(words,runeCh)
-			//如果dat.base[POS] 为负数，则需要把begin指向其fail状态
-			if dat.base[pos]<0 {
-				
+				break
 			}
-			begin = getAbs(dat.base[pos])
 			parentState = pos
-		}else {
-			begin = dat.base[0]
-			parentState = 0
 		}
-
-
-
 	}
-
-
 	for _,v:=range indexs{
 		content[v]=42
 	}
@@ -663,9 +681,7 @@ func (dat *DoubleArrayTrie)search(text string) string {
 	return string(content)
 
 }
-
-
-func BuildV2(keywords []string)*DoubleArrayTrie{
+func BuildDats(keywords []string)*DoubleArrayTrie{
 	var(
 		dat *DoubleArrayTrie
 		i int
@@ -682,7 +698,7 @@ func BuildV2(keywords []string)*DoubleArrayTrie{
 	}
 
 	//初始化容量
-	dat.resize(64)
+	dat.resize(_ALLOC_SIZE)
 
 	queue = make([]Node,0,2)
 	//放入root节点
@@ -691,11 +707,11 @@ func BuildV2(keywords []string)*DoubleArrayTrie{
 		right: dat.keySize,
 		term: false,
 		depth: 0,
-		base: 1,
-		state:0,
+		base: _ROOT_BASE,
+		state:_ROOT_STATE,
 	})
 	//root节点在容器状态为0，值为1
-	dat.base[0]=1
+	dat.base[_ROOT_STATE]=_ROOT_BASE
 
 
 	for len(queue)!=0 {
@@ -706,18 +722,16 @@ func BuildV2(keywords []string)*DoubleArrayTrie{
 			queue = append(queue,childSlice...)
 		}
 	}
-
 	return dat
-
 }
 
 func main(){
 	keywords := []string{
-		"she","his", "hers",  "he",
+		"he","hers","his","she"
 	}
-	d:= BuildV2(keywords)
+	d:= BuildDats(keywords)
 	tet := "ushers"
-	res:= d.search(tet)
+	res:= d.searchAndReplace(tet)
 	fmt.Println(res)
 
 }
