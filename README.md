@@ -748,6 +748,14 @@ func (dat *DoubleArrayTrie)SearchAndReplace(text string) string {
 		if runeCh==32{
 			continue
 		}
+		//如果屏蔽词含有*号则要进行【无视文本长度的字符比对】
+		if t:=dat.checkState(parentState,42);t<0&&t!=-1{
+			if t:=dat.checkState(getAbs(dat.checkState(parentState,42)),runeCh);t<0&&t!=-1{
+				indexs=append(indexs,i)
+				parentState = getAbs(t)
+			}
+			continue
+		}
 		for pos>0{
 			pos:=dat.checkState(parentState,runeCh)
 			if pos<0{
