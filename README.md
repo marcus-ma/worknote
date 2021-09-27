@@ -448,7 +448,6 @@ if err!=nil{
 ## Golang实现DoubleArrayTrie+AC自动机
 ```golang
 
-
 const (
 	_ROOT_STATE = 0
 	_ROOT_BASE = 1
@@ -526,33 +525,40 @@ type DoubleArrayTrie struct {
 	base,check,fail []int
 	keys dartsKeySlice
 	keySize int
+	finalSize int
 	nextCheckPos int
 }
-
 /**
-	对base、check、fail扩容
- */
+对base、check、fail数组扩容
+*/
 func (dat *DoubleArrayTrie)resize(newSize int)  {
-	//var(
-	//	base,check,fail []int
-	//)
-	//base,check,fail = make([]int,newSize,newSize),make([]int,newSize,newSize),make([]int,newSize,newSize)
-	//
-	//copy(base,dat.base)
-	//copy(check,dat.check)
-	//copy(fail,dat.fail)
-	//
-	//dat.base=base
-	//dat.check=check
-	//dat.fail=fail
 
 	dat.base = append(dat.base,make([]int,newSize-len(dat.base))...)
 	dat.check = append(dat.check,make([]int,newSize-len(dat.check))...)
 	dat.fail = append(dat.fail,make([]int,newSize-len(dat.fail))...)
 }
+
 /**
-	获取节点的子节点
+压缩base，check，fail数组
+长度压缩为真实的size
  */
+func (dat *DoubleArrayTrie)shrink(finalSize int){
+	var (
+		finalBase,finalCheck,finalFail []int
+	)
+	finalBase,finalCheck,finalFail = make([]int, finalSize, finalSize),make([]int, finalSize, finalSize),make([]int, finalSize, finalSize)
+
+	copy(finalBase, dat.base)
+	copy(finalCheck, dat.check)
+	copy(finalFail, dat.fail)
+
+	dat.base = finalBase
+	dat.check = finalCheck
+	dat.fail = finalFail
+}
+/**
+获取节点的子节点
+*/
 func (dat *DoubleArrayTrie)fetchChild(parent *Node) (childSlice []Node) {
 	var (
 		i,childSliceLen int
@@ -595,8 +601,8 @@ func (dat *DoubleArrayTrie)fetchChild(parent *Node) (childSlice []Node) {
 	return
 }
 /**
-	设置节点的fail状态转移
- */
+设置节点的fail状态转移
+*/
 func (dat *DoubleArrayTrie)setFail(node Node){
 	var(
 		fState,pos int
@@ -626,8 +632,8 @@ func (dat *DoubleArrayTrie)setFail(node Node){
 	}
 }
 /**
-	检验当前传入状态下是否有满足传入字符的转移状态
- */
+检验当前传入状态下是否有满足传入字符的转移状态
+*/
 func (dat *DoubleArrayTrie)checkState(parentState int,code rune)(nextState int){
 	var pos int
 
@@ -652,8 +658,8 @@ func (dat *DoubleArrayTrie)checkState(parentState int,code rune)(nextState int){
 	return dat.fail[parentState]
 }
 /**
-	把传入节点信息存储到数组base与check上
- */
+把传入节点信息存储到数组base与check上
+*/
 func (dat *DoubleArrayTrie)insertArrayTrie(parent Node,childSlice []Node)[]Node{
 	var(
 		childLen,begin,pos,i int
@@ -684,13 +690,20 @@ func (dat *DoubleArrayTrie)insertArrayTrie(parent Node,childSlice []Node)[]Node{
 		}
 
 		begin = pos - int(childSlice[0].code)
-		if len(dat.check)<=(begin+int(childSlice[childLen-1].code)){
-			dat.resize(begin+int(childSlice[childLen-1].code)+_ALLOC_SIZE)
+		max := begin+int(childSlice[childLen-1].code)
+		if len(dat.check)<=max{
+			//扩容
+			dat.resize(max+_ALLOC_SIZE)
 		}
 		for i=1;i<childLen;i++ {
 			if 0!=dat.base[begin+int(childSlice[i].code)] {
 				goto next
 			}
+		}
+
+		//记录下当前进度下的真实占用容量
+		if  dat.finalSize < max {
+			dat.finalSize = max
 		}
 		break
 	}
@@ -708,14 +721,16 @@ func (dat *DoubleArrayTrie)insertArrayTrie(parent Node,childSlice []Node)[]Node{
 		childSlice[i].base = begin
 	}
 
+
+
 	dat.setFail(parent)
 
 	return childSlice
 }
 
 /**
-	检验监测字符串敏感词并将其替换成*符号
- */
+检验监测字符串敏感词并将其替换成*符号
+*/
 func (dat *DoubleArrayTrie)SearchAndReplace(text string) string {
 	var(
 		content []rune
@@ -739,7 +754,6 @@ func (dat *DoubleArrayTrie)SearchAndReplace(text string) string {
 				//当前字符存在
 				if pos!=-1{
 					indexs=append(indexs,i)
-					//words=append(words,runeCh)
 					//重制下一个开始节点
 					parentState=getAbs(pos)
 				}else {
@@ -761,8 +775,8 @@ func (dat *DoubleArrayTrie)SearchAndReplace(text string) string {
 
 }
 /**
-	建立Dats
- */
+建立Dats
+*/
 func BuildDats(keywords []string)*DoubleArrayTrie{
 	var(
 		dat *DoubleArrayTrie
@@ -806,6 +820,8 @@ func BuildDats(keywords []string)*DoubleArrayTrie{
 			queue = append(queue,childSlice...)
 		}
 	}
+
+	dat.shrink(dat.finalSize)
 	return dat
 }
 
@@ -836,13 +852,41 @@ func BuildFromFile(inputfile string) (*DoubleArrayTrie, error) {
 	return BuildDats(keywords), nil
 }
 
+
+func traceMemStats() {
+	var m runtime.MemStats
+	runtime.ReadMemStats(&m)
+	mb :=  1024 * 1024.0
+	fmt.Printf("\nAlloc = %v\tTotalAlloc = %v\tSys = %v\t NumGC = %v\n\n", float64(m.Alloc)/mb, float64(m.TotalAlloc)/mb, float64(m.Sys)/mb, m.NumGC)
+}
+
 func main(){
+	//demo-1
 	keywords := []string{
 		"he","hers","his","she"
 	}
 	d:= BuildDats(keywords)
 	tet := "ushers"
 	res:= d.searchAndReplace(tet)
+	fmt.Println(res)
+	
+	//demo-2
+	start:= time.Now()
+	fmt.Println("开始构建")
+	traceMemStats()
+	d,err:=BuildFromFile("./dictionary.txt")
+	fmt.Println("构建成功：",time.Since(start).Seconds())
+	traceMemStats()
+
+	if err!=nil {
+		panic(err)
+	}
+	runtime.GC()
+	traceMemStats()
+	fmt.Println("开始查询")
+	start = time.Now()
+	res := d.SearchAndReplace("打秋风u打算盘")
+	fmt.Println("查询成功：",time.Since(start).Nanoseconds())
 	fmt.Println(res)
 
 }
