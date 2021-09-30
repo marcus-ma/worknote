@@ -782,6 +782,33 @@ func (dat *DoubleArrayTrie)SearchAndReplace(text string) string {
 	return string(content)
 
 }
+//保存build好的DAT到指定路径
+//使用gob协议
+func (dat *DoubleArrayTrie) Store(path string) error {
+	file, err := os.OpenFile(path, os.O_CREATE|os.O_WRONLY, os.ModePerm)
+	if err != nil {
+		log.Fatalln(err)
+		return err
+	}
+	defer file.Close()
+	encoder := gob.NewEncoder(file)
+	type DATExport struct{
+		Base,Check,Fail []int
+	}
+	saveDat := new(DATExport)
+	saveDat.Base = dat.base
+	saveDat.Check = dat.check
+	saveDat.Fail = dat.fail
+
+	err = encoder.Encode(saveDat)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	return nil
+}
+
+
 /**
 建立Dats
 */
@@ -832,7 +859,30 @@ func BuildDats(keywords []string)*DoubleArrayTrie{
 	dat.shrink(dat.finalSize)
 	return dat
 }
-
+//从指定路径加载DAT
+func LoadDats(path string)(*DoubleArrayTrie,error){
+	file, err := os.Open(path)
+	if err != nil {
+		log.Fatalln(err)
+		return nil,err
+	}
+	defer file.Close()
+	decoder := gob.NewDecoder(file)
+	type DATExport struct{
+		Base,Check,Fail []int
+	}
+	fileDat := new(DATExport)
+	err = decoder.Decode(fileDat)
+	if err != nil {
+		log.Fatalln(err)
+		return nil,err
+	}
+	return &DoubleArrayTrie{
+		base: fileDat.Base,
+		check: fileDat.Check,
+		fail: fileDat.Fail,
+	},nil
+}
 // BuildFromFile build ac from file
 func BuildFromFile(inputfile string) (*DoubleArrayTrie, error) {
 	file, err := os.Open(inputfile)
@@ -883,6 +933,7 @@ func main(){
 	fmt.Println("开始构建")
 	traceMemStats()
 	d,err:=BuildFromFile("./dictionary.txt")
+	//d,err := LoadDats("./dats.dic")
 	fmt.Println("构建成功：",time.Since(start).Seconds())
 	traceMemStats()
 
@@ -896,6 +947,14 @@ func main(){
 	res := d.SearchAndReplace("打秋风u打算盘")
 	fmt.Println("查询成功：",time.Since(start).Nanoseconds())
 	fmt.Println(res)
+	
+	//err  = d.Store("./dats.dic")
+	//if err != nil {
+	//	fmt.Println("store is error")
+	//	panic(err)
+	//}
+	//
+	//fmt.Println("store is ok")
 
 }
 ```
