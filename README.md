@@ -306,6 +306,8 @@ $(window).scroll(function(){
 8:截取制定位置的视频【将视频2.mp4，从5秒开始剪辑时长为4分41秒的视频output.mp4】：`ffmpeg -ss 00:00:05 -t 00:04:41 -i 2.mp4 -vcodec copy -acodec copy output.mp4`
 </br></br>
 9:裁剪视频宽高画面【将视频1.mp4的画面高度减去原来高度的1.2成视频output.mp4】：`ffmpeg -i 1.mp4 -strict -2 -vf crop=iw:ih/1.2:0:ih out1.mp4`
+</br>
+【将视频1.mp4的画面高度从下往上减去原来高度的1.2成视频output.mp4】：`ffmpeg -i 1.mp4 -strict -2 -vf crop=iw:ih/1.2:0:0 output.mp4`
 </br></br>
 10:将视频的音频抽出:`ffmpeg -i we.mp4 -vn r.mp3`
 </br></br>
